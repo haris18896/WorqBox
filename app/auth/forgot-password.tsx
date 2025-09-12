@@ -2,7 +2,7 @@ import Button from "@/components/ui/Button";
 import TextInput from "@/components/ui/TextInput";
 import { useTheme } from "@/theme";
 import { spacing } from "@/theme/responsive";
-import { LoginFormData } from "@/types";
+import { ForgotPasswordFormData } from "@/types";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useFormik } from "formik";
@@ -22,44 +22,41 @@ import {
 import * as Yup from "yup";
 
 // Validation schema
-const loginSchema = Yup.object().shape({
+const forgotPasswordSchema = Yup.object().shape({
   email: Yup.string()
     .email("Please enter a valid email address")
     .required("Email is required"),
-  password: Yup.string()
-    .min(6, "Password must be at least 6 characters")
-    .required("Password is required"),
 });
 
-export default function Login() {
+export default function ForgotPassword() {
   const router = useRouter();
   const { palette, toggleTheme, isDark } = useTheme();
-  const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [emailSent, setEmailSent] = useState(false);
 
   // Refs for input navigation
   const emailRef = useRef<RNTextInput>(null);
-  const passwordRef = useRef<RNTextInput>(null);
 
-  const formik = useFormik<LoginFormData>({
+  const formik = useFormik<ForgotPasswordFormData>({
     initialValues: {
-      email: "dev.reporteq@gmail.com", // Pre-filled for demo
-      password: "password123", // Pre-filled for demo
-      rememberMe: false,
+      email: "",
     },
-    validationSchema: loginSchema,
+    validationSchema: forgotPasswordSchema,
     onSubmit: async (values) => {
       setIsLoading(true);
       try {
         // Simulate API call
         await new Promise((resolve) => setTimeout(resolve, 2000));
 
-        console.log("Login attempt:", values);
-        Alert.alert("Success", "Login successful!", [
-          { text: "OK", onPress: () => router.push("/auth/register") },
-        ]);
+        console.log("Password reset request:", values);
+        setEmailSent(true);
+        Alert.alert(
+          "Email Sent",
+          "We've sent a password reset link to your email address.",
+          [{ text: "OK", onPress: () => router.back() }]
+        );
       } catch {
-        Alert.alert("Error", "Login failed. Please try again.");
+        Alert.alert("Error", "Failed to send reset email. Please try again.");
       } finally {
         setIsLoading(false);
       }
@@ -83,19 +80,20 @@ export default function Login() {
       alignItems: "center",
       marginBottom: spacing.xl * 2,
     },
+    backButton: {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      padding: spacing.sm,
+      zIndex: 1,
+    },
     logo: {
       width: 80,
       height: 80,
       marginBottom: spacing.lg,
     },
-    appName: {
-      fontSize: 28,
-      fontWeight: "bold",
-      color: palette.text.primary,
-      marginBottom: spacing.sm,
-    },
     title: {
-      fontSize: 32,
+      fontSize: 28,
       fontWeight: "bold",
       color: palette.text.primary,
       marginBottom: spacing.sm,
@@ -106,43 +104,12 @@ export default function Login() {
       color: palette.text.secondary,
       textAlign: "center",
       marginBottom: spacing.xl,
+      lineHeight: 24,
     },
     formContainer: {
       marginBottom: spacing.xl,
     },
-    rememberForgotContainer: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
-      marginBottom: spacing.xl,
-    },
-    rememberMeContainer: {
-      flexDirection: "row",
-      alignItems: "center",
-    },
-    checkbox: {
-      width: 20,
-      height: 20,
-      borderWidth: 2,
-      borderColor: palette.primary.main,
-      borderRadius: 4,
-      marginRight: spacing.sm,
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    checkboxChecked: {
-      backgroundColor: palette.primary.main,
-    },
-    checkboxText: {
-      fontSize: 14,
-      color: palette.text.secondary,
-    },
-    forgotPassword: {
-      fontSize: 14,
-      color: palette.primary.main,
-      fontWeight: "500",
-    },
-    loginButton: {
+    resetButton: {
       marginBottom: spacing.lg,
     },
     divider: {
@@ -178,7 +145,97 @@ export default function Login() {
       right: 20,
       padding: spacing.sm,
     },
+    rememberPasswordContainer: {
+      alignItems: "center",
+      marginTop: spacing.xl,
+    },
+    rememberPasswordText: {
+      fontSize: 14,
+      color: palette.text.secondary,
+    },
+    rememberPasswordLink: {
+      fontSize: 14,
+      color: palette.primary.main,
+      fontWeight: "600",
+    },
   });
+
+  if (emailSent) {
+    return (
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
+        <ScrollView
+          style={styles.scrollContainer}
+          contentContainerStyle={styles.scrollContainer}
+        >
+          <View style={styles.content}>
+            {/* Theme Toggle */}
+            <TouchableOpacity
+              style={styles.themeToggle}
+              onPress={toggleTheme}
+              activeOpacity={0.7}
+            >
+              <Ionicons
+                name={isDark ? "sunny-outline" : "moon-outline"}
+                size={24}
+                color={palette.text.primary}
+              />
+            </TouchableOpacity>
+
+            {/* Header */}
+            <View style={styles.header}>
+              <View style={styles.logo}>
+                <Ionicons name="mail" size={32} color={palette.text.inverse} />
+              </View>
+              <Text style={styles.title}>Check Your Email</Text>
+              <Text style={styles.subtitle}>
+                We&apos;ve sent a password reset link to{"\n"}
+                <Text
+                  style={{ fontWeight: "600", color: palette.text.primary }}
+                >
+                  {formik.values.email}
+                </Text>
+              </Text>
+            </View>
+
+            {/* Actions */}
+            <View style={styles.formContainer}>
+              <Button
+                title="Resend Email"
+                onPress={() => formik.handleSubmit()}
+                variant="outline"
+                size="large"
+                fullWidth
+                loading={isLoading}
+                style={styles.resetButton}
+              />
+
+              <View style={styles.rememberPasswordContainer}>
+                <Text style={styles.rememberPasswordText}>
+                  Remember your password?{" "}
+                  <Text
+                    style={styles.rememberPasswordLink}
+                    onPress={() => router.back()}
+                  >
+                    Sign in
+                  </Text>
+                </Text>
+              </View>
+            </View>
+
+            {/* Footer */}
+            <View style={styles.footer}>
+              <Text style={styles.footerText}>
+                © 2025 WorkBox. All rights reserved.
+              </Text>
+            </View>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    );
+  }
 
   return (
     <KeyboardAvoidingView
@@ -211,9 +268,10 @@ export default function Login() {
               style={styles.logo}
               resizeMode="contain"
             />
-            <Text style={styles.appName}>WORK BOX</Text>
-            <Text style={styles.title}>Login</Text>
-            <Text style={styles.subtitle}>To continue your account!</Text>
+            <Text style={styles.title}>Forgot Password</Text>
+            <Text style={styles.subtitle}>
+              Enter your email address to reset your password
+            </Text>
           </View>
 
           {/* Form */}
@@ -224,87 +282,44 @@ export default function Login() {
               leftIcon="email"
               inputMode="email"
               variant="outlined"
-              returnKeyType="next"
+              returnKeyType="done"
               value={formik.values.email}
-              nextInputRef={passwordRef}
               placeholder="Enter your email"
               formikError={formik.errors.email}
               formikTouched={formik.touched.email}
               onChangeText={(text) => formik.setFieldValue("email", text)}
               onBlur={() => formik.setFieldTouched("email", true)}
-            />
-
-            <TextInput
-              ref={passwordRef}
-              title="Password"
-              leftIcon="password"
-              variant="outlined"
-              returnKeyType="done"
-              value={formik.values.password}
-              placeholder="Enter your password"
-              formikError={formik.errors.password}
-              formikTouched={formik.touched.password}
-              onChangeText={(text) => formik.setFieldValue("password", text)}
-              onBlur={() => formik.setFieldTouched("password", true)}
               onSubmitEditing={() => formik.handleSubmit()}
             />
 
-            {/* Remember Me & Forgot Password */}
-            <View style={styles.rememberForgotContainer}>
-              <TouchableOpacity
-                style={styles.rememberMeContainer}
-                onPress={() => setRememberMe(!rememberMe)}
-                activeOpacity={0.7}
-              >
-                <View
-                  style={[
-                    styles.checkbox,
-                    rememberMe && styles.checkboxChecked,
-                  ]}
-                >
-                  {rememberMe && (
-                    <Ionicons
-                      name="checkmark"
-                      size={14}
-                      color={palette.text.inverse}
-                    />
-                  )}
-                </View>
-                <Text style={styles.checkboxText}>Remember me</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                onPress={() => router.push("/auth/forgot-password")}
-                activeOpacity={0.7}
-              >
-                <Text style={styles.forgotPassword}>Forgot password?</Text>
-              </TouchableOpacity>
-            </View>
-
-            {/* Login Button */}
+            {/* Reset Button */}
             <Button
-              title="Login"
+              title="Reset Password"
               onPress={() => formik.handleSubmit()}
               variant="primary"
               size="large"
               fullWidth
               loading={isLoading}
-              style={styles.loginButton}
+              style={styles.resetButton}
             />
+
+            {/* Remember Password */}
+            <View style={styles.rememberPasswordContainer}>
+              <Text style={styles.rememberPasswordText}>
+                Remember your password?{" "}
+                <Text
+                  style={styles.rememberPasswordLink}
+                  onPress={() => router.back()}
+                >
+                  Sign in
+                </Text>
+              </Text>
+            </View>
           </View>
 
           {/* Footer */}
           <View style={styles.footer}>
             <Text style={styles.footerText}>
-              Don&apos;t have an account?{" "}
-              <Text
-                style={{ color: palette.primary.main, fontWeight: "600" }}
-                onPress={() => router.push("/auth/register")}
-              >
-                Sign up
-              </Text>
-            </Text>
-            <Text style={[styles.footerText, { marginTop: spacing.sm }]}>
               © 2025 WorkBox. All rights reserved.
             </Text>
           </View>
