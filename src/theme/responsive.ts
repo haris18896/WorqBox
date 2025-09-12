@@ -3,7 +3,7 @@ import { Dimensions, PixelRatio } from "react-native";
 // Get device dimensions
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 
-// Base dimensions (iPhone 12 Pro as reference)
+// Base dimensions
 const BASE_WIDTH = 390;
 const BASE_HEIGHT = 844;
 

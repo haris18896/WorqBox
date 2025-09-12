@@ -1,8 +1,6 @@
-// Main theme exports
 export { ThemeProvider, useTheme, useThemeMode } from "./ThemeContext";
 export type { ThemeContextType, ThemeProviderProps } from "./ThemeContext";
 
-// Color system exports
 export {
   createColorPalette,
   darkPalette,
@@ -12,7 +10,6 @@ export {
 } from "./Colors";
 export type { ColorPalette, ThemeMode } from "./Colors";
 
-// Color utilities exports
 export {
   createColorCombinations,
   createColorResolver,
@@ -23,7 +20,6 @@ export {
 } from "./colorUtils";
 export type { ColorPath } from "./colorUtils";
 
-// Typography exports
 export {
   createTypographyStyle,
   fontFamily,
@@ -36,7 +32,6 @@ export {
 } from "./fonts";
 export type { TypographySize, TypographyVariant } from "./fonts";
 
-// Responsive utilities exports
 export {
   borderRadius,
   breakpoints,
@@ -54,10 +49,8 @@ export {
   WP,
 } from "./responsive";
 
-// Style helpers exports
 export { createThemedStyles, createThemedStyleSheet } from "./styleHelpers";
 
-// Navigation theme exports
 export {
   createNavigationTheme,
   darkNavigationTheme,
@@ -65,5 +58,4 @@ export {
   lightNavigationTheme,
 } from "./navigationTheme";
 
-// Re-export React Navigation Theme type
 export type { Theme } from "@react-navigation/native";

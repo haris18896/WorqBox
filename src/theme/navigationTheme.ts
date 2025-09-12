@@ -2,7 +2,6 @@ import { Theme } from "@react-navigation/native";
 import { ColorPalette, darkPalette, lightPalette } from "./Colors";
 import { createColorCombinations } from "./colorUtils";
 
-// Create navigation theme for React Navigation
 export const createNavigationTheme = (palette: ColorPalette): Theme => {
   const colors = createColorCombinations(palette);
 
@@ -37,10 +36,7 @@ export const createNavigationTheme = (palette: ColorPalette): Theme => {
   };
 };
 
-// Default light navigation theme
 export const lightNavigationTheme = createNavigationTheme(lightPalette);
-
-// Default dark navigation theme
 export const darkNavigationTheme = createNavigationTheme(darkPalette);
 
 // Helper function to get navigation theme based on mode

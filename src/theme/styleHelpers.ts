@@ -15,7 +15,6 @@ export const createThemedStyles = (palette: ColorPalette) => {
   const colors = createColorCombinations(palette);
 
   return {
-    // Container styles
     container: {
       screen: {
         flex: 1,

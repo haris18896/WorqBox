@@ -1,6 +1,5 @@
 import { Platform } from "react-native";
 
-// Font family configuration
 export const fontFamily = {
   regular: "Poppins-Regular",
   medium: "Poppins-Medium",
@@ -12,7 +11,6 @@ export const fontFamily = {
   thin: "Poppins-Thin",
 };
 
-// Font weights
 export const fontWeight = {
   thin: "100",
   extraLight: "200",
@@ -25,7 +23,6 @@ export const fontWeight = {
   black: "900",
 };
 
-// Font sizes (Vuexy-inspired scale)
 export const fontSize = {
   xs: 12,
   sm: 14,
@@ -42,7 +39,6 @@ export const fontSize = {
   "9xl": 128,
 };
 
-// Line heights
 export const lineHeight = {
   none: 1,
   tight: 1.25,
@@ -52,7 +48,6 @@ export const lineHeight = {
   loose: 2,
 };
 
-// Letter spacing
 export const letterSpacing = {
   tighter: -0.05,
   tight: -0.025,
@@ -62,9 +57,7 @@ export const letterSpacing = {
   widest: 0.1,
 };
 
-// Typography system
 export const typography = {
-  // Display styles
   display: {
     large: {
       fontFamily: fontFamily.bold,

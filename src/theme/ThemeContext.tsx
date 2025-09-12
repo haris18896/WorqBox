@@ -32,13 +32,11 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 // Storage key for theme preference
 const THEME_STORAGE_KEY = "app_theme_preference";
 
-// Theme provider props
 interface ThemeProviderProps {
   children: ReactNode;
   initialTheme?: ThemeMode;
 }
 
-// Theme provider component
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({
   children,
   initialTheme,
@@ -79,13 +77,11 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
     }
   };
 
-  // Set theme function
   const setTheme = (newTheme: ThemeMode) => {
     setThemeState(newTheme);
     saveThemePreference(newTheme);
   };
 
-  // Toggle theme function
   const toggleTheme = () => {
     const newTheme = theme === "light" ? "dark" : "light";
     setTheme(newTheme);
@@ -97,7 +93,6 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
   const navigationTheme = getNavigationTheme(theme);
   const isDark = theme === "dark";
 
-  // Context value
   const contextValue: ThemeContextType = {
     theme,
     palette,
@@ -120,7 +115,6 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
   );
 };
 
-// Custom hook to use theme
 export const useTheme = (): ThemeContextType => {
   const context = useContext(ThemeContext);
 
@@ -131,11 +125,9 @@ export const useTheme = (): ThemeContextType => {
   return context;
 };
 
-// Hook to get theme without context (for use outside provider)
 export const useThemeMode = (): ThemeMode => {
   const systemTheme = useSystemTheme();
   return systemTheme;
 };
 
-// Export types
 export type { ThemeContextType, ThemeProviderProps };

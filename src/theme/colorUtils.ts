@@ -206,11 +206,9 @@ export const withOpacity = (color: string, opacity: number): string => {
 
 // Color manipulation utilities
 export const lightenColor = (color: string, amount: number): string => {
-  // Simple implementation - in a real app you might want to use a color library
   return withOpacity(color, 1 - amount * 0.1);
 };
 
 export const darkenColor = (color: string, amount: number): string => {
-  // Simple implementation - in a real app you might want to use a color library
   return withOpacity(color, 1 + amount * 0.1);
 };
