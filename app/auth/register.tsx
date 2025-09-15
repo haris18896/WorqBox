@@ -1,6 +1,4 @@
 import { scaleSize, useTheme } from "@/theme";
-import { fontFamily } from "@/theme/fonts";
-import { spacing } from "@/theme/stylingConstants";
 import { RegisterFormData } from "@/types";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
@@ -13,7 +11,6 @@ import {
   Platform,
   TextInput as RNTextInput,
   ScrollView,
-  StyleSheet,
   Text,
   TouchableOpacity,
   TouchableWithoutFeedback,
@@ -23,6 +20,9 @@ import * as Yup from "yup";
 
 import Button from "@/components/ui/Button";
 import TextInput from "@/components/ui/TextInput";
+
+// Import common styles
+import { createAuthStyles } from "@/styles";
 
 const registerSchema = Yup.object().shape({
   firstName: Yup.string()
@@ -48,7 +48,7 @@ const registerSchema = Yup.object().shape({
 
 export default function Register() {
   const router = useRouter();
-  const { palette, toggleTheme, isDark } = useTheme();
+  const { palette } = useTheme();
   const [agreeToTerms, setAgreeToTerms] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -58,6 +58,9 @@ export default function Register() {
   const emailRef = useRef<RNTextInput>(null);
   const passwordRef = useRef<RNTextInput>(null);
   const confirmPasswordRef = useRef<RNTextInput>(null);
+
+  // Create styles using common auth styles
+  const styles = createAuthStyles(palette);
 
   const formik = useFormik<RegisterFormData>({
     initialValues: {
@@ -91,132 +94,6 @@ export default function Register() {
     },
   });
 
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-    },
-    mainContainer: {
-      flex: 1,
-      backgroundColor: palette.primary.main,
-      position: "relative",
-    },
-    scrollContainer: {
-      flexGrow: 1,
-      backgroundColor: palette.background.secondary,
-      borderBottomLeftRadius: scaleSize(30),
-      borderBottomRightRadius: scaleSize(30),
-    },
-    content: {
-      flex: 1,
-      paddingHorizontal: spacing.xl,
-      paddingTop: spacing.xs,
-    },
-    themeToggle: {
-      position: "absolute",
-      top: scaleSize(60),
-      right: spacing.xl,
-      padding: spacing.sm,
-      borderRadius: scaleSize(8),
-      backgroundColor: palette.surface.secondary,
-      zIndex: 10,
-    },
-    headerSection: {
-      alignItems: "center",
-      marginTop: scaleSize(80),
-      marginBottom: spacing.xl * 2,
-    },
-    backButtonContainer: {
-      flexDirection: "row",
-      alignItems: "center",
-      marginBottom: spacing.xl,
-      alignSelf: "stretch",
-    },
-    backButton: {
-      padding: spacing.sm,
-      marginRight: spacing.md,
-    },
-    headerTitle: {
-      fontSize: scaleSize(24),
-      fontFamily: fontFamily.bold,
-      color: palette.secondary.main,
-      letterSpacing: 0.5,
-    },
-    titleSection: {
-      marginBottom: spacing.lg,
-      alignItems: "flex-start",
-      alignSelf: "stretch",
-    },
-    title: {
-      fontSize: scaleSize(28),
-      fontFamily: fontFamily.bold,
-      color: palette.secondary.main,
-      marginBottom: spacing.xs,
-    },
-    subtitle: {
-      fontSize: scaleSize(16),
-      fontFamily: fontFamily.regular,
-      color: palette.text.secondary,
-      lineHeight: scaleSize(24),
-    },
-    formContainer: {
-      marginBottom: spacing.xl,
-    },
-    nameRow: {
-      flexDirection: "row",
-      gap: spacing.md,
-      marginBottom: spacing.lg,
-    },
-    nameInput: {
-      flex: 1,
-    },
-    termsContainer: {
-      flexDirection: "row",
-      alignItems: "flex-start",
-      marginBottom: spacing.xl * 2,
-      marginTop: spacing.md,
-    },
-    checkbox: {
-      width: scaleSize(20),
-      height: scaleSize(20),
-      borderWidth: 2,
-      borderColor: palette.border.secondary,
-      borderRadius: scaleSize(4),
-      marginRight: spacing.sm,
-      marginTop: spacing.xs,
-      alignItems: "center",
-      justifyContent: "center",
-      backgroundColor: "transparent",
-    },
-    checkboxChecked: {
-      backgroundColor: palette.primary.main,
-      borderColor: palette.primary.main,
-    },
-    termsText: {
-      flex: 1,
-      fontSize: scaleSize(14),
-      fontFamily: fontFamily.regular,
-      color: palette.text.secondary,
-      lineHeight: scaleSize(20),
-    },
-    termsLink: {
-      color: palette.secondary.main,
-      fontFamily: fontFamily.medium,
-    },
-    registerButtonContainer: {
-      marginBottom: spacing.md,
-    },
-    footer: {
-      paddingVertical: spacing.sm,
-      paddingHorizontal: spacing.md,
-    },
-    footerText: {
-      fontSize: scaleSize(12),
-      fontFamily: fontFamily.regular,
-      color: palette.text.inverse,
-      textAlign: "center",
-    },
-  });
-
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <KeyboardAvoidingView
@@ -224,18 +101,6 @@ export default function Register() {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
         <View style={styles.mainContainer}>
-          <TouchableOpacity
-            style={styles.themeToggle}
-            onPress={toggleTheme}
-            activeOpacity={0.7}
-          >
-            <Ionicons
-              name={isDark ? "sunny-outline" : "moon-outline"}
-              size={scaleSize(24)}
-              color={palette.text.primary}
-            />
-          </TouchableOpacity>
-
           <ScrollView
             style={styles.container}
             contentContainerStyle={styles.scrollContainer}
@@ -369,7 +234,7 @@ export default function Register() {
                 >
                   <View
                     style={[
-                      styles.checkbox,
+                      styles.checkboxWithTopMargin,
                       agreeToTerms && styles.checkboxChecked,
                     ]}
                   >
@@ -388,7 +253,7 @@ export default function Register() {
                   </Text>
                 </TouchableOpacity>
 
-                <View style={styles.registerButtonContainer}>
+                <View style={styles.buttonContainer}>
                   <Button
                     title="Create Account"
                     onPress={formik.handleSubmit}
@@ -407,13 +272,11 @@ export default function Register() {
                   />
                 </View>
 
-                <View
-                  style={{ alignItems: "center", marginBottom: spacing.xl }}
-                >
-                  <Text style={{ fontSize: 14, color: palette.text.secondary }}>
+                <View style={styles.centerText}>
+                  <Text style={styles.inlineText}>
                     Already have an account?{" "}
                     <Text
-                      style={{ color: palette.primary.main, fontWeight: "600" }}
+                      style={styles.inlineLinkText}
                       onPress={() => router.push("/auth/login")}
                     >
                       Sign in

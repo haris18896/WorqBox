@@ -1,5 +1,4 @@
 import { scaleSize, useTheme } from "@/theme";
-import { fontFamily } from "@/theme/fonts";
 import { spacing } from "@/theme/stylingConstants";
 import { LoginFormData } from "@/types";
 import { Ionicons } from "@expo/vector-icons";
@@ -14,7 +13,6 @@ import {
   Platform,
   TextInput as RNTextInput,
   ScrollView,
-  StyleSheet,
   Text,
   TouchableOpacity,
   TouchableWithoutFeedback,
@@ -25,6 +23,7 @@ import * as Yup from "yup";
 // Import UI components
 import Button from "@/components/ui/Button";
 import TextInput from "@/components/ui/TextInput";
+import { createAuthStyles } from "@/styles";
 
 // Validation schema
 const loginSchema = Yup.object().shape({
@@ -45,6 +44,9 @@ export default function Login() {
   // Refs for input navigation
   const emailRef = useRef<RNTextInput>(null);
   const passwordRef = useRef<RNTextInput>(null);
+
+  // Create styles using common auth styles
+  const styles = createAuthStyles(palette);
 
   const formik = useFormik<LoginFormData>({
     initialValues: {
@@ -68,130 +70,6 @@ export default function Login() {
       } finally {
         setIsLoading(false);
       }
-    },
-  });
-
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-    },
-    mainContainer: {
-      flex: 1,
-      backgroundColor: palette.primary.main,
-      position: "relative",
-    },
-    scrollContainer: {
-      flexGrow: 1,
-      backgroundColor: palette.background.secondary,
-      borderBottomLeftRadius: scaleSize(30),
-      borderBottomRightRadius: scaleSize(30),
-    },
-    content: {
-      flex: 1,
-      paddingHorizontal: spacing.xl,
-      paddingTop: spacing.xs,
-    },
-    themeToggle: {
-      position: "absolute",
-      top: scaleSize(60),
-      right: spacing.xl,
-      padding: spacing.sm,
-      borderRadius: scaleSize(8),
-      backgroundColor: palette.surface.secondary,
-      zIndex: 10,
-    },
-    headerSection: {
-      alignItems: "center",
-      marginTop: scaleSize(80),
-      marginBottom: spacing.xl * 2,
-    },
-    logoContainer: {
-      flexDirection: "row",
-      alignItems: "center",
-      marginBottom: spacing.xl,
-    },
-    logo: {
-      width: scaleSize(50),
-      height: scaleSize(50),
-      marginRight: spacing.md,
-    },
-    appName: {
-      fontSize: scaleSize(32),
-      fontFamily: fontFamily.bold,
-      color: palette.secondary.main,
-      letterSpacing: 0.5,
-    },
-    titleSection: {
-      marginBottom: spacing.lg,
-      alignItems: "flex-start",
-      alignSelf: "stretch",
-    },
-    title: {
-      fontSize: scaleSize(28),
-      fontFamily: fontFamily.bold,
-      color: palette.secondary.main,
-      marginBottom: spacing.xs,
-    },
-    subtitle: {
-      fontSize: scaleSize(16),
-      fontFamily: fontFamily.regular,
-      color: palette.text.secondary,
-      lineHeight: scaleSize(24),
-    },
-    formContainer: {
-      marginBottom: spacing.xl,
-    },
-    inputContainer: {
-      marginBottom: spacing.lg,
-    },
-    rememberForgotContainer: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
-      marginBottom: spacing.xl * 2,
-      marginTop: spacing.md,
-    },
-    rememberMeContainer: {
-      flexDirection: "row",
-      alignItems: "center",
-    },
-    checkbox: {
-      width: scaleSize(20),
-      height: scaleSize(20),
-      borderWidth: 2,
-      borderColor: palette.border.secondary,
-      borderRadius: scaleSize(4),
-      marginRight: spacing.sm,
-      alignItems: "center",
-      justifyContent: "center",
-      backgroundColor: "transparent",
-    },
-    checkboxChecked: {
-      backgroundColor: palette.primary.main,
-      borderColor: palette.primary.main,
-    },
-    checkboxText: {
-      fontSize: scaleSize(14),
-      fontFamily: fontFamily.regular,
-      color: palette.text.secondary,
-    },
-    forgotPassword: {
-      fontSize: scaleSize(14),
-      fontFamily: fontFamily.medium,
-      color: palette.secondary.main,
-    },
-    loginButtonContainer: {
-      marginBottom: spacing.md,
-    },
-    footer: {
-      paddingVertical: spacing.sm,
-      paddingHorizontal: spacing.md,
-    },
-    footerText: {
-      fontSize: scaleSize(12),
-      fontFamily: fontFamily.regular,
-      color: palette.text.inverse,
-      textAlign: "center",
     },
   });
 
@@ -310,7 +188,7 @@ export default function Login() {
                 </View>
 
                 {/* Login Button */}
-                <View style={styles.loginButtonContainer}>
+                <View style={styles.buttonContainer}>
                   <Button
                     title="Login"
                     onPress={formik.handleSubmit}
@@ -329,13 +207,11 @@ export default function Login() {
                   />
                 </View>
 
-                <View
-                  style={{ alignItems: "center", marginBottom: spacing.xl }}
-                >
-                  <Text style={{ fontSize: 14, color: palette.text.secondary }}>
+                <View style={styles.centerText}>
+                  <Text style={styles.inlineText}>
                     Don&apos;t have an account?{" "}
                     <Text
-                      style={{ color: palette.primary.main, fontWeight: "600" }}
+                      style={styles.inlineLinkText}
                       onPress={() => router.push("/auth/register")}
                     >
                       Sign up

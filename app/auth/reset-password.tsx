@@ -40,7 +40,7 @@ const resetPasswordSchema = Yup.object().shape({
 
 export default function ResetPassword() {
   const router = useRouter();
-  const { palette, toggleTheme, isDark } = useTheme();
+  const { palette } = useTheme();
   const [isLoading, setIsLoading] = useState(false);
 
   const tokenRef = useRef<RNTextInput>(null);
@@ -177,18 +177,6 @@ export default function ResetPassword() {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
         <View style={styles.mainContainer}>
-          <TouchableOpacity
-            style={styles.themeToggle}
-            onPress={toggleTheme}
-            activeOpacity={0.7}
-          >
-            <Ionicons
-              name={isDark ? "sunny-outline" : "moon-outline"}
-              size={scaleSize(24)}
-              color={palette.text.primary}
-            />
-          </TouchableOpacity>
-
           <ScrollView
             style={styles.container}
             contentContainerStyle={styles.scrollContainer}

@@ -1,6 +1,4 @@
 import { scaleSize, useTheme } from "@/theme";
-import { fontFamily } from "@/theme/fonts";
-import { spacing } from "@/theme/stylingConstants";
 import { ForgotPasswordFormData } from "@/types";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
@@ -13,7 +11,6 @@ import {
   Platform,
   TextInput as RNTextInput,
   ScrollView,
-  StyleSheet,
   Text,
   TouchableOpacity,
   TouchableWithoutFeedback,
@@ -24,6 +21,9 @@ import * as Yup from "yup";
 import Button from "@/components/ui/Button";
 import TextInput from "@/components/ui/TextInput";
 
+// Import common styles
+import { createAuthStyles } from "@/styles";
+
 const forgotPasswordSchema = Yup.object().shape({
   email: Yup.string()
     .email("Please enter a valid email address")
@@ -32,9 +32,11 @@ const forgotPasswordSchema = Yup.object().shape({
 
 export default function ForgotPassword() {
   const router = useRouter();
-  const { palette, toggleTheme, isDark } = useTheme();
+  const { palette } = useTheme();
   const [isLoading, setIsLoading] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
+
+  const styles = createAuthStyles(palette);
 
   // Refs for input navigation
   const emailRef = useRef<RNTextInput>(null);
@@ -59,105 +61,6 @@ export default function ForgotPassword() {
     },
   });
 
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-    },
-    mainContainer: {
-      flex: 1,
-      backgroundColor: palette.primary.main,
-      position: "relative",
-    },
-    scrollContainer: {
-      flexGrow: 1,
-      backgroundColor: palette.background.secondary,
-      borderBottomLeftRadius: scaleSize(30),
-      borderBottomRightRadius: scaleSize(30),
-    },
-    content: {
-      flex: 1,
-      paddingHorizontal: spacing.xl,
-      paddingTop: spacing.xs,
-    },
-    themeToggle: {
-      position: "absolute",
-      top: scaleSize(60),
-      right: spacing.xl,
-      padding: spacing.sm,
-      borderRadius: scaleSize(8),
-      backgroundColor: palette.surface.secondary,
-      zIndex: 10,
-    },
-    headerSection: {
-      alignItems: "center",
-      marginTop: scaleSize(80),
-      marginBottom: spacing.xl * 2,
-    },
-    backButtonContainer: {
-      flexDirection: "row",
-      alignItems: "center",
-      marginBottom: spacing.xl,
-      alignSelf: "stretch",
-    },
-    backButton: {
-      padding: spacing.sm,
-      marginRight: spacing.md,
-    },
-    headerTitle: {
-      fontSize: scaleSize(24),
-      fontFamily: fontFamily.bold,
-      color: palette.secondary.main,
-      letterSpacing: 0.5,
-    },
-    titleSection: {
-      marginBottom: spacing.lg,
-      alignItems: "flex-start",
-      alignSelf: "stretch",
-    },
-    title: {
-      fontSize: scaleSize(28),
-      fontFamily: fontFamily.bold,
-      color: palette.secondary.main,
-      marginBottom: spacing.xs,
-    },
-    subtitle: {
-      fontSize: scaleSize(16),
-      fontFamily: fontFamily.regular,
-      color: palette.text.secondary,
-      lineHeight: scaleSize(24),
-    },
-    formContainer: {
-      marginBottom: spacing.xl,
-    },
-    resetButtonContainer: {
-      marginBottom: spacing.md,
-    },
-    rememberPasswordContainer: {
-      alignItems: "center",
-      marginTop: spacing.xl,
-    },
-    rememberPasswordText: {
-      fontSize: scaleSize(14),
-      fontFamily: fontFamily.regular,
-      color: palette.text.secondary,
-    },
-    rememberPasswordLink: {
-      fontSize: scaleSize(14),
-      fontFamily: fontFamily.medium,
-      color: palette.secondary.main,
-    },
-    footer: {
-      paddingVertical: spacing.sm,
-      paddingHorizontal: spacing.md,
-    },
-    footerText: {
-      fontSize: scaleSize(12),
-      fontFamily: fontFamily.regular,
-      color: palette.text.inverse,
-      textAlign: "center",
-    },
-  });
-
   if (emailSent) {
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -166,18 +69,6 @@ export default function ForgotPassword() {
           behavior={Platform.OS === "ios" ? "padding" : "height"}
         >
           <View style={styles.mainContainer}>
-            <TouchableOpacity
-              style={styles.themeToggle}
-              onPress={toggleTheme}
-              activeOpacity={0.7}
-            >
-              <Ionicons
-                name={isDark ? "sunny-outline" : "moon-outline"}
-                size={scaleSize(24)}
-                color={palette.text.primary}
-              />
-            </TouchableOpacity>
-
             <ScrollView
               style={styles.container}
               contentContainerStyle={styles.scrollContainer}
@@ -210,7 +101,7 @@ export default function ForgotPassword() {
                 </View>
 
                 <View style={styles.formContainer}>
-                  <View style={styles.resetButtonContainer}>
+                  <View style={styles.buttonContainer}>
                     <Button
                       title="Resend Email"
                       onPress={formik.handleSubmit}
@@ -222,11 +113,11 @@ export default function ForgotPassword() {
                     />
                   </View>
 
-                  <View style={styles.rememberPasswordContainer}>
-                    <Text style={styles.rememberPasswordText}>
+                  <View style={styles.centerText}>
+                    <Text style={styles.inlineText}>
                       Remember your password?{" "}
                       <Text
-                        style={styles.rememberPasswordLink}
+                        style={styles.inlineLinkText}
                         onPress={() => router.push("/auth/login")}
                       >
                         Sign in
@@ -255,18 +146,6 @@ export default function ForgotPassword() {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
         <View style={styles.mainContainer}>
-          <TouchableOpacity
-            style={styles.themeToggle}
-            onPress={toggleTheme}
-            activeOpacity={0.7}
-          >
-            <Ionicons
-              name={isDark ? "sunny-outline" : "moon-outline"}
-              size={scaleSize(24)}
-              color={palette.text.primary}
-            />
-          </TouchableOpacity>
-
           <ScrollView
             style={styles.container}
             contentContainerStyle={styles.scrollContainer}
@@ -316,7 +195,7 @@ export default function ForgotPassword() {
                   onSubmitEditing={() => formik.handleSubmit()}
                 />
 
-                <View style={styles.resetButtonContainer}>
+                <View style={styles.buttonContainer}>
                   <Button
                     title="Reset Password"
                     onPress={formik.handleSubmit}
@@ -335,11 +214,11 @@ export default function ForgotPassword() {
                   />
                 </View>
 
-                <View style={styles.rememberPasswordContainer}>
-                  <Text style={styles.rememberPasswordText}>
+                <View style={styles.centerText}>
+                  <Text style={styles.inlineText}>
                     Remember your password?{" "}
                     <Text
-                      style={styles.rememberPasswordLink}
+                      style={styles.inlineLinkText}
                       onPress={() => router.push("/auth/login")}
                     >
                       Sign in

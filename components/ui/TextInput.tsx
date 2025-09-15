@@ -124,7 +124,11 @@ const TextInput = forwardRef<RNTextInput, TextInputProps>(
           return {
             ...baseStyles,
             backgroundColor: palette.background.primary,
-            borderColor: hasError ? palette.error.main : palette.border.primary,
+            borderColor: hasError
+              ? palette.error.main
+              : isFocused
+              ? palette.primary.main
+              : palette.border.primary,
           };
         case "underlined":
           return {
@@ -239,9 +243,15 @@ const TextInput = forwardRef<RNTextInput, TextInputProps>(
               disabled={disabled}
             >
               <Ionicons
-                name={isPasswordVisible ? "eye-off-outline" : "eye-outline"}
+                name={isPasswordVisible ? "eye-outline" : "eye-off-outline"}
                 size={20}
-                color={disabled ? palette.text.tertiary : "#6B7280"}
+                color={
+                  disabled
+                    ? palette.text.tertiary
+                    : isFocused
+                    ? palette.primary.main
+                    : "#6B7280"
+                }
               />
             </TouchableOpacity>
           )}
