@@ -4,6 +4,7 @@ import { StatusBar } from "expo-status-bar";
 import "react-native-reanimated";
 
 import { ThemeProvider } from "@/theme";
+import { ReduxProvider } from "../providers/ReduxProvider";
 
 export default function RootLayout() {
   const [loaded] = useFonts({
@@ -24,14 +25,16 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider>
-      <Stack>
-        <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen name="auth/login" options={{ headerShown: false }} />
-        <Stack.Screen name="auth/register" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <ReduxProvider>
+      <ThemeProvider>
+        <Stack>
+          <Stack.Screen name="index" options={{ headerShown: false }} />
+          <Stack.Screen name="auth/login" options={{ headerShown: false }} />
+          <Stack.Screen name="auth/register" options={{ headerShown: false }} />
+          <Stack.Screen name="+not-found" />
+        </Stack>
+        <StatusBar style="auto" />
+      </ThemeProvider>
+    </ReduxProvider>
   );
 }
