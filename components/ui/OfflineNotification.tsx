@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    paddingTop: scaleSize(20),
+    paddingTop: scaleSize(50),
   },
   indicator: {
     width: 8,
