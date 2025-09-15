@@ -128,3 +128,23 @@ export const useSystemTheme = (): ThemeMode => {
   const colorScheme = useColorScheme();
   return colorScheme === "dark" ? "dark" : "light";
 };
+
+// Legacy Colors export for backward compatibility
+export const Colors = {
+  light: {
+    text: lightPalette.text.primary,
+    background: lightPalette.background.primary,
+    tint: lightPalette.primary.main,
+    icon: lightPalette.text.secondary,
+    tabIconDefault: lightPalette.text.tertiary,
+    tabIconSelected: lightPalette.primary.main,
+  },
+  dark: {
+    text: darkPalette.text.primary,
+    background: darkPalette.background.primary,
+    tint: darkPalette.primary.main,
+    icon: darkPalette.text.secondary,
+    tabIconDefault: darkPalette.text.tertiary,
+    tabIconSelected: darkPalette.primary.main,
+  },
+};

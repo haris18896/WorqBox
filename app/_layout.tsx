@@ -4,6 +4,7 @@ import { StatusBar } from "expo-status-bar";
 import "react-native-reanimated";
 
 import { ThemeProvider } from "@/theme";
+import { ACLProvider } from "../acl/context";
 import { ReduxProvider } from "../providers/ReduxProvider";
 
 export default function RootLayout() {
@@ -26,15 +27,20 @@ export default function RootLayout() {
 
   return (
     <ReduxProvider>
-      <ThemeProvider>
-        <Stack>
-          <Stack.Screen name="index" options={{ headerShown: false }} />
-          <Stack.Screen name="auth/login" options={{ headerShown: false }} />
-          <Stack.Screen name="auth/register" options={{ headerShown: false }} />
-          <Stack.Screen name="+not-found" />
-        </Stack>
-        <StatusBar style="auto" />
-      </ThemeProvider>
+      <ACLProvider>
+        <ThemeProvider>
+          <Stack>
+            <Stack.Screen name="index" options={{ headerShown: false }} />
+            <Stack.Screen name="auth/login" options={{ headerShown: false }} />
+            <Stack.Screen
+              name="auth/register"
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen name="+not-found" />
+          </Stack>
+          <StatusBar style="auto" />
+        </ThemeProvider>
+      </ACLProvider>
     </ReduxProvider>
   );
 }
