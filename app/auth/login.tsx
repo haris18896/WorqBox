@@ -1,7 +1,8 @@
+import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 import TextInput from "@/components/ui/TextInput";
 import { useTheme } from "@/theme";
-import { spacing } from "@/theme/responsive";
+import { spacing } from "@/theme/stylingConstants";
 import { LoginFormData } from "@/types";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
@@ -214,6 +215,13 @@ export default function Login() {
             <Text style={styles.appName}>WORK BOX</Text>
             <Text style={styles.title}>Login</Text>
             <Text style={styles.subtitle}>To continue your account!</Text>
+
+            {/* Demo Badge */}
+            <View style={{ marginTop: spacing.sm }}>
+              <Badge variant="primary" size="small">
+                Demo Mode
+              </Badge>
+            </View>
           </View>
 
           {/* Form */}

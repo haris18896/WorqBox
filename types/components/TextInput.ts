@@ -16,6 +16,7 @@ export interface TextInputProps extends Omit<RNTextInputProps, "style"> {
   leftIcon?: string;
   variant?: "outlined" | "filled" | "underlined";
   size?: "small" | "medium" | "large";
+  disabled?: boolean;
   formikError?: string;
   formikTouched?: boolean;
   nextInputRef?: React.RefObject<any>;

@@ -10,7 +10,8 @@ import {
 
 // ** Theme
 import { useTheme } from "@/theme";
-import { buttonSize, scaleSize, spacing } from "@/theme/responsive";
+import { scaleSize } from "@/theme/responsive";
+import { buttonSize, spacing } from "@/theme/stylingConstants";
 import { ButtonProps } from "@/types";
 
 const Button: React.FC<ButtonProps> = ({

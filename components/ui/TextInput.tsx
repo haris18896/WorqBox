@@ -12,13 +12,8 @@ import { Ionicons } from "@expo/vector-icons";
 
 // ** Theme
 import { useTheme } from "@/theme";
-import {
-  inputSize,
-  scaleFontSize,
-  scaleSize,
-  spacing,
-  WP,
-} from "@/theme/responsive";
+import { scaleFontSize, scaleSize, WP } from "@/theme/responsive";
+import { inputSize, spacing } from "@/theme/stylingConstants";
 import { TextInputIconType, TextInputProps } from "@/types";
 
 // Icon mapping for different input types
@@ -39,6 +34,7 @@ const TextInput = forwardRef<RNTextInput, TextInputProps>(
       leftIcon,
       variant = "outlined",
       size = "medium",
+      disabled = false,
       formikError,
       formikTouched,
       nextInputRef,
@@ -111,8 +107,17 @@ const TextInput = forwardRef<RNTextInput, TextInputProps>(
         flexDirection: "row" as const,
         alignItems: "center" as const,
         backgroundColor: "transparent",
+        opacity: disabled ? 0.6 : 1,
         ...getSizeStyles(),
       };
+
+      if (disabled) {
+        return {
+          ...baseStyles,
+          backgroundColor: palette.surface.secondary,
+          borderColor: palette.border.primary,
+        };
+      }
 
       switch (variant) {
         case "filled":
@@ -154,7 +159,7 @@ const TextInput = forwardRef<RNTextInput, TextInputProps>(
       label: {
         fontSize: 14,
         fontWeight: "500",
-        color: palette.text.secondary,
+        color: disabled ? palette.text.tertiary : palette.text.secondary,
         marginBottom: spacing.xs,
         ...styleData?.labelStyles,
       },
@@ -174,7 +179,7 @@ const TextInput = forwardRef<RNTextInput, TextInputProps>(
             : size === "large"
             ? inputSize.lg.fontSize
             : inputSize.md.fontSize,
-        color: palette.text.primary,
+        color: disabled ? palette.text.tertiary : palette.text.secondary,
         paddingVertical: 0,
         ...styleData?.inputStyles,
       },
@@ -203,7 +208,13 @@ const TextInput = forwardRef<RNTextInput, TextInputProps>(
                   (iconMap[leftIcon as TextInputIconType] as any) || leftIcon
                 }
                 size={20}
-                color={isFocused ? palette.primary.main : "#6B7280"}
+                color={
+                  disabled
+                    ? palette.text.tertiary
+                    : isFocused
+                    ? palette.primary.main
+                    : "#6B7280"
+                }
               />
             </View>
           )}
@@ -216,19 +227,21 @@ const TextInput = forwardRef<RNTextInput, TextInputProps>(
             onBlur={handleBlur}
             onSubmitEditing={handleSubmitEditing}
             placeholderTextColor={palette.text.tertiary}
+            editable={!disabled}
             {...props}
           />
 
           {isPassword && (
             <TouchableOpacity
               style={styles.passwordToggle}
-              onPress={togglePasswordVisibility}
-              activeOpacity={0.7}
+              onPress={disabled ? undefined : togglePasswordVisibility}
+              activeOpacity={disabled ? 1 : 0.7}
+              disabled={disabled}
             >
               <Ionicons
                 name={isPasswordVisible ? "eye-off-outline" : "eye-outline"}
                 size={20}
-                color="#6B7280"
+                color={disabled ? palette.text.tertiary : "#6B7280"}
               />
             </TouchableOpacity>
           )}

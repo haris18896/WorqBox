@@ -13,13 +13,11 @@ import {
   useSystemTheme,
 } from "./Colors";
 import { getNavigationTheme } from "./navigationTheme";
-import { createThemedStyles } from "./styleHelpers";
 
 // Theme context type
 interface ThemeContextType {
   theme: ThemeMode;
   palette: ColorPalette;
-  styles: ReturnType<typeof createThemedStyles>;
   navigationTheme: ReturnType<typeof getNavigationTheme>;
   isDark: boolean;
   toggleTheme: () => void;
@@ -87,16 +85,14 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
     setTheme(newTheme);
   };
 
-  // Create palette and styles
+  // Create palette and navigation theme
   const palette = createColorPalette(theme);
-  const styles = createThemedStyles(palette);
   const navigationTheme = getNavigationTheme(theme);
   const isDark = theme === "dark";
 
   const contextValue: ThemeContextType = {
     theme,
     palette,
-    styles,
     navigationTheme,
     isDark,
     toggleTheme,
