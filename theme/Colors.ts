@@ -1,16 +1,15 @@
 import { useColorScheme } from "react-native";
 
-// Vuexy-inspired color palette
-export const lightPalette = {
+const commonColors = {
   primary: {
-    light: "#38bdf8",
-    main: "#0ea5e9",
-    dark: "#0284c7",
+    light: "#9d8ef7",
+    main: "#7367F0",
+    dark: "#5a4fd1",
   },
   secondary: {
-    light: "#94a3b8",
-    main: "#64748b",
-    dark: "#475569",
+    light: "#33c4f0",
+    main: "#00ABE8",
+    dark: "#0088b8",
   },
   success: {
     light: "#4ade80",
@@ -33,8 +32,17 @@ export const lightPalette = {
     dark: "#2563eb",
   },
   neutral: {
-    light: "#a3a3a3",
     main: "#737373",
+  },
+};
+
+// Vuexy-inspired color palette
+export const lightPalette = {
+  ...commonColors,
+
+  neutral: {
+    ...commonColors.neutral,
+    light: "#a3a3a3",
     dark: "#525252",
   },
   surface: {
@@ -55,9 +63,9 @@ export const lightPalette = {
   border: {
     primary: "#e2e8f0",
     secondary: "#cbd5e1",
-    focus: "#0ea5e9",
-    error: "#ef4444",
-    success: "#22c55e",
+    focus: commonColors.primary.main,
+    error: commonColors.error.main,
+    success: commonColors.success.main,
   },
   background: {
     primary: "#ffffff",
@@ -68,39 +76,10 @@ export const lightPalette = {
 };
 
 export const darkPalette = {
-  primary: {
-    light: "#7dd3fc",
-    main: "#0ea5e9",
-    dark: "#0284c7",
-  },
-  secondary: {
-    light: "#cbd5e1",
-    main: "#64748b",
-    dark: "#334155",
-  },
-  success: {
-    light: "#86efac",
-    main: "#22c55e",
-    dark: "#16a34a",
-  },
-  warning: {
-    light: "#fcd34d",
-    main: "#f59e0b",
-    dark: "#d97706",
-  },
-  error: {
-    light: "#fca5a5",
-    main: "#ef4444",
-    dark: "#dc2626",
-  },
-  info: {
-    light: "#93c5fd",
-    main: "#3b82f6",
-    dark: "#2563eb",
-  },
+  ...commonColors,
   neutral: {
+    ...commonColors.neutral,
     light: "#d4d4d4",
-    main: "#737373",
     dark: "#404040",
   },
   surface: {
@@ -121,9 +100,9 @@ export const darkPalette = {
   border: {
     primary: "#334155",
     secondary: "#475569",
-    focus: "#0ea5e9",
-    error: "#ef4444",
-    success: "#22c55e",
+    focus: commonColors.primary.main,
+    error: commonColors.error.main,
+    success: commonColors.success.main,
   },
   background: {
     primary: "#0f172a",

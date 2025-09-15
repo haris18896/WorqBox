@@ -1,5 +1,3 @@
-import Badge from "@/components/ui/Badge";
-import BarHeader from "@/components/ui/BarHeader";
 import BottomSheet from "@/components/ui/BottomSheet";
 import Button from "@/components/ui/Button";
 import Empty from "@/components/ui/Empty";
@@ -15,6 +13,7 @@ import { useFormik } from "formik";
 import React, { useRef, useState } from "react";
 import {
   Alert,
+  Image,
   KeyboardAvoidingView,
   Platform,
   TextInput as RNTextInput,
@@ -117,28 +116,30 @@ export default function Register() {
       marginBottom: spacing.xl * 2,
     },
     logo: {
-      width: 80,
-      height: 80,
-      marginBottom: spacing.lg,
+      width: 60,
+      height: 60,
+      marginBottom: spacing.md,
     },
     appName: {
-      fontSize: 28,
+      fontSize: 24,
       fontWeight: "bold",
-      color: palette.text.primary,
-      marginBottom: spacing.sm,
+      color: palette.primary.main,
+      marginBottom: spacing.xl * 2,
     },
     title: {
-      fontSize: 32,
+      fontSize: 28,
       fontWeight: "bold",
-      color: palette.text.primary,
+      color: palette.primary.main,
       marginBottom: spacing.sm,
-      textAlign: "center",
+      textAlign: "left",
+      alignSelf: "flex-start",
     },
     subtitle: {
       fontSize: 16,
       color: palette.text.secondary,
-      textAlign: "center",
-      marginBottom: spacing.xl,
+      textAlign: "left",
+      marginBottom: spacing.xl * 2,
+      alignSelf: "flex-start",
     },
     formContainer: {
       marginBottom: spacing.xl,
@@ -180,33 +181,23 @@ export default function Register() {
       fontWeight: "600",
     },
     registerButton: {
-      marginBottom: spacing.lg,
-    },
-    divider: {
-      flexDirection: "row",
-      alignItems: "center",
-      marginVertical: spacing.lg,
-    },
-    dividerLine: {
-      flex: 1,
-      height: 1,
-      backgroundColor: palette.border.primary,
-    },
-    dividerText: {
-      marginHorizontal: spacing.md,
-      fontSize: 14,
-      color: palette.text.secondary,
-    },
-    socialButtons: {
-      gap: spacing.md,
+      marginBottom: spacing.xl,
     },
     footer: {
+      position: "absolute",
+      bottom: 0,
+      left: 0,
+      right: 0,
+      backgroundColor: palette.primary.main,
+      paddingVertical: spacing.xl,
+      paddingHorizontal: spacing.xl,
+      borderTopLeftRadius: 30,
+      borderTopRightRadius: 30,
       alignItems: "center",
-      paddingBottom: spacing.xl,
     },
     footerText: {
       fontSize: 12,
-      color: palette.text.tertiary,
+      color: palette.text.inverse,
       textAlign: "center",
     },
     themeToggle: {
@@ -228,22 +219,33 @@ export default function Register() {
         keyboardShouldPersistTaps="handled"
       >
         <View style={styles.content}>
-          {/* BarHeader Component Demo */}
-          <BarHeader
-            title="Create Account"
-            subtitle="Join us and start your journey!"
-            showBackButton
-            onBackPress={() => router.back()}
-            rightIcon="help-circle-outline"
-            onRightPress={() => setShowDemoEmpty(true)}
-            variant="large"
-          />
+          {/* Theme Toggle */}
+          <TouchableOpacity
+            style={styles.themeToggle}
+            onPress={toggleTheme}
+            activeOpacity={0.7}
+          >
+            <Ionicons
+              name={isDark ? "sunny-outline" : "moon-outline"}
+              size={24}
+              color={palette.text.primary}
+            />
+          </TouchableOpacity>
 
-          {/* Demo Badge */}
-          <View style={{ alignItems: "center", marginBottom: spacing.lg }}>
-            <Badge variant="success" size="small">
-              New User Registration
-            </Badge>
+          {/* Header */}
+          <View style={styles.header}>
+            <Image
+              source={require("../../assets/images/logo.png")}
+              style={styles.logo}
+              resizeMode="contain"
+            />
+            <Text style={styles.appName}>WORK BOX</Text>
+          </View>
+
+          {/* Title Section */}
+          <View style={{ marginBottom: spacing.xl }}>
+            <Text style={styles.title}>Create Account</Text>
+            <Text style={styles.subtitle}>Join us and start your journey!</Text>
           </View>
 
           {/* Form */}
@@ -388,9 +390,9 @@ export default function Register() {
             />
           </View>
 
-          {/* Footer */}
-          <View style={styles.footer}>
-            <Text style={styles.footerText}>
+          {/* Sign In Link */}
+          <View style={{ alignItems: "center", marginBottom: spacing.xl }}>
+            <Text style={{ fontSize: 14, color: palette.text.secondary }}>
               Already have an account?{" "}
               <Text
                 style={{ color: palette.primary.main, fontWeight: "600" }}
@@ -399,7 +401,11 @@ export default function Register() {
                 Sign in
               </Text>
             </Text>
-            <Text style={[styles.footerText, { marginTop: spacing.sm }]}>
+          </View>
+
+          {/* Footer */}
+          <View style={styles.footer}>
+            <Text style={styles.footerText}>
               © 2025 WorkBox. All rights reserved.
             </Text>
           </View>
