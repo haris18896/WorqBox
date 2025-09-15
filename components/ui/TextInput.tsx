@@ -114,7 +114,7 @@ const TextInput = forwardRef<RNTextInput, TextInputProps>(
       if (disabled) {
         return {
           ...baseStyles,
-          backgroundColor: palette.surface.secondary,
+          backgroundColor: palette.surface.primary,
           borderColor: palette.border.primary,
         };
       }
@@ -123,7 +123,7 @@ const TextInput = forwardRef<RNTextInput, TextInputProps>(
         case "filled":
           return {
             ...baseStyles,
-            backgroundColor: palette.surface.secondary,
+            backgroundColor: palette.background.primary,
             borderColor: hasError ? palette.error.main : palette.border.primary,
           };
         case "underlined":

@@ -1,6 +1,5 @@
-import Button from "@/components/ui/Button";
-import TextInput from "@/components/ui/TextInput";
-import { useTheme } from "@/theme";
+import { scaleSize, useTheme } from "@/theme";
+import { fontFamily } from "@/theme/fonts";
 import { spacing } from "@/theme/stylingConstants";
 import { LoginFormData } from "@/types";
 import { Ionicons } from "@expo/vector-icons";
@@ -10,6 +9,7 @@ import React, { useRef, useState } from "react";
 import {
   Alert,
   Image,
+  Keyboard,
   KeyboardAvoidingView,
   Platform,
   TextInput as RNTextInput,
@@ -17,9 +17,14 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   View,
 } from "react-native";
 import * as Yup from "yup";
+
+// Import UI components
+import Button from "@/components/ui/Button";
+import TextInput from "@/components/ui/TextInput";
 
 // Validation schema
 const loginSchema = Yup.object().shape({
@@ -69,120 +74,134 @@ export default function Login() {
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: palette.background.primary,
+    },
+    mainContainer: {
+      flex: 1,
+      backgroundColor: palette.primary.main,
+      position: "relative",
     },
     scrollContainer: {
       flexGrow: 1,
+      backgroundColor: palette.background.secondary,
+      borderBottomLeftRadius: scaleSize(30),
+      borderBottomRightRadius: scaleSize(30),
     },
     content: {
       flex: 1,
       paddingHorizontal: spacing.xl,
-      paddingTop: spacing.xl * 2,
+      paddingTop: spacing.xs,
     },
-    header: {
+    themeToggle: {
+      position: "absolute",
+      top: scaleSize(60),
+      right: spacing.xl,
+      padding: spacing.sm,
+      borderRadius: scaleSize(8),
+      backgroundColor: palette.surface.secondary,
+      zIndex: 10,
+    },
+    headerSection: {
       alignItems: "center",
+      marginTop: scaleSize(80),
       marginBottom: spacing.xl * 2,
+    },
+    logoContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+      marginBottom: spacing.xl,
     },
     logo: {
-      width: 60,
-      height: 60,
-      marginBottom: spacing.md,
+      width: scaleSize(50),
+      height: scaleSize(50),
+      marginRight: spacing.md,
     },
     appName: {
-      fontSize: 24,
-      fontWeight: "bold",
-      color: palette.primary.main,
-      marginBottom: spacing.xl * 2,
+      fontSize: scaleSize(32),
+      fontFamily: fontFamily.bold,
+      color: palette.secondary.main,
+      letterSpacing: 0.5,
+    },
+    titleSection: {
+      marginBottom: spacing.lg,
+      alignItems: "flex-start",
+      alignSelf: "stretch",
     },
     title: {
-      fontSize: 28,
-      fontWeight: "bold",
-      color: palette.primary.main,
-      marginBottom: spacing.sm,
-      textAlign: "left",
-      alignSelf: "flex-start",
+      fontSize: scaleSize(28),
+      fontFamily: fontFamily.bold,
+      color: palette.secondary.main,
+      marginBottom: spacing.xs,
     },
     subtitle: {
-      fontSize: 16,
+      fontSize: scaleSize(16),
+      fontFamily: fontFamily.regular,
       color: palette.text.secondary,
-      textAlign: "left",
-      marginBottom: spacing.xl * 2,
-      alignSelf: "flex-start",
+      lineHeight: scaleSize(24),
     },
     formContainer: {
       marginBottom: spacing.xl,
+    },
+    inputContainer: {
+      marginBottom: spacing.lg,
     },
     rememberForgotContainer: {
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "center",
-      marginBottom: spacing.xl,
+      marginBottom: spacing.xl * 2,
+      marginTop: spacing.md,
     },
     rememberMeContainer: {
       flexDirection: "row",
       alignItems: "center",
     },
     checkbox: {
-      width: 20,
-      height: 20,
+      width: scaleSize(20),
+      height: scaleSize(20),
       borderWidth: 2,
-      borderColor: palette.primary.main,
-      borderRadius: 4,
+      borderColor: palette.border.secondary,
+      borderRadius: scaleSize(4),
       marginRight: spacing.sm,
       alignItems: "center",
       justifyContent: "center",
+      backgroundColor: "transparent",
     },
     checkboxChecked: {
       backgroundColor: palette.primary.main,
+      borderColor: palette.primary.main,
     },
     checkboxText: {
-      fontSize: 14,
+      fontSize: scaleSize(14),
+      fontFamily: fontFamily.regular,
       color: palette.text.secondary,
     },
     forgotPassword: {
-      fontSize: 14,
-      color: palette.primary.main,
-      fontWeight: "500",
+      fontSize: scaleSize(14),
+      fontFamily: fontFamily.medium,
+      color: palette.secondary.main,
     },
-    loginButton: {
-      marginBottom: spacing.xl,
+    loginButtonContainer: {
+      marginBottom: spacing.md,
     },
     footer: {
-      position: "absolute",
-      bottom: 0,
-      left: 0,
-      right: 0,
-      backgroundColor: palette.primary.main,
-      paddingVertical: spacing.xl,
-      paddingHorizontal: spacing.xl,
-      borderTopLeftRadius: 30,
-      borderTopRightRadius: 30,
-      alignItems: "center",
+      paddingVertical: spacing.sm,
+      paddingHorizontal: spacing.md,
     },
     footerText: {
-      fontSize: 12,
+      fontSize: scaleSize(12),
+      fontFamily: fontFamily.regular,
       color: palette.text.inverse,
       textAlign: "center",
-    },
-    themeToggle: {
-      position: "absolute",
-      top: 50,
-      right: 20,
-      padding: spacing.sm,
     },
   });
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-    >
-      <ScrollView
-        style={styles.scrollContainer}
-        contentContainerStyle={styles.scrollContainer}
-        keyboardShouldPersistTaps="handled"
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
-        <View style={styles.content}>
+        <View style={styles.mainContainer}>
           {/* Theme Toggle */}
           <TouchableOpacity
             style={styles.themeToggle}
@@ -191,126 +210,150 @@ export default function Login() {
           >
             <Ionicons
               name={isDark ? "sunny-outline" : "moon-outline"}
-              size={24}
+              size={scaleSize(24)}
               color={palette.text.primary}
             />
           </TouchableOpacity>
 
-          {/* Header */}
-          <View style={styles.header}>
-            <Image
-              source={require("../../assets/images/logo.png")}
-              style={styles.logo}
-              resizeMode="contain"
-            />
-            <Text style={styles.appName}>WORK BOX</Text>
-          </View>
-
-          {/* Title Section */}
-          <View style={{ marginBottom: spacing.xl }}>
-            <Text style={styles.title}>Login</Text>
-            <Text style={styles.subtitle}>To continue your account!</Text>
-          </View>
-
-          {/* Form */}
-          <View style={styles.formContainer}>
-            <TextInput
-              ref={emailRef}
-              title="Email"
-              leftIcon="email"
-              inputMode="email"
-              variant="outlined"
-              size="medium"
-              returnKeyType="next"
-              value={formik.values.email}
-              nextInputRef={passwordRef}
-              placeholder="Enter your email"
-              formikError={formik.errors.email}
-              formikTouched={formik.touched.email}
-              onChangeText={(text) => formik.setFieldValue("email", text)}
-              onBlur={() => formik.setFieldTouched("email", true)}
-            />
-
-            <TextInput
-              ref={passwordRef}
-              title="Password"
-              leftIcon="password"
-              variant="outlined"
-              size="medium"
-              returnKeyType="done"
-              value={formik.values.password}
-              placeholder="Enter your password"
-              formikError={formik.errors.password}
-              formikTouched={formik.touched.password}
-              onChangeText={(text) => formik.setFieldValue("password", text)}
-              onBlur={() => formik.setFieldTouched("password", true)}
-              onSubmitEditing={() => formik.handleSubmit()}
-            />
-
-            {/* Remember Me & Forgot Password */}
-            <View style={styles.rememberForgotContainer}>
-              <TouchableOpacity
-                style={styles.rememberMeContainer}
-                onPress={() => setRememberMe(!rememberMe)}
-                activeOpacity={0.7}
-              >
-                <View
-                  style={[
-                    styles.checkbox,
-                    rememberMe && styles.checkboxChecked,
-                  ]}
-                >
-                  {rememberMe && (
-                    <Ionicons
-                      name="checkmark"
-                      size={14}
-                      color={palette.text.inverse}
-                    />
-                  )}
+          <ScrollView
+            style={styles.container}
+            contentContainerStyle={styles.scrollContainer}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+          >
+            <View style={styles.content}>
+              {/* Header Section with Logo and App Name */}
+              <View style={styles.headerSection}>
+                <View style={styles.logoContainer}>
+                  <Image
+                    source={require("../../assets/images/logo.png")}
+                    style={styles.logo}
+                    resizeMode="contain"
+                  />
+                  <Text style={styles.appName}>WorkBox</Text>
                 </View>
-                <Text style={styles.checkboxText}>Remember me</Text>
-              </TouchableOpacity>
+              </View>
 
-              <TouchableOpacity
-                onPress={() => router.push("/auth/forgot-password")}
-                activeOpacity={0.7}
-              >
-                <Text style={styles.forgotPassword}>Forgot password?</Text>
-              </TouchableOpacity>
+              {/* Title Section */}
+              <View style={styles.titleSection}>
+                <Text style={styles.title}>Login</Text>
+                <Text style={styles.subtitle}>To continue your account!</Text>
+              </View>
+
+              {/* Form Section */}
+              <View style={styles.formContainer}>
+                <TextInput
+                  ref={emailRef}
+                  title="Email"
+                  leftIcon="email"
+                  inputMode="email"
+                  variant="filled"
+                  size="medium"
+                  returnKeyType="next"
+                  value={formik.values.email}
+                  nextInputRef={passwordRef}
+                  placeholder="Enter your email"
+                  formikError={formik.errors.email}
+                  formikTouched={formik.touched.email}
+                  onChangeText={(text) => formik.setFieldValue("email", text)}
+                  onBlur={() => formik.setFieldTouched("email", true)}
+                />
+
+                <TextInput
+                  ref={passwordRef}
+                  title="Password"
+                  leftIcon="password"
+                  variant="filled"
+                  size="medium"
+                  returnKeyType="done"
+                  value={formik.values.password}
+                  placeholder="Enter your password"
+                  formikError={formik.errors.password}
+                  formikTouched={formik.touched.password}
+                  onChangeText={(text) =>
+                    formik.setFieldValue("password", text)
+                  }
+                  onBlur={() => formik.setFieldTouched("password", true)}
+                  onSubmitEditing={() => formik.handleSubmit()}
+                />
+
+                {/* Remember Me and Forgot Password */}
+                <View style={styles.rememberForgotContainer}>
+                  <TouchableOpacity
+                    style={styles.rememberMeContainer}
+                    onPress={() => setRememberMe(!rememberMe)}
+                    activeOpacity={0.7}
+                  >
+                    <View
+                      style={[
+                        styles.checkbox,
+                        rememberMe && styles.checkboxChecked,
+                      ]}
+                    >
+                      {rememberMe && (
+                        <Ionicons
+                          name="checkmark"
+                          size={scaleSize(12)}
+                          color={palette.text.inverse}
+                        />
+                      )}
+                    </View>
+                    <Text style={styles.checkboxText}>Remember Me</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    onPress={() => router.push("/auth/forgot-password")}
+                    activeOpacity={0.7}
+                  >
+                    <Text style={styles.forgotPassword}>Forgot Password?</Text>
+                  </TouchableOpacity>
+                </View>
+
+                {/* Login Button */}
+                <View style={styles.loginButtonContainer}>
+                  <Button
+                    title="Login"
+                    onPress={formik.handleSubmit}
+                    loading={isLoading}
+                    disabled={isLoading}
+                    fullWidth
+                    variant="primary"
+                    size="medium"
+                    leftIcon={
+                      <Ionicons
+                        name="log-in-outline"
+                        size={24}
+                        color={palette.text.inverse}
+                      />
+                    }
+                  />
+                </View>
+
+                <View
+                  style={{ alignItems: "center", marginBottom: spacing.xl }}
+                >
+                  <Text style={{ fontSize: 14, color: palette.text.secondary }}>
+                    Don&apos;t have an account?{" "}
+                    <Text
+                      style={{ color: palette.primary.main, fontWeight: "600" }}
+                      onPress={() => router.push("/auth/register")}
+                    >
+                      Sign up
+                    </Text>
+                  </Text>
+                </View>
+              </View>
             </View>
+          </ScrollView>
 
-            <Button
-              title="Login"
-              onPress={() => formik.handleSubmit()}
-              variant="primary"
-              size="large"
-              fullWidth
-              loading={isLoading}
-              style={styles.loginButton}
-            />
-          </View>
-
-          {/* Sign Up Link */}
-          <View style={{ alignItems: "center", marginBottom: spacing.xl }}>
-            <Text style={{ fontSize: 14, color: palette.text.secondary }}>
-              Don&apos;t have an account?{" "}
-              <Text
-                style={{ color: palette.primary.main, fontWeight: "600" }}
-                onPress={() => router.push("/auth/register")}
-              >
-                Sign up
-              </Text>
-            </Text>
-          </View>
-
-          {/* Footer */}
+          {/* Footer with Copyright */}
           <View style={styles.footer}>
             <Text style={styles.footerText}>
-              © 2025 WorkBox. All rights reserved.
+              © {new Date().getFullYear()} WorkBox. All rights reserved.
             </Text>
           </View>
         </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+      </KeyboardAvoidingView>
+    </TouchableWithoutFeedback>
   );
 }

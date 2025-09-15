@@ -83,19 +83,19 @@ const Button: React.FC<ButtonProps> = ({
     switch (size) {
       case "small":
         return {
-          paddingVertical: scaleSize(12),
+          paddingVertical: scaleSize(10),
           paddingHorizontal: spacing.md,
-          minHeight: buttonSize.md.height,
+          minHeight: buttonSize.sm.height,
         };
       case "large":
         return {
-          paddingVertical: scaleSize(16),
+          paddingVertical: scaleSize(15),
           paddingHorizontal: spacing.md,
           minHeight: buttonSize.lg.height,
         };
       default: // medium
         return {
-          paddingVertical: scaleSize(14),
+          paddingVertical: scaleSize(12),
           paddingHorizontal: spacing.md,
           minHeight: buttonSize.md.height,
         };
