@@ -1,7 +1,7 @@
 import { scaleSize, useTheme } from "@/theme";
 import { fontFamily } from "@/theme/fonts";
 import { spacing } from "@/theme/stylingConstants";
-import { ForgotPasswordFormData } from "@/types";
+import { ResetPasswordFormData } from "@/types";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useFormik } from "formik";
@@ -24,35 +24,47 @@ import * as Yup from "yup";
 import Button from "@/components/ui/Button";
 import TextInput from "@/components/ui/TextInput";
 
-const forgotPasswordSchema = Yup.object().shape({
-  email: Yup.string()
-    .email("Please enter a valid email address")
-    .required("Email is required"),
+const resetPasswordSchema = Yup.object().shape({
+  token: Yup.string().required("Reset token is required"),
+  password: Yup.string()
+    .min(8, "Password must be at least 8 characters")
+    .matches(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
+      "Password must contain at least one uppercase letter, one lowercase letter, and one number"
+    )
+    .required("Password is required"),
+  confirmPassword: Yup.string()
+    .oneOf([Yup.ref("password")], "Passwords must match")
+    .required("Please confirm your password"),
 });
 
-export default function ForgotPassword() {
+export default function ResetPassword() {
   const router = useRouter();
   const { palette, toggleTheme, isDark } = useTheme();
   const [isLoading, setIsLoading] = useState(false);
-  const [emailSent, setEmailSent] = useState(false);
 
-  // Refs for input navigation
-  const emailRef = useRef<RNTextInput>(null);
+  const tokenRef = useRef<RNTextInput>(null);
+  const passwordRef = useRef<RNTextInput>(null);
+  const confirmPasswordRef = useRef<RNTextInput>(null);
 
-  const formik = useFormik<ForgotPasswordFormData>({
+  const formik = useFormik<ResetPasswordFormData>({
     initialValues: {
-      email: "",
+      token: "",
+      password: "",
+      confirmPassword: "",
     },
-    validationSchema: forgotPasswordSchema,
+    validationSchema: resetPasswordSchema,
     onSubmit: async (values) => {
       setIsLoading(true);
       try {
         await new Promise((resolve) => setTimeout(resolve, 2000));
 
-        console.log("Password reset request:", values);
-        setEmailSent(true);
+        console.log("Password reset:", values);
+        Alert.alert("Success", "Password reset successfully!", [
+          { text: "OK", onPress: () => router.push("/auth/login") },
+        ]);
       } catch {
-        Alert.alert("Error", "Failed to send reset email. Please try again.");
+        Alert.alert("Error", "Failed to reset password. Please try again.");
       } finally {
         setIsLoading(false);
       }
@@ -132,16 +144,16 @@ export default function ForgotPassword() {
     resetButtonContainer: {
       marginBottom: spacing.md,
     },
-    rememberPasswordContainer: {
+    signInContainer: {
       alignItems: "center",
       marginTop: spacing.xl,
     },
-    rememberPasswordText: {
+    signInText: {
       fontSize: scaleSize(14),
       fontFamily: fontFamily.regular,
       color: palette.text.secondary,
     },
-    rememberPasswordLink: {
+    signInLink: {
       fontSize: scaleSize(14),
       fontFamily: fontFamily.medium,
       color: palette.secondary.main,
@@ -157,96 +169,6 @@ export default function ForgotPassword() {
       textAlign: "center",
     },
   });
-
-  if (emailSent) {
-    return (
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <KeyboardAvoidingView
-          style={styles.container}
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-        >
-          <View style={styles.mainContainer}>
-            <TouchableOpacity
-              style={styles.themeToggle}
-              onPress={toggleTheme}
-              activeOpacity={0.7}
-            >
-              <Ionicons
-                name={isDark ? "sunny-outline" : "moon-outline"}
-                size={scaleSize(24)}
-                color={palette.text.primary}
-              />
-            </TouchableOpacity>
-
-            <ScrollView
-              style={styles.container}
-              contentContainerStyle={styles.scrollContainer}
-              keyboardShouldPersistTaps="handled"
-              showsVerticalScrollIndicator={false}
-            >
-              <View style={styles.content}>
-                <View style={styles.headerSection}>
-                  <View style={styles.backButtonContainer}>
-                    <TouchableOpacity
-                      style={styles.backButton}
-                      onPress={() => router.back()}
-                      activeOpacity={0.7}
-                    >
-                      <Ionicons
-                        name="arrow-back"
-                        size={scaleSize(24)}
-                        color={palette.secondary.main}
-                      />
-                    </TouchableOpacity>
-                    <Text style={styles.headerTitle}>Email Sent</Text>
-                  </View>
-                </View>
-
-                <View style={styles.titleSection}>
-                  <Text style={styles.title}>Check Your Email</Text>
-                  <Text style={styles.subtitle}>
-                    We&apos;ve sent a password reset link to your email address
-                  </Text>
-                </View>
-
-                <View style={styles.formContainer}>
-                  <View style={styles.resetButtonContainer}>
-                    <Button
-                      title="Resend Email"
-                      onPress={formik.handleSubmit}
-                      loading={isLoading}
-                      disabled={isLoading}
-                      fullWidth
-                      variant="secondary"
-                      size="medium"
-                    />
-                  </View>
-
-                  <View style={styles.rememberPasswordContainer}>
-                    <Text style={styles.rememberPasswordText}>
-                      Remember your password?{" "}
-                      <Text
-                        style={styles.rememberPasswordLink}
-                        onPress={() => router.push("/auth/login")}
-                      >
-                        Sign in
-                      </Text>
-                    </Text>
-                  </View>
-                </View>
-              </View>
-            </ScrollView>
-
-            <View style={styles.footer}>
-              <Text style={styles.footerText}>
-                © {new Date().getFullYear()} WorkBox. All rights reserved.
-              </Text>
-            </View>
-          </View>
-        </KeyboardAvoidingView>
-      </TouchableWithoutFeedback>
-    );
-  }
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -287,32 +209,67 @@ export default function ForgotPassword() {
                       color={palette.secondary.main}
                     />
                   </TouchableOpacity>
-                  <Text style={styles.headerTitle}>Reset Password</Text>
+                  <Text style={styles.headerTitle}>New Password</Text>
                 </View>
               </View>
 
               <View style={styles.titleSection}>
-                <Text style={styles.title}>Forgot Password?</Text>
+                <Text style={styles.title}>Reset Password</Text>
                 <Text style={styles.subtitle}>
-                  Enter your email address to reset your password
+                  Enter your reset token and create a new password
                 </Text>
               </View>
 
               <View style={styles.formContainer}>
                 <TextInput
-                  ref={emailRef}
-                  title="Email"
-                  leftIcon="email"
-                  inputMode="email"
+                  ref={tokenRef}
+                  title="Reset Token"
+                  leftIcon="key"
+                  variant="filled"
+                  size="medium"
+                  returnKeyType="next"
+                  value={formik.values.token}
+                  nextInputRef={passwordRef}
+                  placeholder="Enter reset token from email"
+                  formikError={formik.errors.token}
+                  formikTouched={formik.touched.token}
+                  onChangeText={(text) => formik.setFieldValue("token", text)}
+                  onBlur={() => formik.setFieldTouched("token", true)}
+                />
+
+                <TextInput
+                  ref={passwordRef}
+                  title="New Password"
+                  leftIcon="password"
+                  variant="filled"
+                  size="medium"
+                  returnKeyType="next"
+                  value={formik.values.password}
+                  nextInputRef={confirmPasswordRef}
+                  placeholder="Create new password"
+                  formikError={formik.errors.password}
+                  formikTouched={formik.touched.password}
+                  onChangeText={(text) =>
+                    formik.setFieldValue("password", text)
+                  }
+                  onBlur={() => formik.setFieldTouched("password", true)}
+                />
+
+                <TextInput
+                  ref={confirmPasswordRef}
+                  title="Confirm Password"
+                  leftIcon="password"
                   variant="filled"
                   size="medium"
                   returnKeyType="done"
-                  value={formik.values.email}
-                  placeholder="Enter your email"
-                  formikError={formik.errors.email}
-                  formikTouched={formik.touched.email}
-                  onChangeText={(text) => formik.setFieldValue("email", text)}
-                  onBlur={() => formik.setFieldTouched("email", true)}
+                  value={formik.values.confirmPassword}
+                  placeholder="Confirm new password"
+                  formikError={formik.errors.confirmPassword}
+                  formikTouched={formik.touched.confirmPassword}
+                  onChangeText={(text) =>
+                    formik.setFieldValue("confirmPassword", text)
+                  }
+                  onBlur={() => formik.setFieldTouched("confirmPassword", true)}
                   onSubmitEditing={() => formik.handleSubmit()}
                 />
 
@@ -327,7 +284,7 @@ export default function ForgotPassword() {
                     size="medium"
                     leftIcon={
                       <Ionicons
-                        name="key-outline"
+                        name="checkmark-circle-outline"
                         size={24}
                         color={palette.text.inverse}
                       />
@@ -335,11 +292,11 @@ export default function ForgotPassword() {
                   />
                 </View>
 
-                <View style={styles.rememberPasswordContainer}>
-                  <Text style={styles.rememberPasswordText}>
+                <View style={styles.signInContainer}>
+                  <Text style={styles.signInText}>
                     Remember your password?{" "}
                     <Text
-                      style={styles.rememberPasswordLink}
+                      style={styles.signInLink}
                       onPress={() => router.push("/auth/login")}
                     >
                       Sign in

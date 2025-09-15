@@ -1,10 +1,5 @@
-import BottomSheet from "@/components/ui/BottomSheet";
-import Button from "@/components/ui/Button";
-import Empty from "@/components/ui/Empty";
-import Loading from "@/components/ui/Loading";
-import Modal from "@/components/ui/Modal";
-import TextInput from "@/components/ui/TextInput";
-import { useTheme } from "@/theme";
+import { scaleSize, useTheme } from "@/theme";
+import { fontFamily } from "@/theme/fonts";
 import { spacing } from "@/theme/stylingConstants";
 import { RegisterFormData } from "@/types";
 import { Ionicons } from "@expo/vector-icons";
@@ -13,7 +8,7 @@ import { useFormik } from "formik";
 import React, { useRef, useState } from "react";
 import {
   Alert,
-  Image,
+  Keyboard,
   KeyboardAvoidingView,
   Platform,
   TextInput as RNTextInput,
@@ -21,11 +16,14 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   View,
 } from "react-native";
 import * as Yup from "yup";
 
-// Validation schema
+import Button from "@/components/ui/Button";
+import TextInput from "@/components/ui/TextInput";
+
 const registerSchema = Yup.object().shape({
   firstName: Yup.string()
     .min(2, "First name must be at least 2 characters")
@@ -54,12 +52,6 @@ export default function Register() {
   const [agreeToTerms, setAgreeToTerms] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  // New component states
-  const [showTermsModal, setShowTermsModal] = useState(false);
-  const [showPrivacyModal, setShowPrivacyModal] = useState(false);
-  const [showSuccessBottomSheet, setShowSuccessBottomSheet] = useState(false);
-  const [showDemoEmpty, setShowDemoEmpty] = useState(false);
-
   // Refs for input navigation
   const firstNameRef = useRef<RNTextInput>(null);
   const lastNameRef = useRef<RNTextInput>(null);
@@ -78,18 +70,19 @@ export default function Register() {
     },
     validationSchema: registerSchema,
     onSubmit: async (values) => {
-      if (!values.agreeToTerms) {
+      if (!agreeToTerms) {
         Alert.alert("Error", "Please agree to the Terms and Conditions");
         return;
       }
 
       setIsLoading(true);
       try {
-        // Simulate API call
         await new Promise((resolve) => setTimeout(resolve, 2000));
 
         console.log("Registration attempt:", values);
-        setShowSuccessBottomSheet(true);
+        Alert.alert("Success", "Account created successfully!", [
+          { text: "OK", onPress: () => router.push("/auth/login") },
+        ]);
       } catch {
         Alert.alert("Error", "Registration failed. Please try again.");
       } finally {
@@ -101,45 +94,69 @@ export default function Register() {
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: palette.background.primary,
+    },
+    mainContainer: {
+      flex: 1,
+      backgroundColor: palette.primary.main,
+      position: "relative",
     },
     scrollContainer: {
       flexGrow: 1,
+      backgroundColor: palette.background.secondary,
+      borderBottomLeftRadius: scaleSize(30),
+      borderBottomRightRadius: scaleSize(30),
     },
     content: {
       flex: 1,
       paddingHorizontal: spacing.xl,
-      paddingTop: spacing.xl * 2,
+      paddingTop: spacing.xs,
     },
-    header: {
+    themeToggle: {
+      position: "absolute",
+      top: scaleSize(60),
+      right: spacing.xl,
+      padding: spacing.sm,
+      borderRadius: scaleSize(8),
+      backgroundColor: palette.surface.secondary,
+      zIndex: 10,
+    },
+    headerSection: {
       alignItems: "center",
+      marginTop: scaleSize(80),
       marginBottom: spacing.xl * 2,
     },
-    logo: {
-      width: 60,
-      height: 60,
-      marginBottom: spacing.md,
+    backButtonContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+      marginBottom: spacing.xl,
+      alignSelf: "stretch",
     },
-    appName: {
-      fontSize: 24,
-      fontWeight: "bold",
-      color: palette.primary.main,
-      marginBottom: spacing.xl * 2,
+    backButton: {
+      padding: spacing.sm,
+      marginRight: spacing.md,
+    },
+    headerTitle: {
+      fontSize: scaleSize(24),
+      fontFamily: fontFamily.bold,
+      color: palette.secondary.main,
+      letterSpacing: 0.5,
+    },
+    titleSection: {
+      marginBottom: spacing.lg,
+      alignItems: "flex-start",
+      alignSelf: "stretch",
     },
     title: {
-      fontSize: 28,
-      fontWeight: "bold",
-      color: palette.primary.main,
-      marginBottom: spacing.sm,
-      textAlign: "left",
-      alignSelf: "flex-start",
+      fontSize: scaleSize(28),
+      fontFamily: fontFamily.bold,
+      color: palette.secondary.main,
+      marginBottom: spacing.xs,
     },
     subtitle: {
-      fontSize: 16,
+      fontSize: scaleSize(16),
+      fontFamily: fontFamily.regular,
       color: palette.text.secondary,
-      textAlign: "left",
-      marginBottom: spacing.xl * 2,
-      alignSelf: "flex-start",
+      lineHeight: scaleSize(24),
     },
     formContainer: {
       marginBottom: spacing.xl,
@@ -147,6 +164,7 @@ export default function Register() {
     nameRow: {
       flexDirection: "row",
       gap: spacing.md,
+      marginBottom: spacing.lg,
     },
     nameInput: {
       flex: 1,
@@ -154,72 +172,58 @@ export default function Register() {
     termsContainer: {
       flexDirection: "row",
       alignItems: "flex-start",
-      marginBottom: spacing.xl,
+      marginBottom: spacing.xl * 2,
+      marginTop: spacing.md,
     },
     checkbox: {
-      width: 20,
-      height: 20,
+      width: scaleSize(20),
+      height: scaleSize(20),
       borderWidth: 2,
-      borderColor: palette.primary.main,
-      borderRadius: 4,
+      borderColor: palette.border.secondary,
+      borderRadius: scaleSize(4),
       marginRight: spacing.sm,
-      marginTop: 2,
+      marginTop: spacing.xs,
       alignItems: "center",
       justifyContent: "center",
+      backgroundColor: "transparent",
     },
     checkboxChecked: {
       backgroundColor: palette.primary.main,
+      borderColor: palette.primary.main,
     },
     termsText: {
       flex: 1,
-      fontSize: 14,
+      fontSize: scaleSize(14),
+      fontFamily: fontFamily.regular,
       color: palette.text.secondary,
-      lineHeight: 20,
+      lineHeight: scaleSize(20),
     },
     termsLink: {
-      color: palette.primary.main,
-      fontWeight: "600",
+      color: palette.secondary.main,
+      fontFamily: fontFamily.medium,
     },
-    registerButton: {
-      marginBottom: spacing.xl,
+    registerButtonContainer: {
+      marginBottom: spacing.md,
     },
     footer: {
-      position: "absolute",
-      bottom: 0,
-      left: 0,
-      right: 0,
-      backgroundColor: palette.primary.main,
-      paddingVertical: spacing.xl,
-      paddingHorizontal: spacing.xl,
-      borderTopLeftRadius: 30,
-      borderTopRightRadius: 30,
-      alignItems: "center",
+      paddingVertical: spacing.sm,
+      paddingHorizontal: spacing.md,
     },
     footerText: {
-      fontSize: 12,
+      fontSize: scaleSize(12),
+      fontFamily: fontFamily.regular,
       color: palette.text.inverse,
       textAlign: "center",
-    },
-    themeToggle: {
-      position: "absolute",
-      top: 50,
-      right: 20,
-      padding: spacing.sm,
     },
   });
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-    >
-      <ScrollView
-        style={styles.scrollContainer}
-        contentContainerStyle={styles.scrollContainer}
-        keyboardShouldPersistTaps="handled"
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
-        <View style={styles.content}>
-          {/* Theme Toggle */}
+        <View style={styles.mainContainer}>
           <TouchableOpacity
             style={styles.themeToggle}
             onPress={toggleTheme}
@@ -227,377 +231,206 @@ export default function Register() {
           >
             <Ionicons
               name={isDark ? "sunny-outline" : "moon-outline"}
-              size={24}
+              size={scaleSize(24)}
               color={palette.text.primary}
             />
           </TouchableOpacity>
 
-          {/* Header */}
-          <View style={styles.header}>
-            <Image
-              source={require("../../assets/images/logo.png")}
-              style={styles.logo}
-              resizeMode="contain"
-            />
-            <Text style={styles.appName}>WORK BOX</Text>
-          </View>
-
-          {/* Title Section */}
-          <View style={{ marginBottom: spacing.xl }}>
-            <Text style={styles.title}>Create Account</Text>
-            <Text style={styles.subtitle}>Join us and start your journey!</Text>
-          </View>
-
-          {/* Form */}
-          <View style={styles.formContainer}>
-            {/* Name Row */}
-            <View style={styles.nameRow}>
-              <View style={styles.nameInput}>
-                <TextInput
-                  ref={firstNameRef}
-                  title="First Name"
-                  leftIcon="user"
-                  variant="outlined"
-                  returnKeyType="next"
-                  value={formik.values.firstName}
-                  nextInputRef={lastNameRef}
-                  placeholder="Enter first name"
-                  formikError={formik.errors.firstName}
-                  formikTouched={formik.touched.firstName}
-                  onChangeText={(text) =>
-                    formik.setFieldValue("firstName", text)
-                  }
-                  onBlur={() => formik.setFieldTouched("firstName", true)}
-                />
+          <ScrollView
+            style={styles.container}
+            contentContainerStyle={styles.scrollContainer}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+          >
+            <View style={styles.content}>
+              <View style={styles.headerSection}>
+                <View style={styles.backButtonContainer}>
+                  <TouchableOpacity
+                    style={styles.backButton}
+                    onPress={() => router.back()}
+                    activeOpacity={0.7}
+                  >
+                    <Ionicons
+                      name="arrow-back"
+                      size={scaleSize(24)}
+                      color={palette.secondary.main}
+                    />
+                  </TouchableOpacity>
+                  <Text style={styles.headerTitle}>Create Account</Text>
+                </View>
               </View>
-              <View style={styles.nameInput}>
+
+              <View style={styles.titleSection}>
+                <Text style={styles.title}>Join WorkBox</Text>
+                <Text style={styles.subtitle}>
+                  Start your journey with us today!
+                </Text>
+              </View>
+
+              <View style={styles.formContainer}>
+                <View style={styles.nameRow}>
+                  <View style={styles.nameInput}>
+                    <TextInput
+                      ref={firstNameRef}
+                      title="First Name"
+                      leftIcon="user"
+                      variant="filled"
+                      size="medium"
+                      returnKeyType="next"
+                      value={formik.values.firstName}
+                      nextInputRef={lastNameRef}
+                      placeholder="Enter first name"
+                      formikError={formik.errors.firstName}
+                      formikTouched={formik.touched.firstName}
+                      onChangeText={(text) =>
+                        formik.setFieldValue("firstName", text)
+                      }
+                      onBlur={() => formik.setFieldTouched("firstName", true)}
+                    />
+                  </View>
+                  <View style={styles.nameInput}>
+                    <TextInput
+                      ref={lastNameRef}
+                      title="Last Name"
+                      leftIcon="user"
+                      variant="filled"
+                      size="medium"
+                      returnKeyType="next"
+                      value={formik.values.lastName}
+                      nextInputRef={emailRef}
+                      placeholder="Enter last name"
+                      formikError={formik.errors.lastName}
+                      formikTouched={formik.touched.lastName}
+                      onChangeText={(text) =>
+                        formik.setFieldValue("lastName", text)
+                      }
+                      onBlur={() => formik.setFieldTouched("lastName", true)}
+                    />
+                  </View>
+                </View>
+
                 <TextInput
-                  ref={lastNameRef}
-                  title="Last Name"
-                  leftIcon="user"
-                  variant="outlined"
+                  ref={emailRef}
+                  title="Email"
+                  leftIcon="email"
+                  inputMode="email"
+                  variant="filled"
+                  size="medium"
                   returnKeyType="next"
-                  value={formik.values.lastName}
-                  nextInputRef={emailRef}
-                  placeholder="Enter last name"
-                  formikError={formik.errors.lastName}
-                  formikTouched={formik.touched.lastName}
-                  onChangeText={(text) =>
-                    formik.setFieldValue("lastName", text)
-                  }
-                  onBlur={() => formik.setFieldTouched("lastName", true)}
+                  value={formik.values.email}
+                  nextInputRef={passwordRef}
+                  placeholder="Enter your email"
+                  formikError={formik.errors.email}
+                  formikTouched={formik.touched.email}
+                  onChangeText={(text) => formik.setFieldValue("email", text)}
+                  onBlur={() => formik.setFieldTouched("email", true)}
                 />
+
+                <TextInput
+                  ref={passwordRef}
+                  title="Password"
+                  leftIcon="password"
+                  variant="filled"
+                  size="medium"
+                  returnKeyType="next"
+                  value={formik.values.password}
+                  nextInputRef={confirmPasswordRef}
+                  placeholder="Create a password"
+                  formikError={formik.errors.password}
+                  formikTouched={formik.touched.password}
+                  onChangeText={(text) =>
+                    formik.setFieldValue("password", text)
+                  }
+                  onBlur={() => formik.setFieldTouched("password", true)}
+                />
+
+                <TextInput
+                  ref={confirmPasswordRef}
+                  title="Confirm Password"
+                  leftIcon="password"
+                  variant="filled"
+                  size="medium"
+                  returnKeyType="done"
+                  value={formik.values.confirmPassword}
+                  placeholder="Confirm your password"
+                  formikError={formik.errors.confirmPassword}
+                  formikTouched={formik.touched.confirmPassword}
+                  onChangeText={(text) =>
+                    formik.setFieldValue("confirmPassword", text)
+                  }
+                  onBlur={() => formik.setFieldTouched("confirmPassword", true)}
+                  onSubmitEditing={() => formik.handleSubmit()}
+                />
+
+                <TouchableOpacity
+                  style={styles.termsContainer}
+                  onPress={() => setAgreeToTerms(!agreeToTerms)}
+                  activeOpacity={0.7}
+                >
+                  <View
+                    style={[
+                      styles.checkbox,
+                      agreeToTerms && styles.checkboxChecked,
+                    ]}
+                  >
+                    {agreeToTerms && (
+                      <Ionicons
+                        name="checkmark"
+                        size={scaleSize(12)}
+                        color={palette.text.inverse}
+                      />
+                    )}
+                  </View>
+                  <Text style={styles.termsText}>
+                    I agree to the{" "}
+                    <Text style={styles.termsLink}>Terms and Conditions</Text>{" "}
+                    and <Text style={styles.termsLink}>Privacy Policy</Text>
+                  </Text>
+                </TouchableOpacity>
+
+                <View style={styles.registerButtonContainer}>
+                  <Button
+                    title="Create Account"
+                    onPress={formik.handleSubmit}
+                    loading={isLoading}
+                    disabled={isLoading}
+                    fullWidth
+                    variant="primary"
+                    size="medium"
+                    leftIcon={
+                      <Ionicons
+                        name="person-add-outline"
+                        size={24}
+                        color={palette.text.inverse}
+                      />
+                    }
+                  />
+                </View>
+
+                <View
+                  style={{ alignItems: "center", marginBottom: spacing.xl }}
+                >
+                  <Text style={{ fontSize: 14, color: palette.text.secondary }}>
+                    Already have an account?{" "}
+                    <Text
+                      style={{ color: palette.primary.main, fontWeight: "600" }}
+                      onPress={() => router.push("/auth/login")}
+                    >
+                      Sign in
+                    </Text>
+                  </Text>
+                </View>
               </View>
             </View>
+          </ScrollView>
 
-            <TextInput
-              ref={emailRef}
-              title="Email"
-              leftIcon="email"
-              inputMode="email"
-              variant="outlined"
-              returnKeyType="next"
-              value={formik.values.email}
-              nextInputRef={passwordRef}
-              placeholder="Enter your email"
-              formikError={formik.errors.email}
-              formikTouched={formik.touched.email}
-              // disabled={true} // Uncomment to see disabled state demo
-              onChangeText={(text) => formik.setFieldValue("email", text)}
-              onBlur={() => formik.setFieldTouched("email", true)}
-            />
-
-            <TextInput
-              ref={passwordRef}
-              title="Password"
-              leftIcon="password"
-              variant="outlined"
-              returnKeyType="next"
-              value={formik.values.password}
-              nextInputRef={confirmPasswordRef}
-              placeholder="Create a password"
-              formikError={formik.errors.password}
-              formikTouched={formik.touched.password}
-              onChangeText={(text) => formik.setFieldValue("password", text)}
-              onBlur={() => formik.setFieldTouched("password", true)}
-            />
-
-            <TextInput
-              ref={confirmPasswordRef}
-              title="Confirm Password"
-              leftIcon="password"
-              variant="outlined"
-              returnKeyType="done"
-              value={formik.values.confirmPassword}
-              placeholder="Confirm your password"
-              formikError={formik.errors.confirmPassword}
-              formikTouched={formik.touched.confirmPassword}
-              disabled={!formik.values.password} // Disable until password is entered
-              onChangeText={(text) =>
-                formik.setFieldValue("confirmPassword", text)
-              }
-              onBlur={() => formik.setFieldTouched("confirmPassword", true)}
-              onSubmitEditing={() => formik.handleSubmit()}
-            />
-
-            {/* Terms and Conditions */}
-            <TouchableOpacity
-              style={styles.termsContainer}
-              onPress={() => setAgreeToTerms(!agreeToTerms)}
-              activeOpacity={0.7}
-            >
-              <View
-                style={[
-                  styles.checkbox,
-                  agreeToTerms && styles.checkboxChecked,
-                ]}
-              >
-                {agreeToTerms && (
-                  <Ionicons
-                    name="checkmark"
-                    size={14}
-                    color={palette.text.inverse}
-                  />
-                )}
-              </View>
-              <Text style={styles.termsText}>
-                I agree to the{" "}
-                <Text
-                  style={styles.termsLink}
-                  onPress={() => setShowTermsModal(true)}
-                >
-                  Terms and Conditions
-                </Text>{" "}
-                and{" "}
-                <Text
-                  style={styles.termsLink}
-                  onPress={() => setShowPrivacyModal(true)}
-                >
-                  Privacy Policy
-                </Text>
-              </Text>
-            </TouchableOpacity>
-
-            {/* Register Button */}
-            <Button
-              title="Create Account"
-              onPress={() => formik.handleSubmit()}
-              variant="primary"
-              size="large"
-              fullWidth
-              loading={isLoading}
-              style={styles.registerButton}
-            />
-          </View>
-
-          {/* Sign In Link */}
-          <View style={{ alignItems: "center", marginBottom: spacing.xl }}>
-            <Text style={{ fontSize: 14, color: palette.text.secondary }}>
-              Already have an account?{" "}
-              <Text
-                style={{ color: palette.primary.main, fontWeight: "600" }}
-                onPress={() => router.push("/auth/login")}
-              >
-                Sign in
-              </Text>
-            </Text>
-          </View>
-
-          {/* Footer */}
           <View style={styles.footer}>
             <Text style={styles.footerText}>
-              © 2025 WorkBox. All rights reserved.
+              © {new Date().getFullYear()} WorkBox. All rights reserved.
             </Text>
           </View>
         </View>
-      </ScrollView>
-
-      {/* Loading Component Demo */}
-      <Loading
-        visible={isLoading}
-        text="Creating your account..."
-        variant="spinner"
-        size="large"
-        overlay
-      />
-
-      {/* Terms Modal Demo */}
-      <Modal
-        visible={showTermsModal}
-        onClose={() => setShowTermsModal(false)}
-        title="Terms and Conditions"
-        subtitle="Please read our terms carefully"
-        variant="centered"
-        animationType="fade"
-        width="90%"
-        height="70%"
-      >
-        <ScrollView style={{ flex: 1 }}>
-          <Text
-            style={{
-              fontSize: 16,
-              lineHeight: 24,
-              color: palette.text.primary,
-            }}
-          >
-            Welcome to WorkBox! These terms and conditions outline the rules and
-            regulations for the use of our application.
-            {"\n\n"}
-            By accessing this app, we assume you accept these terms and
-            conditions. Do not continue to use WorkBox if you do not agree to
-            take all of the terms and conditions stated on this page.
-            {"\n\n"}
-            The following terminology applies to these Terms and Conditions,
-            Privacy Statement and Disclaimer Notice and all Agreements:
-            &quot;Client&quot;, &quot;You&quot; and &quot;Your&quot; refers to you, the person log on this
-            website and compliant to the Company&apos;s terms and conditions.
-          </Text>
-          <Button
-            title="I Understand"
-            onPress={() => setShowTermsModal(false)}
-            variant="primary"
-            fullWidth
-            style={{ marginTop: spacing.lg }}
-          />
-        </ScrollView>
-      </Modal>
-
-      {/* Privacy Modal Demo */}
-      <Modal
-        visible={showPrivacyModal}
-        onClose={() => setShowPrivacyModal(false)}
-        title="Privacy Policy"
-        subtitle="How we protect your data"
-        variant="centered"
-        animationType="slide"
-        width="95%"
-        height="60%"
-      >
-        <ScrollView style={{ flex: 1 }}>
-          <Text
-            style={{
-              fontSize: 16,
-              lineHeight: 24,
-              color: palette.text.primary,
-            }}
-          >
-            At WorkBox, we take your privacy seriously. This Privacy Policy
-            explains how we collect, use, disclose, and safeguard your
-            information when you use our mobile application.
-            {"\n\n"}
-            Information We Collect: • Personal Information (name, email, phone
-            number) • Usage Data (how you interact with our app) • Device
-            Information (device type, operating system)
-            {"\n\n"}
-            How We Use Your Information: • To provide and maintain our service •
-            To notify you about changes to our service • To provide customer
-            support • To gather analysis or valuable information
-          </Text>
-          <Button
-            title="Got It"
-            onPress={() => setShowPrivacyModal(false)}
-            variant="secondary"
-            fullWidth
-            style={{ marginTop: spacing.lg }}
-          />
-        </ScrollView>
-      </Modal>
-
-      {/* Success Bottom Sheet Demo */}
-      <BottomSheet
-        visible={showSuccessBottomSheet}
-        onClose={() => setShowSuccessBottomSheet(false)}
-        title="Account Created Successfully!"
-        height="50%"
-        showHandle
-        showHeader
-      >
-        <View style={{ alignItems: "center", paddingVertical: spacing.lg }}>
-          <Ionicons
-            name="checkmark-circle"
-            size={80}
-            color={palette.success.main}
-            style={{ marginBottom: spacing.lg }}
-          />
-          <Text
-            style={{
-              fontSize: 18,
-              fontWeight: "600",
-              color: palette.text.primary,
-              textAlign: "center",
-              marginBottom: spacing.sm,
-            }}
-          >
-            Welcome to WorkBox!
-          </Text>
-          <Text
-            style={{
-              fontSize: 14,
-              color: palette.text.secondary,
-              textAlign: "center",
-              marginBottom: spacing.xl,
-              lineHeight: 20,
-            }}
-          >
-            Your account has been created successfully. You can now start using
-            all the features of our platform.
-          </Text>
-          <Button
-            title="Continue to Login"
-            onPress={() => {
-              setShowSuccessBottomSheet(false);
-              router.push("/auth/login");
-            }}
-            variant="primary"
-            fullWidth
-            size="large"
-          />
-        </View>
-      </BottomSheet>
-
-      {/* Demo Empty Component */}
-      <Modal
-        visible={showDemoEmpty}
-        onClose={() => setShowDemoEmpty(false)}
-        title="Help & Support"
-        variant="fullscreen"
-        animationType="slide"
-      >
-        <Empty
-          title="Need Help?"
-          subtitle="We're here to assist you with any questions or issues you might have."
-          icon="help-circle-outline"
-          actionText="Contact Support"
-          onActionPress={() => {
-            setShowDemoEmpty(false);
-            Alert.alert("Support", "Support team will contact you soon!");
-          }}
-        >
-          <View style={{ marginTop: spacing.lg }}>
-            <Text
-              style={{
-                fontSize: 14,
-                color: palette.text.secondary,
-                textAlign: "center",
-                marginBottom: spacing.md,
-              }}
-            >
-              Common Questions:
-            </Text>
-            <View style={{ gap: spacing.sm }}>
-              <Text style={{ fontSize: 14, color: palette.text.primary }}>
-                • How do I reset my password?
-              </Text>
-              <Text style={{ fontSize: 14, color: palette.text.primary }}>
-                • What features are available?
-              </Text>
-              <Text style={{ fontSize: 14, color: palette.text.primary }}>
-                • How do I update my profile?
-              </Text>
-            </View>
-          </View>
-        </Empty>
-      </Modal>
-    </KeyboardAvoidingView>
+      </KeyboardAvoidingView>
+    </TouchableWithoutFeedback>
   );
 }

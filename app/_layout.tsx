@@ -42,6 +42,14 @@ export default function RootLayout() {
                 name="auth/register"
                 options={{ headerShown: false }}
               />
+              <Stack.Screen
+                name="auth/forgot-password"
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="auth/reset-password"
+                options={{ headerShown: false }}
+              />
               <Stack.Screen name="+not-found" />
             </Stack>
             <GlobalOfflineIndicator variant="notification" position="top" />
