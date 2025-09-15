@@ -1,4 +1,3 @@
-import Loading from "@/components/ui/Loading";
 import { useAppDispatch, useAppSelector } from "@/store";
 import {
   initializeAuth,
@@ -6,9 +5,18 @@ import {
   selectIsInitialized,
 } from "@/store/slices/authSlice";
 import { Redirect } from "expo-router";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
+import Loading from "../ui/Loading";
 
-export default function Index() {
+interface AuthGuardProps {
+  children: React.ReactNode;
+  requireAuth?: boolean;
+}
+
+export default function AuthGuard({
+  children,
+  requireAuth = true,
+}: AuthGuardProps) {
   const dispatch = useAppDispatch();
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
   const isInitialized = useAppSelector(selectIsInitialized);
@@ -23,9 +31,13 @@ export default function Index() {
     return <Loading visible={true} />;
   }
 
-  if (isAuthenticated) {
+  if (requireAuth && !isAuthenticated) {
+    return <Redirect href="/auth/login" />;
+  }
+
+  if (!requireAuth && isAuthenticated) {
     return <Redirect href="/pms" />;
   }
 
-  return <Redirect href="/auth/login" />;
+  return <>{children}</>;
 }

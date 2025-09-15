@@ -5,6 +5,7 @@ import { useRouter } from "expo-router";
 import { useFormik } from "formik";
 import React, { useEffect, useRef, useState } from "react";
 import {
+  Alert,
   Image,
   Keyboard,
   KeyboardAvoidingView,
@@ -50,8 +51,6 @@ export default function Login() {
 
   const [loginMutation, { isLoading: isLoginLoading }] = useLoginMutation();
 
-  console.log("isLoginLoading : ", isLoginLoading);
-
   // Refs for input navigation
   const emailRef = useRef<RNTextInput>(null);
   const passwordRef = useRef<RNTextInput>(null);
@@ -85,13 +84,38 @@ export default function Login() {
           username: values.email,
           password: values.password,
         }).unwrap();
-        dispatch(setUser(result.user));
+        // Extract user details from login response (excluding token)
+        const userDetails = {
+          id: result.id,
+          employeeId: result.employeeId,
+          fullName: result.fullName,
+          email: result.email,
+          imageUrl: result.imageUrl,
+          username: result.username,
+          allowedRoles: result.allowedRoles,
+          allowedModules: result.allowedModules,
+          allowedPagePermissions: result.allowedPagePermissions,
+        };
+
+        dispatch(setUser(userDetails));
 
         if (rememberMe) {
           await storageService.setItem("login_creds", JSON.stringify(values));
         }
+
+        router.replace("/pms");
       } catch (error: any) {
-        console.error("Login error:", error);
+        let errorMessage = "Login failed. Please try again.";
+
+        if (error?.data?.message) {
+          errorMessage = error.data.message;
+        } else if (error?.data?.errors && Array.isArray(error.data.errors)) {
+          errorMessage = error.data.errors.join(", ");
+        } else if (error?.message) {
+          errorMessage = error.message;
+        }
+
+        Alert.alert("Error", errorMessage);
       }
     },
   });

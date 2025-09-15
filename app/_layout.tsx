@@ -32,24 +32,11 @@ export default function RootLayout() {
       <NetworkProvider>
         <ACLProvider>
           <ThemeProvider>
-            <Stack>
-              <Stack.Screen name="index" options={{ headerShown: false }} />
-              <Stack.Screen
-                name="auth/login"
-                options={{ headerShown: false }}
-              />
-              <Stack.Screen
-                name="auth/register"
-                options={{ headerShown: false }}
-              />
-              <Stack.Screen
-                name="auth/forgot-password"
-                options={{ headerShown: false }}
-              />
-              <Stack.Screen
-                name="auth/reset-password"
-                options={{ headerShown: false }}
-              />
+            <Stack screenOptions={{ headerShown: false }}>
+              <Stack.Screen name="index" />
+              <Stack.Screen name="auth" />
+              <Stack.Screen name="pms" />
+              <Stack.Screen name="efs" />
               <Stack.Screen name="+not-found" />
             </Stack>
             <GlobalOfflineIndicator variant="notification" position="top" />

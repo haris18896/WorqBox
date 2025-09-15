@@ -34,25 +34,57 @@ export interface LoginRequest {
 }
 
 export interface LoginResponse {
+  id: number;
+  employeeId: number;
+  fullName: string;
+  email: string;
+  imageUrl?: string;
+  username: string;
   token: string;
-  refreshToken: string;
-  expiresAt: string;
-  user: UserDetails;
+  lastPasswordChange?: string;
+  allowedRoles: string[];
+  allowedModules: {
+    id: number;
+    name: string;
+  }[];
+  allowedPagePermissions: {
+    id: number;
+    systemModule: {
+      id: number;
+      name: string;
+    };
+    name: string;
+    canView: boolean;
+    canCreate: boolean;
+    canUpdate: boolean;
+    canDelete: boolean;
+  }[];
 }
 
 export interface UserDetails {
-  id: string;
-  email: string;
-  firstName: string;
-  lastName: string;
+  id: number;
+  employeeId: number;
   fullName: string;
-  avatar?: string;
-  employeeId?: string;
-  department?: string;
-  designation?: string;
-  isEmailVerified: boolean;
-  createdAt: string;
-  updatedAt: string;
+  email: string;
+  imageUrl?: string;
+  username: string;
+  allowedRoles: string[];
+  allowedModules: {
+    id: number;
+    name: string;
+  }[];
+  allowedPagePermissions: {
+    id: number;
+    systemModule: {
+      id: number;
+      name: string;
+    };
+    name: string;
+    canView: boolean;
+    canCreate: boolean;
+    canUpdate: boolean;
+    canDelete: boolean;
+  }[];
 }
 
 export interface RegisterRequest {

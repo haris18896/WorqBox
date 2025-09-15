@@ -24,15 +24,10 @@ export const initializeAuth = createAsyncThunk(
   "auth/initialize",
   async (_, { rejectWithValue }) => {
     try {
-      const [token, userDataString] = await Promise.all([
-        storageService.getAccessToken(),
-        storageService.getUserData(),
-      ]);
+      const token = await storageService.getAccessToken();
 
-      if (token && userDataString) {
-        const userData: UserDetails = JSON.parse(userDataString);
+      if (token) {
         return {
-          user: userData,
           isAuthenticated: true,
         };
       }
