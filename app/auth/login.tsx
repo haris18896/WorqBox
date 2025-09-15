@@ -1,5 +1,4 @@
 import { scaleSize, useTheme } from "@/theme";
-import { spacing } from "@/theme/stylingConstants";
 import { LoginFormData } from "@/types";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
@@ -50,8 +49,8 @@ export default function Login() {
 
   const formik = useFormik<LoginFormData>({
     initialValues: {
-      email: "dev.reporteq@gmail.com", // Pre-filled for demo
-      password: "password123", // Pre-filled for demo
+      email: "",
+      password: "",
       rememberMe: false,
     },
     validationSchema: loginSchema,
