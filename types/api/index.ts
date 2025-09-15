@@ -28,7 +28,7 @@ export interface PaginationParams {
 
 // Auth API Types
 export interface LoginRequest {
-  email: string;
+  username: string;
   password: string;
   rememberMe?: boolean;
 }
@@ -191,7 +191,7 @@ export interface ValidationError {
 
 export const API_ENDPOINTS = {
   // Auth endpoints
-  LOGIN: "/Account/Login",
+  LOGIN: "/Account/login",
   REGISTER: "/Account/Register",
   USER_DETAILS: "/Account/GetUserDetails",
   FORGOT_PASSWORD: "/Account/ForgotPassword",

@@ -3,9 +3,8 @@ import { LoginFormData } from "@/types";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useFormik } from "formik";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
-  Alert,
   Image,
   Keyboard,
   KeyboardAvoidingView,
@@ -22,6 +21,10 @@ import * as Yup from "yup";
 // Import UI components
 import Button from "@/components/ui/Button";
 import TextInput from "@/components/ui/TextInput";
+import { storageService } from "@/services/storage";
+import { useAppDispatch } from "@/store";
+import { useLoginMutation } from "@/store/api/authApi";
+import { clearError, setUser } from "@/store/slices/authSlice";
 import { createAuthStyles } from "@/styles";
 
 // Validation schema
@@ -37,8 +40,17 @@ const loginSchema = Yup.object().shape({
 export default function Login() {
   const router = useRouter();
   const { palette, toggleTheme, isDark } = useTheme();
-  const [rememberMe, setRememberMe] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [rememberMe, setRememberMe] = useState(true);
+  const [loginCreds, setLoginCreds] = useState<LoginFormData>({
+    email: "",
+    password: "",
+  });
+
+  const dispatch = useAppDispatch();
+
+  const [loginMutation, { isLoading: isLoginLoading }] = useLoginMutation();
+
+  console.log("isLoginLoading : ", isLoginLoading);
 
   // Refs for input navigation
   const emailRef = useRef<RNTextInput>(null);
@@ -47,27 +59,39 @@ export default function Login() {
   // Create styles using common auth styles
   const styles = createAuthStyles(palette);
 
+  useEffect(() => {
+    const loadStoredCredentials = async () => {
+      const storedLoginCreds = await storageService.getItem("login_creds");
+      if (storedLoginCreds) {
+        const parsedCreds = JSON.parse(storedLoginCreds);
+        setLoginCreds(parsedCreds);
+      }
+    };
+    loadStoredCredentials();
+  }, [rememberMe]);
+
   const formik = useFormik<LoginFormData>({
     initialValues: {
-      email: "",
-      password: "",
+      email: loginCreds.email || "",
+      password: loginCreds.password || "",
       rememberMe: false,
     },
     validationSchema: loginSchema,
+    enableReinitialize: true,
     onSubmit: async (values) => {
-      setIsLoading(true);
       try {
-        // Simulate API call
-        await new Promise((resolve) => setTimeout(resolve, 2000));
+        dispatch(clearError());
+        const result = await loginMutation({
+          username: values.email,
+          password: values.password,
+        }).unwrap();
+        dispatch(setUser(result.user));
 
-        console.log("Login attempt:", values);
-        Alert.alert("Success", "Login successful!", [
-          { text: "OK", onPress: () => router.push("/auth/register") },
-        ]);
-      } catch {
-        Alert.alert("Error", "Login failed. Please try again.");
-      } finally {
-        setIsLoading(false);
+        if (rememberMe) {
+          await storageService.setItem("login_creds", JSON.stringify(values));
+        }
+      } catch (error: any) {
+        console.error("Login error:", error);
       }
     },
   });
@@ -191,8 +215,8 @@ export default function Login() {
                   <Button
                     title="Login"
                     onPress={formik.handleSubmit}
-                    loading={isLoading}
-                    disabled={isLoading}
+                    loading={isLoginLoading}
+                    disabled={isLoginLoading}
                     fullWidth
                     variant="primary"
                     size="medium"

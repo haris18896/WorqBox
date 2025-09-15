@@ -14,9 +14,7 @@ const STORAGE_KEYS = {
 } as const;
 
 class StorageService {
-  /**
-   * Store a value securely
-   */
+  // Store a value securely
   async setItem(key: string, value: string): Promise<void> {
     try {
       if (Platform.OS === "web") {
@@ -30,9 +28,7 @@ class StorageService {
     }
   }
 
-  /**
-   * Retrieve a value securely
-   */
+  // Retrieve a value securely
   async getItem(key: string): Promise<string | null> {
     try {
       if (Platform.OS === "web") {
@@ -46,9 +42,7 @@ class StorageService {
     }
   }
 
-  /**
-   * Remove a value
-   */
+  // Remove a value
   async removeItem(key: string): Promise<void> {
     try {
       if (Platform.OS === "web") {
@@ -61,9 +55,7 @@ class StorageService {
     }
   }
 
-  /**
-   * Clear all stored values
-   */
+  // Clear all stored values
   async clear(): Promise<void> {
     try {
       const keys = Object.values(STORAGE_KEYS);

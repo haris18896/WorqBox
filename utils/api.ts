@@ -18,8 +18,13 @@ const baseQuery = fetchBaseQuery({
   baseUrl: API_BASE_URL,
   prepareHeaders: async (headers, { getState }) => {
     headers.set("Content-Type", "application/json");
+    headers.set("Accept", "application/json, text/plain, */*");
     headers.set("Connection", "keep-alive");
-    headers.set("Access-Control-Request-Method", "*");
+
+    const apiKey = process.env.EXPO_PUBLIC_API_KEY || "";
+    if (apiKey) {
+      headers.set("x-api-key", apiKey);
+    }
 
     const token = await storageService.getAccessToken();
 
@@ -39,45 +44,55 @@ export const baseQueryWithReauth: BaseQueryFn<
 > = async (args, api, extraOptions) => {
   let result = await baseQuery(args, api, extraOptions);
 
+  // Commented out refresh token logic since API doesn't provide refresh tokens
   if (result.error && result.error.status === 401) {
-    console.log("Token expired, attempting to refresh...");
+    console.log("Token expired, logging out user...");
 
-    // Try to refresh the token
-    const refreshToken = await storageService.getRefreshToken();
-
-    if (refreshToken) {
-      const refreshResult = await baseQuery(
-        {
-          url: "/Account/RefreshToken",
-          method: "POST",
-          body: { refreshToken },
-        },
-        api,
-        extraOptions
-      );
-
-      if (refreshResult.data) {
-        const { token, refreshToken: newRefreshToken } = (
-          refreshResult.data as any
-        ).result;
-
-        // Store new tokens
-        await storageService.setAccessToken(token);
-        await storageService.setRefreshToken(newRefreshToken);
-
-        // Retry the original query
-        result = await baseQuery(args, api, extraOptions);
-      } else {
-        // Refresh failed, logout user
-        api.dispatch(logout());
-        await storageService.clearTokens();
-      }
-    } else {
-      // No refresh token, logout user
-      api.dispatch(logout());
-      await storageService.clearTokens();
-    }
+    // Since we don't have refresh tokens, just logout the user
+    api.dispatch(logout());
+    await storageService.clearTokens();
   }
+
+  // Original refresh token logic (commented out)
+  // if (result.error && result.error.status === 401) {
+  //   console.log("Token expired, attempting to refresh...");
+
+  //   // Try to refresh the token
+  //   const refreshToken = await storageService.getRefreshToken();
+
+  //   if (refreshToken) {
+  //     const refreshResult = await baseQuery(
+  //       {
+  //         url: "/Account/RefreshToken",
+  //         method: "POST",
+  //         body: { refreshToken },
+  //       },
+  //       api,
+  //       extraOptions
+  //     );
+
+  //     if (refreshResult.data) {
+  //       const { token, refreshToken: newRefreshToken } = (
+  //         refreshResult.data as any
+  //       ).result;
+
+  //       // Store new tokens
+  //       await storageService.setAccessToken(token);
+  //       await storageService.setRefreshToken(newRefreshToken);
+
+  //       // Retry the original query
+  //       result = await baseQuery(args, api, extraOptions);
+  //     } else {
+  //       // Refresh failed, logout user
+  //       api.dispatch(logout());
+  //       await storageService.clearTokens();
+  //     }
+  //   } else {
+  //     // No refresh token, logout user
+  //     api.dispatch(logout());
+  //     await storageService.clearTokens();
+  //   }
+  // }
 
   return result;
 };
@@ -124,7 +139,7 @@ export const handleApiError = (
   }
 
   // TODO: Install suitable toast notification and integrate it here
-  console.error("API Error:", message);
+  console.log("API Error:", message);
 
   return message;
 };

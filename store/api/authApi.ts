@@ -36,10 +36,9 @@ export const authApi = createApi({
       async onQueryStarted(arg, { queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
-
           await storageService.setAccessToken(data.token);
-          await storageService.setRefreshToken(data.refreshToken);
-          await storageService.setUserData(JSON.stringify(data.user));
+          // await storageService.setRefreshToken(data.refreshToken); // Commented out - no refresh token in response
+          // await storageService.setUserData(JSON.stringify(data));
 
           handleApiSuccess("Login successful");
         } catch (error) {
@@ -64,8 +63,8 @@ export const authApi = createApi({
           const { data } = await queryFulfilled;
 
           await storageService.setAccessToken(data.token);
-          await storageService.setRefreshToken(data.refreshToken);
-          await storageService.setUserData(JSON.stringify(data.user));
+          // await storageService.setRefreshToken(data.refreshToken); // Commented out - no refresh token in response
+          // await storageService.setUserData(JSON.stringify(data));
 
           handleApiSuccess("Registration successful");
         } catch (error) {
@@ -135,28 +134,28 @@ export const authApi = createApi({
       },
     }),
 
-    // REFRESH TOKEN
-    refreshToken: builder.mutation<LoginResponse, { refreshToken: string }>({
-      query: (data) => ({
-        url: API_ENDPOINTS.REFRESH_TOKEN,
-        method: "POST",
-        body: data,
-      }),
-      transformResponse: (response: BaseApiResponse<LoginResponse>) => {
-        return transformResponse(response);
-      },
-      async onQueryStarted(arg, { queryFulfilled }) {
-        try {
-          const { data } = await queryFulfilled;
+    // REFRESH TOKEN - Commented out since API doesn't provide refresh tokens
+    // refreshToken: builder.mutation<LoginResponse, { refreshToken: string }>({
+    //   query: (data) => ({
+    //     url: API_ENDPOINTS.REFRESH_TOKEN,
+    //     method: "POST",
+    //     body: data,
+    //   }),
+    //   transformResponse: (response: BaseApiResponse<LoginResponse>) => {
+    //     return transformResponse(response);
+    //   },
+    //   async onQueryStarted(arg, { queryFulfilled }) {
+    //     try {
+    //       const { data } = await queryFulfilled;
 
-          await storageService.setAccessToken(data.token);
-          await storageService.setRefreshToken(data.refreshToken);
-          await storageService.setUserData(JSON.stringify(data.user));
-        } catch {
-          await storageService.clearTokens();
-        }
-      },
-    }),
+    //       await storageService.setAccessToken(data.token);
+    //       await storageService.setRefreshToken(data.refreshToken);
+    //       await storageService.setUserData(JSON.stringify(data.user));
+    //     } catch {
+    //       await storageService.clearTokens();
+    //     }
+    //   },
+    // }),
   }),
 });
 
@@ -167,5 +166,5 @@ export const {
   useLazyGetUserDetailsQuery,
   useForgotPasswordMutation,
   useResetPasswordMutation,
-  useRefreshTokenMutation,
+  // useRefreshTokenMutation, // Commented out since refresh token endpoint is disabled
 } = authApi;
