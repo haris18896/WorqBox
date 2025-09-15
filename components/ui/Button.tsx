@@ -1,6 +1,3 @@
-import { useTheme } from "@/theme";
-import { spacing } from "@/theme/responsive";
-import { ButtonProps } from "@/types";
 import React from "react";
 import {
   ActivityIndicator,
@@ -10,6 +7,11 @@ import {
   View,
   ViewStyle,
 } from "react-native";
+
+// ** Theme
+import { useTheme } from "@/theme";
+import { buttonSize, scaleSize, spacing } from "@/theme/responsive";
+import { ButtonProps } from "@/types";
 
 const Button: React.FC<ButtonProps> = ({
   title,
@@ -80,21 +82,21 @@ const Button: React.FC<ButtonProps> = ({
     switch (size) {
       case "small":
         return {
-          paddingVertical: 12,
+          paddingVertical: scaleSize(12),
           paddingHorizontal: spacing.md,
-          minHeight: 44,
+          minHeight: buttonSize.md.height,
         };
       case "large":
         return {
-          paddingVertical: 16,
-          paddingHorizontal: spacing.lg,
-          minHeight: 56,
+          paddingVertical: scaleSize(16),
+          paddingHorizontal: spacing.md,
+          minHeight: buttonSize.lg.height,
         };
       default: // medium
         return {
-          paddingVertical: 14,
-          paddingHorizontal: spacing.lg,
-          minHeight: 50,
+          paddingVertical: scaleSize(14),
+          paddingHorizontal: spacing.md,
+          minHeight: buttonSize.md.height,
         };
     }
   };
@@ -103,7 +105,7 @@ const Button: React.FC<ButtonProps> = ({
     button: {
       ...getVariantStyles(),
       ...getSizeStyles(),
-      borderRadius: 12, // More rounded like the design
+      borderRadius: 12,
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "center",

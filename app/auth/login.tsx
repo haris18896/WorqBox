@@ -224,6 +224,7 @@ export default function Login() {
               leftIcon="email"
               inputMode="email"
               variant="outlined"
+              size="medium"
               returnKeyType="next"
               value={formik.values.email}
               nextInputRef={passwordRef}
@@ -239,6 +240,7 @@ export default function Login() {
               title="Password"
               leftIcon="password"
               variant="outlined"
+              size="medium"
               returnKeyType="done"
               value={formik.values.password}
               placeholder="Enter your password"
@@ -281,12 +283,11 @@ export default function Login() {
               </TouchableOpacity>
             </View>
 
-            {/* Login Button */}
             <Button
               title="Login"
               onPress={() => formik.handleSubmit()}
               variant="primary"
-              size="large"
+              size="small"
               fullWidth
               loading={isLoading}
               style={styles.loginButton}

@@ -1,7 +1,3 @@
-import { useTheme } from "@/theme";
-import { spacing, WP } from "@/theme/responsive";
-import { TextInputIconType, TextInputProps } from "@/types";
-import { Ionicons } from "@expo/vector-icons";
 import React, { forwardRef, useState } from "react";
 import {
   TextInput as RNTextInput,
@@ -10,6 +6,20 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+
+// ** Third Party Components
+import { Ionicons } from "@expo/vector-icons";
+
+// ** Theme
+import { useTheme } from "@/theme";
+import {
+  inputSize,
+  scaleFontSize,
+  scaleSize,
+  spacing,
+  WP,
+} from "@/theme/responsive";
+import { TextInputIconType, TextInputProps } from "@/types";
 
 // Icon mapping for different input types
 const iconMap: Record<TextInputIconType, string> = {
@@ -28,11 +38,14 @@ const TextInput = forwardRef<RNTextInput, TextInputProps>(
       title,
       leftIcon,
       variant = "outlined",
+      size = "medium",
       formikError,
       formikTouched,
       nextInputRef,
       styleData,
       secureTextEntry,
+      onFocus,
+      onBlur,
       ...props
     },
     ref
@@ -54,20 +67,51 @@ const TextInput = forwardRef<RNTextInput, TextInputProps>(
       }
     };
 
+    const handleFocus = (e: any) => {
+      setIsFocused(true);
+      onFocus?.(e);
+    };
+
+    const handleBlur = (e: any) => {
+      setIsFocused(false);
+      onBlur?.(e);
+    };
+
     const togglePasswordVisibility = () => {
       setIsPasswordVisible(!isPasswordVisible);
+    };
+
+    const getSizeStyles = () => {
+      switch (size) {
+        case "small":
+          return {
+            paddingVertical: scaleSize(8),
+            paddingHorizontal: inputSize.sm.paddingHorizontal,
+            minHeight: inputSize.sm.height,
+          };
+        case "large":
+          return {
+            paddingVertical: scaleSize(12),
+            paddingHorizontal: inputSize.lg.paddingHorizontal,
+            minHeight: inputSize.lg.height,
+          };
+        default: // medium
+          return {
+            paddingVertical: scaleSize(10),
+            paddingHorizontal: inputSize.md.paddingHorizontal,
+            minHeight: inputSize.md.height,
+          };
+      }
     };
 
     const getVariantStyles = () => {
       const baseStyles = {
         borderWidth: 1,
         borderRadius: WP(3),
-        paddingHorizontal: spacing.md,
-        paddingVertical: spacing.md, // Increased padding for better height
         flexDirection: "row" as const,
         alignItems: "center" as const,
-        backgroundColor: "#FFFFFF", // Pure white background
-        minHeight: WP(4),
+        backgroundColor: "transparent",
+        ...getSizeStyles(),
       };
 
       switch (variant) {
@@ -75,7 +119,7 @@ const TextInput = forwardRef<RNTextInput, TextInputProps>(
           return {
             ...baseStyles,
             backgroundColor: palette.surface.secondary,
-            borderColor: hasError ? palette.error.main : "transparent",
+            borderColor: hasError ? palette.error.main : palette.border.primary,
           };
         case "underlined":
           return {
@@ -124,9 +168,14 @@ const TextInput = forwardRef<RNTextInput, TextInputProps>(
       },
       textInput: {
         flex: 1,
-        fontSize: 16,
+        fontSize:
+          size === "small"
+            ? inputSize.sm.fontSize
+            : size === "large"
+            ? inputSize.lg.fontSize
+            : inputSize.md.fontSize,
         color: palette.text.primary,
-        paddingVertical: 0, // Remove default padding
+        paddingVertical: 0,
         ...styleData?.inputStyles,
       },
       passwordToggle: {
@@ -134,9 +183,10 @@ const TextInput = forwardRef<RNTextInput, TextInputProps>(
         marginLeft: spacing.sm,
       },
       errorText: {
-        fontSize: 12,
+        fontSize: scaleFontSize(12),
         color: palette.error.main,
         marginTop: spacing.xs,
+        paddingHorizontal: spacing.xs,
         ...styleData?.errorStyles,
       },
     });
@@ -162,8 +212,8 @@ const TextInput = forwardRef<RNTextInput, TextInputProps>(
             ref={ref}
             style={styles.textInput}
             secureTextEntry={isPassword && !isPasswordVisible}
-            onFocus={() => setIsFocused(true)}
-            onBlur={() => setIsFocused(false)}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
             onSubmitEditing={handleSubmitEditing}
             placeholderTextColor={palette.text.tertiary}
             {...props}
