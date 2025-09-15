@@ -1,7 +1,28 @@
-import { scaleSize } from "@/theme";
+import {
+  isMobile,
+  isTablet,
+  isWeb,
+  scaleFontSize,
+  scaleSize,
+  WP,
+} from "@/theme";
 import { fontFamily } from "@/theme/fonts";
 import { spacing } from "@/theme/stylingConstants";
 import { StyleSheet } from "react-native";
+
+// responsive values
+const getResponsiveValue = (mobile: number, tablet: number, web: number) => {
+  if (isWeb()) return web;
+  if (isTablet()) return tablet;
+  return mobile;
+};
+
+// responsive container width
+const getContainerWidth = () => {
+  if (isWeb()) return Math.min(600, WP(50));
+  if (isTablet()) return "100%";
+  return WP(100);
+};
 
 export const createAuthStyles = (palette: any) =>
   StyleSheet.create({
@@ -19,11 +40,26 @@ export const createAuthStyles = (palette: any) =>
       backgroundColor: palette.background.secondary,
       borderBottomLeftRadius: scaleSize(30),
       borderBottomRightRadius: scaleSize(30),
+      // Add subtle elevation for web
+      ...(isWeb() && {
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.05,
+        shadowRadius: 8,
+        elevation: 4,
+      }),
     },
     content: {
       flex: 1,
-      paddingHorizontal: spacing.xl,
-      paddingTop: spacing.xs,
+      paddingHorizontal: getResponsiveValue(
+        spacing.xl,
+        spacing["2xl"],
+        spacing.xl
+      ),
+      paddingTop: getResponsiveValue(spacing.xs, spacing.md, spacing.lg),
+      maxWidth: getContainerWidth(),
+      alignSelf: "center",
+      width: "100%",
     },
 
     // Theme Toggle (for login screen)
@@ -40,8 +76,16 @@ export const createAuthStyles = (palette: any) =>
     // Header Section Styles
     headerSection: {
       alignItems: "center",
-      marginTop: scaleSize(80),
-      marginBottom: spacing.xl * 2,
+      marginTop: getResponsiveValue(
+        scaleSize(80),
+        scaleSize(60),
+        scaleSize(60)
+      ),
+      marginBottom: getResponsiveValue(
+        spacing.xl * 2,
+        spacing.xl * 1.5,
+        spacing.xl * 1.5
+      ),
     },
     logoContainer: {
       flexDirection: "row",
@@ -49,12 +93,16 @@ export const createAuthStyles = (palette: any) =>
       marginBottom: spacing.xl,
     },
     logo: {
-      width: scaleSize(50),
-      height: scaleSize(50),
+      width: getResponsiveValue(scaleSize(50), scaleSize(60), scaleSize(70)),
+      height: getResponsiveValue(scaleSize(50), scaleSize(60), scaleSize(70)),
       marginRight: spacing.md,
     },
     appName: {
-      fontSize: scaleSize(32),
+      fontSize: getResponsiveValue(
+        scaleFontSize(32),
+        scaleFontSize(36),
+        scaleFontSize(40)
+      ),
       fontFamily: fontFamily.bold,
       color: palette.secondary.main,
       letterSpacing: 0.5,
@@ -83,16 +131,28 @@ export const createAuthStyles = (palette: any) =>
       alignSelf: "stretch",
     },
     title: {
-      fontSize: scaleSize(28),
+      fontSize: getResponsiveValue(
+        scaleFontSize(28),
+        scaleFontSize(32),
+        scaleFontSize(36)
+      ),
       fontFamily: fontFamily.bold,
       color: palette.secondary.main,
       marginBottom: spacing.xs,
     },
     subtitle: {
-      fontSize: scaleSize(16),
+      fontSize: getResponsiveValue(
+        scaleFontSize(16),
+        scaleFontSize(18),
+        scaleFontSize(20)
+      ),
       fontFamily: fontFamily.regular,
       color: palette.text.secondary,
-      lineHeight: scaleSize(24),
+      lineHeight: getResponsiveValue(
+        scaleFontSize(24),
+        scaleFontSize(26),
+        scaleFontSize(28)
+      ),
     },
 
     // Form Styles
@@ -139,12 +199,20 @@ export const createAuthStyles = (palette: any) =>
 
     // Common Text Styles
     linkText: {
-      fontSize: scaleSize(14),
+      fontSize: getResponsiveValue(
+        scaleFontSize(14),
+        scaleFontSize(15),
+        scaleFontSize(16)
+      ),
       fontFamily: fontFamily.medium,
       color: palette.secondary.main,
     },
     secondaryText: {
-      fontSize: scaleSize(14),
+      fontSize: getResponsiveValue(
+        scaleFontSize(14),
+        scaleFontSize(15),
+        scaleFontSize(16)
+      ),
       fontFamily: fontFamily.regular,
       color: palette.text.secondary,
     },
@@ -195,7 +263,7 @@ export const createAuthStyles = (palette: any) =>
     },
     termsContainer: {
       flexDirection: "row",
-      alignItems: "flex-start",
+      alignItems: isMobile() ? "flex-start" : "center",
       marginBottom: spacing.xl * 2,
       marginTop: spacing.md,
     },
@@ -204,7 +272,6 @@ export const createAuthStyles = (palette: any) =>
       fontSize: scaleSize(14),
       fontFamily: fontFamily.regular,
       color: palette.text.secondary,
-      lineHeight: scaleSize(20),
     },
     termsLink: {
       color: palette.secondary.main,

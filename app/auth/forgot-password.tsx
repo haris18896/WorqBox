@@ -51,7 +51,6 @@ export default function ForgotPassword() {
       try {
         await new Promise((resolve) => setTimeout(resolve, 2000));
 
-        console.log("Password reset request:", values);
         setEmailSent(true);
       } catch {
         Alert.alert("Error", "Failed to send reset email. Please try again.");

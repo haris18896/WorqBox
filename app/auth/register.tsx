@@ -82,7 +82,6 @@ export default function Register() {
       try {
         await new Promise((resolve) => setTimeout(resolve, 2000));
 
-        console.log("Registration attempt:", values);
         Alert.alert("Success", "Account created successfully!", [
           { text: "OK", onPress: () => router.push("/auth/login") },
         ]);

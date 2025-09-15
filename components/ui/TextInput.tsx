@@ -1,5 +1,6 @@
-import React, { forwardRef, useState } from "react";
+import React, { forwardRef, useCallback, useState } from "react";
 import {
+  Platform,
   TextInput as RNTextInput,
   StyleSheet,
   Text,
@@ -63,15 +64,29 @@ const TextInput = forwardRef<RNTextInput, TextInputProps>(
       }
     };
 
-    const handleFocus = (e: any) => {
-      setIsFocused(true);
-      onFocus?.(e);
-    };
+    const handleFocus = useCallback(
+      (e: any) => {
+        setIsFocused(true);
+        onFocus?.(e);
+      },
+      [onFocus]
+    );
 
-    const handleBlur = (e: any) => {
-      setIsFocused(false);
-      onBlur?.(e);
-    };
+    const handleBlur = useCallback(
+      (e: any) => {
+        // On web, add a small delay to prevent immediate blur when clicking password toggle
+        if (Platform.OS === "web") {
+          setTimeout(() => {
+            setIsFocused(false);
+            onBlur?.(e);
+          }, 100);
+        } else {
+          setIsFocused(false);
+          onBlur?.(e);
+        }
+      },
+      [onBlur]
+    );
 
     const togglePasswordVisibility = () => {
       setIsPasswordVisible(!isPasswordVisible);
@@ -204,7 +219,12 @@ const TextInput = forwardRef<RNTextInput, TextInputProps>(
       <View style={styles.container}>
         {title && <Text style={styles.label}>{title}</Text>}
 
-        <View style={styles.inputContainer}>
+        <View
+          style={styles.inputContainer}
+          onStartShouldSetResponder={
+            Platform.OS === "web" ? () => false : undefined
+          }
+        >
           {leftIcon && (
             <View style={styles.iconContainer}>
               <Ionicons
@@ -241,6 +261,9 @@ const TextInput = forwardRef<RNTextInput, TextInputProps>(
               onPress={disabled ? undefined : togglePasswordVisibility}
               activeOpacity={disabled ? 1 : 0.7}
               disabled={disabled}
+              onPressIn={
+                Platform.OS === "web" ? (e) => e.preventDefault() : undefined
+              }
             >
               <Ionicons
                 name={isPasswordVisible ? "eye-outline" : "eye-off-outline"}

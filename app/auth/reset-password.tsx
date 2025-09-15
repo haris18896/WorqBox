@@ -59,7 +59,6 @@ export default function ResetPassword() {
       try {
         await new Promise((resolve) => setTimeout(resolve, 2000));
 
-        console.log("Password reset:", values);
         Alert.alert("Success", "Password reset successfully!", [
           { text: "OK", onPress: () => router.push("/auth/login") },
         ]);

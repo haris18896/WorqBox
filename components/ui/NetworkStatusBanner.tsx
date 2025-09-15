@@ -1,10 +1,22 @@
 import React from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Platform,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { useNetworkStatus } from "../../hooks/useNetworkStatus";
 import { getColorPalette, useSystemTheme } from "../../theme/Colors";
+import {
+  isTablet,
+  isWeb,
+  scaleFontSize,
+  scaleSize,
+} from "../../theme/responsive";
 
 interface NetworkStatusBannerProps {
-  onRetry?: () => void;
+  onRetry?: () => Promise<void>;
   showConnectionType?: boolean;
 }
 
@@ -12,9 +24,10 @@ export const NetworkStatusBanner: React.FC<NetworkStatusBannerProps> = ({
   onRetry,
   showConnectionType = false,
 }) => {
-  const { isOffline, isOnline, type, isLoading } = useNetworkStatus();
+  const { isOnline, type, isLoading } = useNetworkStatus();
   const theme = useSystemTheme();
   const colors = getColorPalette(theme);
+  const [isRetrying, setIsRetrying] = React.useState(false);
 
   if (isLoading || isOnline) return null;
 
@@ -40,11 +53,48 @@ export const NetworkStatusBanner: React.FC<NetworkStatusBannerProps> = ({
 
         {onRetry && (
           <TouchableOpacity
-            style={[styles.retryButton, { borderColor: colors.text.inverse }]}
-            onPress={onRetry}
+            style={[
+              styles.retryButton,
+              {
+                borderColor: colors.text.inverse,
+                opacity: isRetrying ? 0.6 : 1,
+              },
+            ]}
+            onPress={async () => {
+              // Add immediate visual feedback
+              alert("Retry button pressed! Check console for logs.");
+
+              if (isRetrying) {
+                return;
+              }
+
+              if (!onRetry) {
+                alert("Error: onRetry function is missing!");
+                return;
+              }
+
+              if (typeof onRetry !== "function") {
+                alert("Error: onRetry is not a function!");
+                return;
+              }
+
+              setIsRetrying(true);
+
+              try {
+                await onRetry();
+              } catch (error) {
+                alert(
+                  "Retry failed: " +
+                    (error instanceof Error ? error.message : String(error))
+                );
+              } finally {
+                setIsRetrying(false);
+              }
+            }}
+            disabled={isRetrying}
           >
             <Text style={[styles.retryText, { color: colors.text.inverse }]}>
-              Retry
+              {isRetrying ? "Retrying..." : "Retry"}
             </Text>
           </TouchableOpacity>
         )}
@@ -55,8 +105,14 @@ export const NetworkStatusBanner: React.FC<NetworkStatusBannerProps> = ({
 
 const styles = StyleSheet.create({
   banner: {
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingHorizontal: Platform.select({
+      web: isTablet() ? scaleSize(24) : isWeb() ? scaleSize(32) : scaleSize(16),
+      default: scaleSize(16),
+    }),
+    paddingVertical: Platform.select({
+      web: isTablet() ? scaleSize(16) : isWeb() ? scaleSize(20) : scaleSize(12),
+      default: scaleSize(12),
+    }),
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -75,23 +131,23 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   title: {
-    fontSize: 16,
+    fontSize: scaleFontSize(16),
     fontWeight: "600",
-    marginBottom: 2,
+    marginBottom: scaleSize(2),
   },
   subtitle: {
-    fontSize: 12,
+    fontSize: scaleFontSize(12),
     opacity: 0.9,
   },
   retryButton: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
+    paddingHorizontal: scaleSize(12),
+    paddingVertical: scaleSize(6),
     borderWidth: 1,
-    borderRadius: 4,
-    marginLeft: 12,
+    borderRadius: scaleSize(4),
+    marginLeft: scaleSize(12),
   },
   retryText: {
-    fontSize: 12,
+    fontSize: scaleFontSize(12),
     fontWeight: "600",
   },
 });

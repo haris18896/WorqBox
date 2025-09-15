@@ -1,10 +1,9 @@
-import { scaleSize } from "@/theme";
+import { isTablet, isWeb, scaleSize } from "@/theme";
 import React from "react";
-import { Animated, Dimensions, StyleSheet, Text, View } from "react-native";
+import { Animated, Platform, StyleSheet, Text, View } from "react-native";
+import { useNetwork } from "../../contexts/NetworkContext";
 import { useNetworkStatus } from "../../hooks/useNetworkStatus";
 import { useThemeColor } from "../../hooks/useThemeColor";
-
-const { width } = Dimensions.get("window");
 
 interface OfflineNotificationProps {
   showWhenOffline?: boolean;
@@ -18,6 +17,7 @@ export const OfflineNotification: React.FC<OfflineNotificationProps> = ({
   message = "You are offline. Some features may not be available.",
 }) => {
   const { isOffline, isLoading } = useNetworkStatus();
+  const { isRetrying } = useNetwork();
   const [slideAnim] = React.useState(new Animated.Value(-100));
 
   const backgroundColor = useThemeColor(
@@ -50,6 +50,8 @@ export const OfflineNotification: React.FC<OfflineNotificationProps> = ({
 
   if (isLoading) return null;
 
+  if (!isOffline) return null;
+
   return (
     <Animated.View
       style={[
@@ -63,8 +65,15 @@ export const OfflineNotification: React.FC<OfflineNotificationProps> = ({
       pointerEvents={isOffline ? "auto" : "none"}
     >
       <View style={styles.content}>
-        <View style={styles.indicator} />
-        <Text style={[styles.text, { color: textColor }]}>{message}</Text>
+        <View
+          style={[
+            styles.indicator,
+            { backgroundColor: isRetrying ? "#FFA500" : "#ffffff" },
+          ]}
+        />
+        <Text style={[styles.text, { color: textColor }]}>
+          {isRetrying ? "Checking connection..." : message}
+        </Text>
       </View>
     </Animated.View>
   );
@@ -91,7 +100,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    paddingTop: scaleSize(50),
+    paddingTop: Platform.select({
+      ios: scaleSize(50),
+      android: scaleSize(30),
+      web: isTablet() ? scaleSize(20) : isWeb() ? scaleSize(15) : scaleSize(30),
+    }),
   },
   indicator: {
     width: 8,

@@ -1,6 +1,7 @@
 import React from "react";
-import { SafeAreaView, StyleSheet } from "react-native";
+import { Platform, SafeAreaView, StyleSheet } from "react-native";
 import { useNetwork } from "../../contexts/NetworkContext";
+import { isTablet, isWeb } from "../../theme/responsive";
 import { NetworkStatusBanner } from "./NetworkStatusBanner";
 import { OfflineNotification } from "./OfflineNotification";
 
@@ -20,9 +21,11 @@ export const GlobalOfflineIndicator: React.FC<GlobalOfflineIndicatorProps> = ({
   const { retryConnection } = useNetwork();
 
   if (variant === "banner") {
+    const onRetryFunc = showRetryButton ? retryConnection : undefined;
+
     return (
       <NetworkStatusBanner
-        onRetry={showRetryButton ? retryConnection : undefined}
+        onRetry={onRetryFunc}
         showConnectionType={showConnectionType}
       />
     );
@@ -38,7 +41,10 @@ export const GlobalOfflineIndicator: React.FC<GlobalOfflineIndicatorProps> = ({
 const styles = StyleSheet.create({
   container: {
     position: "absolute",
-    top: 0,
+    top: Platform.select({
+      web: isTablet() || isWeb() ? 0 : 0,
+      default: 0,
+    }),
     left: 0,
     right: 0,
     zIndex: 9999,

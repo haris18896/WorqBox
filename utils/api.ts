@@ -46,9 +46,7 @@ export const baseQueryWithReauth: BaseQueryFn<
 
   // Commented out refresh token logic since API doesn't provide refresh tokens
   if (result.error && result.error.status === 401) {
-    console.log("Token expired, logging out user...");
-
-    // Since we don't have refresh tokens, just logout the user
+    // we don't have refresh tokens, just logout the user
     api.dispatch(logout());
     await storageService.clearTokens();
   }

@@ -39,7 +39,7 @@ export default function RootLayout() {
               <Stack.Screen name="efs" />
               <Stack.Screen name="+not-found" />
             </Stack>
-            <GlobalOfflineIndicator variant="notification" position="top" />
+            <GlobalOfflineIndicator variant="banner" position="top" />
             <StatusBar style="auto" />
           </ThemeProvider>
         </ACLProvider>
