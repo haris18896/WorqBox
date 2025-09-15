@@ -5,6 +5,8 @@ import "react-native-reanimated";
 
 import { ThemeProvider } from "@/theme";
 import { ACLProvider } from "../acl/context";
+import { GlobalOfflineIndicator } from "../components/ui/GlobalOfflineIndicator";
+import { NetworkProvider } from "../contexts/NetworkContext";
 import { ReduxProvider } from "../providers/ReduxProvider";
 
 export default function RootLayout() {
@@ -27,20 +29,26 @@ export default function RootLayout() {
 
   return (
     <ReduxProvider>
-      <ACLProvider>
-        <ThemeProvider>
-          <Stack>
-            <Stack.Screen name="index" options={{ headerShown: false }} />
-            <Stack.Screen name="auth/login" options={{ headerShown: false }} />
-            <Stack.Screen
-              name="auth/register"
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen name="+not-found" />
-          </Stack>
-          <StatusBar style="auto" />
-        </ThemeProvider>
-      </ACLProvider>
+      <NetworkProvider>
+        <ACLProvider>
+          <ThemeProvider>
+            <Stack>
+              <Stack.Screen name="index" options={{ headerShown: false }} />
+              <Stack.Screen
+                name="auth/login"
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="auth/register"
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen name="+not-found" />
+            </Stack>
+            <GlobalOfflineIndicator variant="notification" position="top" />
+            <StatusBar style="auto" />
+          </ThemeProvider>
+        </ACLProvider>
+      </NetworkProvider>
     </ReduxProvider>
   );
 }
