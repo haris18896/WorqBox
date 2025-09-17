@@ -1,3 +1,4 @@
+import BarHeader from "@/components/ui/BarHeader";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { logoutUser, selectUser } from "@/store/slices/authSlice";
 import { useTheme } from "@/theme";
@@ -31,21 +32,6 @@ export default function PMSDashboard() {
     container: {
       flex: 1,
       backgroundColor: palette.background.primary,
-    },
-    header: {
-      padding: 20,
-      backgroundColor: palette.primary.main,
-    },
-    headerText: {
-      fontSize: 24,
-      fontWeight: "bold",
-      color: palette.text.inverse,
-      marginBottom: 5,
-    },
-    welcomeText: {
-      fontSize: 16,
-      color: palette.text.inverse,
-      opacity: 0.9,
     },
     content: {
       flex: 1,
@@ -105,10 +91,7 @@ export default function PMSDashboard() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerText}>Project Management System</Text>
-        <Text style={styles.welcomeText}>Welcome back, {user?.fullName}</Text>
-      </View>
+      <BarHeader title="Project Management" variant="large" />
 
       <ScrollView style={styles.content}>
         <View style={styles.card}>

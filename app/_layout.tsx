@@ -1,10 +1,12 @@
 import { useFonts } from "expo-font";
-import { Stack } from "expo-router";
+import { Drawer } from "expo-router/drawer";
 import { StatusBar } from "expo-status-bar";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import "react-native-reanimated";
 
 import { ThemeProvider } from "@/theme";
 import { ACLProvider } from "../acl/context";
+import { CustomDrawer } from "../components/navigation/CustomDrawer";
 import { GlobalOfflineIndicator } from "../components/ui/GlobalOfflineIndicator";
 import { NetworkProvider } from "../contexts/NetworkContext";
 import { ReduxProvider } from "../providers/ReduxProvider";
@@ -23,7 +25,6 @@ export default function RootLayout() {
   });
 
   if (!loaded) {
-    // Async font loading only occurs in development.
     return null;
   }
 
@@ -32,15 +33,50 @@ export default function RootLayout() {
       <NetworkProvider>
         <ACLProvider>
           <ThemeProvider>
-            <Stack screenOptions={{ headerShown: false }}>
-              <Stack.Screen name="index" />
-              <Stack.Screen name="auth" />
-              <Stack.Screen name="pms" />
-              <Stack.Screen name="efs" />
-              <Stack.Screen name="+not-found" />
-            </Stack>
-            <GlobalOfflineIndicator variant="banner" position="top" />
-            <StatusBar style="auto" />
+            <GestureHandlerRootView style={{ flex: 1 }}>
+              <Drawer
+                drawerContent={(props) => <CustomDrawer {...props} />}
+                screenOptions={{
+                  headerShown: false,
+                  drawerStyle: {
+                    width: 280,
+                  },
+                  swipeEnabled: true,
+                  drawerType: "front",
+                }}
+              >
+                <Drawer.Screen
+                  name="index"
+                  options={{ drawerItemStyle: { display: "none" } }}
+                />
+                <Drawer.Screen
+                  name="auth"
+                  options={{ drawerItemStyle: { display: "none" } }}
+                />
+                <Drawer.Screen
+                  name="dashboard"
+                  options={{ drawerItemStyle: { display: "none" } }}
+                />
+                <Drawer.Screen
+                  name="pms"
+                  options={{ drawerItemStyle: { display: "none" } }}
+                />
+                <Drawer.Screen
+                  name="efs"
+                  options={{ drawerItemStyle: { display: "none" } }}
+                />
+                <Drawer.Screen
+                  name="profile"
+                  options={{ drawerItemStyle: { display: "none" } }}
+                />
+                <Drawer.Screen
+                  name="+not-found"
+                  options={{ drawerItemStyle: { display: "none" } }}
+                />
+              </Drawer>
+              <GlobalOfflineIndicator variant="banner" position="top" />
+              <StatusBar style="auto" />
+            </GestureHandlerRootView>
           </ThemeProvider>
         </ACLProvider>
       </NetworkProvider>

@@ -1,8 +1,14 @@
 import React from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 // ** Third Party Components
 import { Ionicons } from "@expo/vector-icons";
+import { DrawerActions } from "@react-navigation/native";
+import { useNavigation, useRouter } from "expo-router";
+
+// ** Redux
+import { useAppSelector } from "@/store";
+import { selectUser } from "@/store/slices/authSlice";
 
 // ** Theme
 import { useTheme } from "@/theme";
@@ -10,32 +16,31 @@ import { iconSize, spacing } from "@/theme/stylingConstants";
 import { BarHeaderProps } from "@/types";
 
 const BarHeader: React.FC<BarHeaderProps> = ({
-  title,
-  subtitle,
-  leftIcon,
-  rightIcon,
-  onLeftPress,
-  onRightPress,
-  showBackButton = false,
-  onBackPress,
+  onBack,
+  onChatPress,
+  onNotificationPress,
+  onProfilePress,
   style,
   titleStyle,
   subtitleStyle,
   variant = "default",
 }) => {
-  const { palette } = useTheme();
+  const { palette, isDark, toggleTheme } = useTheme();
+  const router = useRouter();
+  const navigation = useNavigation();
+  const user = useAppSelector(selectUser);
 
   const getVariantStyles = () => {
     switch (variant) {
       case "large":
         return {
-          paddingVertical: spacing.lg,
+          paddingVertical: spacing.md,
           titleFontSize: 24,
           subtitleFontSize: 16,
         };
       case "minimal":
         return {
-          paddingVertical: spacing.sm,
+          paddingVertical: spacing.xs,
           titleFontSize: 16,
           subtitleFontSize: 14,
         };
@@ -60,12 +65,10 @@ const BarHeader: React.FC<BarHeaderProps> = ({
     container: {
       flexDirection: "row",
       alignItems: "center",
+      justifyContent: "space-between",
       backgroundColor: palette.surface.primary,
       paddingHorizontal: spacing.lg,
-      paddingTop: spacing.lg,
-      borderBottomWidth: 1,
-      borderBottomColor: palette.border.primary,
-      ...variantStyles,
+      paddingVertical: variantStyles.paddingVertical,
       ...style,
     },
     leftSection: {
@@ -81,11 +84,11 @@ const BarHeader: React.FC<BarHeaderProps> = ({
     rightSection: {
       flexDirection: "row",
       alignItems: "center",
-      minWidth: 40,
+      minWidth: 120,
       justifyContent: "flex-end",
     },
     iconButton: {
-      padding: spacing.sm,
+      marginRight: 10,
       borderRadius: 8,
       alignItems: "center",
       justifyContent: "center",
@@ -93,6 +96,24 @@ const BarHeader: React.FC<BarHeaderProps> = ({
     icon: {
       fontSize: iconSize.lg,
       color: palette.text.primary,
+    },
+    profileIcon: {
+      width: 32,
+      height: 32,
+      borderRadius: 16,
+      backgroundColor: palette.primary.main,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    profileText: {
+      fontSize: 12,
+      fontWeight: "600",
+      color: "#FFFFFF",
+    },
+    profileImage: {
+      width: 32,
+      height: 32,
+      borderRadius: 16,
     },
     title: {
       fontSize: variantStyles.titleFontSize,
@@ -111,28 +132,50 @@ const BarHeader: React.FC<BarHeaderProps> = ({
   });
 
   const handleBackPress = () => {
-    if (onBackPress) {
-      onBackPress();
+    if (onBack) {
+      onBack();
     }
   };
 
-  const handleLeftPress = () => {
-    if (onLeftPress) {
-      onLeftPress();
+  const handleDrawerPress = () => {
+    navigation.dispatch(DrawerActions.openDrawer());
+  };
+
+  const handleChatPress = () => {
+    if (onChatPress) {
+      onChatPress();
     }
   };
 
-  const handleRightPress = () => {
-    if (onRightPress) {
-      onRightPress();
+  const handleNotificationPress = () => {
+    if (onNotificationPress) {
+      onNotificationPress();
     }
+  };
+
+  const handleProfilePress = () => {
+    if (onProfilePress) {
+      onProfilePress();
+    } else {
+      router.push("/profile");
+    }
+  };
+
+  const getUserInitial = () => {
+    if (user?.fullName) {
+      return user.fullName.charAt(0).toUpperCase();
+    }
+    if (user?.email) {
+      return user.email.charAt(0).toUpperCase();
+    }
+    return "U";
   };
 
   return (
     <View style={styles.container}>
       {/* Left Section */}
       <View style={styles.leftSection}>
-        {showBackButton && (
+        {onBack ? (
           <TouchableOpacity
             style={styles.iconButton}
             onPress={handleBackPress}
@@ -140,35 +183,61 @@ const BarHeader: React.FC<BarHeaderProps> = ({
           >
             <Ionicons name="arrow-back" style={styles.icon} />
           </TouchableOpacity>
-        )}
-        {leftIcon && !showBackButton && (
+        ) : (
           <TouchableOpacity
             style={styles.iconButton}
-            onPress={handleLeftPress}
+            onPress={handleDrawerPress}
             activeOpacity={0.7}
           >
-            <Ionicons name={leftIcon as any} style={styles.icon} />
+            <Ionicons name="menu" style={styles.icon} />
           </TouchableOpacity>
         )}
-      </View>
-
-      {/* Center Section */}
-      <View style={styles.centerSection}>
-        {title && <Text style={styles.title}>{title}</Text>}
-        {subtitle && <Text style={styles.subtitle}>{subtitle}</Text>}
       </View>
 
       {/* Right Section */}
       <View style={styles.rightSection}>
-        {rightIcon && (
-          <TouchableOpacity
-            style={styles.iconButton}
-            onPress={handleRightPress}
-            activeOpacity={0.7}
-          >
-            <Ionicons name={rightIcon as any} style={styles.icon} />
-          </TouchableOpacity>
-        )}
+        <TouchableOpacity
+          style={styles.iconButton}
+          onPress={toggleTheme}
+          activeOpacity={0.7}
+        >
+          <Ionicons
+            name={isDark ? "sunny-outline" : "moon-outline"}
+            size={24}
+            color={palette.text.primary}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.iconButton}
+          onPress={handleChatPress}
+          activeOpacity={0.7}
+        >
+          <Ionicons name="chatbubble-outline" style={styles.icon} />
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.iconButton}
+          onPress={handleNotificationPress}
+          activeOpacity={0.7}
+        >
+          <Ionicons name="notifications-outline" style={styles.icon} />
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.profileIcon}
+          onPress={handleProfilePress}
+          activeOpacity={0.7}
+        >
+          {user?.imageUrl ? (
+            <Image
+              source={{ uri: user.imageUrl }}
+              style={styles.profileImage}
+              resizeMode="cover"
+            />
+          ) : (
+            <Text style={styles.profileText}>{getUserInitial()}</Text>
+          )}
+        </TouchableOpacity>
       </View>
     </View>
   );
