@@ -1,0 +1,170 @@
+import { createApi } from "@reduxjs/toolkit/query/react";
+import { storageService } from "../../services/storage";
+import {
+  API_ENDPOINTS,
+  BaseApiResponse,
+  ForgotPasswordRequest,
+  LoginRequest,
+  LoginResponse,
+  RegisterRequest,
+  ResetPasswordRequest,
+  UserDetails,
+} from "../../types/api";
+import {
+  baseQueryWithReauth,
+  handleApiError,
+  handleApiSuccess,
+  TAG_TYPES,
+  transformResponse,
+} from "../../utils/api";
+
+export const authApi = createApi({
+  reducerPath: "authApi",
+  baseQuery: baseQueryWithReauth,
+  tagTypes: [TAG_TYPES.User],
+  endpoints: (builder) => ({
+    // LOGIN
+    login: builder.mutation<LoginResponse, LoginRequest>({
+      query: (credentials) => ({
+        url: API_ENDPOINTS.LOGIN,
+        method: "POST",
+        body: credentials,
+      }),
+      transformResponse: (response: BaseApiResponse<LoginResponse>) => {
+        return transformResponse(response);
+      },
+      async onQueryStarted(arg, { queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          await storageService.setAccessToken(data.token);
+          // await storageService.setRefreshToken(data.refreshToken); // Commented out - no refresh token in response
+          // await storageService.setUserData(JSON.stringify(data));
+
+          handleApiSuccess("Login successful");
+        } catch (error) {
+          handleApiError(error, "Login failed");
+        }
+      },
+      invalidatesTags: [{ type: TAG_TYPES.User, id: "CURRENT" }],
+    }),
+
+    // REGISTER
+    register: builder.mutation<LoginResponse, RegisterRequest>({
+      query: (userData) => ({
+        url: API_ENDPOINTS.REGISTER,
+        method: "POST",
+        body: userData,
+      }),
+      transformResponse: (response: BaseApiResponse<LoginResponse>) => {
+        return transformResponse(response);
+      },
+      async onQueryStarted(arg, { queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+
+          await storageService.setAccessToken(data.token);
+          // await storageService.setRefreshToken(data.refreshToken); // Commented out - no refresh token in response
+          // await storageService.setUserData(JSON.stringify(data));
+
+          handleApiSuccess("Registration successful");
+        } catch (error) {
+          handleApiError(error, "Registration failed");
+        }
+      },
+      invalidatesTags: [{ type: TAG_TYPES.User, id: "CURRENT" }],
+    }),
+
+    // GET USER DETAILS
+    getUserDetails: builder.query<UserDetails, void>({
+      query: () => ({
+        url: API_ENDPOINTS.USER_DETAILS,
+        method: "GET",
+      }),
+      transformResponse: (response: BaseApiResponse<UserDetails>) => {
+        return transformResponse(response);
+      },
+      async onQueryStarted(arg, { queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          await storageService.setUserData(JSON.stringify(data));
+        } catch (error) {
+          handleApiError(error, "Failed to fetch user details");
+        }
+      },
+      providesTags: [{ type: TAG_TYPES.User, id: "CURRENT" }],
+    }),
+
+    // FORGOT PASSWORD
+    forgotPassword: builder.mutation<void, ForgotPasswordRequest>({
+      query: (data) => ({
+        url: API_ENDPOINTS.FORGOT_PASSWORD,
+        method: "POST",
+        body: data,
+      }),
+      transformResponse: (response: BaseApiResponse<void>) => {
+        return transformResponse(response);
+      },
+      async onQueryStarted(arg, { queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          handleApiSuccess("Password reset link sent to your email");
+        } catch (error) {
+          handleApiError(error, "Failed to send password reset link");
+        }
+      },
+    }),
+
+    // RESET PASSWORD
+    resetPassword: builder.mutation<void, ResetPasswordRequest>({
+      query: (data) => ({
+        url: API_ENDPOINTS.RESET_PASSWORD,
+        method: "POST",
+        body: data,
+      }),
+      transformResponse: (response: BaseApiResponse<void>) => {
+        return transformResponse(response);
+      },
+      async onQueryStarted(arg, { queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          handleApiSuccess("Password reset successful");
+        } catch (error) {
+          handleApiError(error, "Failed to reset password");
+        }
+      },
+    }),
+
+    // REFRESH TOKEN - Commented out since API doesn't provide refresh tokens
+    // refreshToken: builder.mutation<LoginResponse, { refreshToken: string }>({
+    //   query: (data) => ({
+    //     url: API_ENDPOINTS.REFRESH_TOKEN,
+    //     method: "POST",
+    //     body: data,
+    //   }),
+    //   transformResponse: (response: BaseApiResponse<LoginResponse>) => {
+    //     return transformResponse(response);
+    //   },
+    //   async onQueryStarted(arg, { queryFulfilled }) {
+    //     try {
+    //       const { data } = await queryFulfilled;
+
+    //       await storageService.setAccessToken(data.token);
+    //       await storageService.setRefreshToken(data.refreshToken);
+    //       await storageService.setUserData(JSON.stringify(data.user));
+    //     } catch {
+    //       await storageService.clearTokens();
+    //     }
+    //   },
+    // }),
+  }),
+});
+
+export const {
+  useLoginMutation,
+  useRegisterMutation,
+  useGetUserDetailsQuery,
+  useLazyGetUserDetailsQuery,
+  useForgotPasswordMutation,
+  useResetPasswordMutation,
+  // useRefreshTokenMutation, // Commented out since refresh token endpoint is disabled
+} = authApi;
