@@ -37,7 +37,7 @@ export const navigationConfig: NavigationItem[] = [
       {
         title: "Projects",
         href: "/pms/projects",
-        icon: "folder-open",
+        icon: "layers",
         permission: ["Superadmin", "manager"],
         default: "Main",
         active_list: ["Project Management", "Projects"],
@@ -143,7 +143,7 @@ export const navigationConfig: NavigationItem[] = [
       {
         title: "Salary Calculator",
         href: "/efs/salary-calculator",
-        icon: "calculator",
+        icon: "dollar-sign",
         permission: ["employee", "hr", "Superadmin"],
         active_list: ["Employee Facilitation", "Salary Calculator"],
         default: null,

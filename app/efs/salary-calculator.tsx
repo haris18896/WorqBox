@@ -41,7 +41,7 @@ export default function SalaryCalculator() {
 
   return (
     <View style={styles.container}>
-      <BarHeader title="WorqBox Dashboard" variant="large" />
+      <BarHeader title="Salary Calculator" variant="large" />
       <ScrollView style={styles.content}>
         <View style={styles.card}>
           <Text style={styles.cardTitle}>Salary Calculator</Text>

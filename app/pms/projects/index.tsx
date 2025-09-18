@@ -1,3 +1,4 @@
+import { BarHeader } from "@/components/ui";
 import { useTheme } from "@/theme";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
@@ -63,6 +64,7 @@ export default function ProjectsMain() {
 
   return (
     <View style={styles.container}>
+      <BarHeader title="Project Management" variant="default" />
       <ScrollView style={styles.content}>
         <View style={styles.card}>
           <Text style={styles.cardTitle}>Project Overview</Text>

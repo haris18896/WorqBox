@@ -8,7 +8,7 @@ import {
   DrawerContentComponentProps,
   DrawerContentScrollView,
 } from "@react-navigation/drawer";
-import { useRouter } from "expo-router";
+import { usePathname, useRouter } from "expo-router";
 import React, { useEffect } from "react";
 import {
   Image,
@@ -19,7 +19,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { NavigationItem, getVisibleNavigationItems } from "./navigationConfig";
+import { getVisibleNavigationItems, NavigationItem } from "./navigationConfig";
 
 interface DrawerItemProps {
   item: NavigationItem;
@@ -35,12 +35,19 @@ const DrawerItem: React.FC<DrawerItemProps> = ({
   onNavigate,
 }) => {
   const { palette } = useTheme();
-  const [isExpanded, setIsExpanded] = React.useState(false);
 
-  const isActive = item.active_list.some((route) =>
-    activeRoute.includes(route)
-  );
+  const isActive = activeRoute === item.href;
+  const hasActiveChild =
+    item.children && item.children.some((child) => activeRoute === child.href);
   const hasChildren = item.children && item.children.length > 0;
+
+  const [isExpanded, setIsExpanded] = React.useState(hasActiveChild || false);
+
+  React.useEffect(() => {
+    if (hasActiveChild) {
+      setIsExpanded(true);
+    }
+  }, [hasActiveChild]);
 
   const handlePress = () => {
     if (hasChildren) {
@@ -61,7 +68,10 @@ const DrawerItem: React.FC<DrawerItemProps> = ({
       paddingHorizontal: spacing.md,
       marginVertical: 2,
       borderRadius: 8,
-      backgroundColor: isActive ? `${palette.primary.main}15` : "transparent",
+      backgroundColor:
+        isActive || hasActiveChild
+          ? `${palette.primary.main}15`
+          : "transparent",
     },
     iconContainer: {
       width: 24,
@@ -76,8 +86,11 @@ const DrawerItem: React.FC<DrawerItemProps> = ({
     },
     text: {
       fontSize: 16,
-      color: isActive ? palette.primary.main : palette.text.primary,
-      fontWeight: isActive ? "600" : "400",
+      color:
+        isActive || hasActiveChild
+          ? palette.primary.main
+          : palette.text.primary,
+      fontWeight: isActive || hasActiveChild ? "600" : "400",
     },
     badge: {
       backgroundColor: palette.error.main,
@@ -109,7 +122,11 @@ const DrawerItem: React.FC<DrawerItemProps> = ({
           <Feather
             name={item.icon as any}
             size={20}
-            color={isActive ? palette.primary.main : palette.text.secondary}
+            color={
+              isActive || hasActiveChild
+                ? palette.primary.main
+                : palette.text.secondary
+            }
           />
         </View>
         <View style={itemStyles.textContainer}>
@@ -154,6 +171,7 @@ export const CustomDrawer: React.FC<DrawerContentComponentProps> = (props) => {
   const dispatch = useAppDispatch();
 
   const router = useRouter();
+  const pathname = usePathname();
   const [localUser, setLocalUser] = React.useState<any>(null);
 
   useEffect(() => {
@@ -163,7 +181,7 @@ export const CustomDrawer: React.FC<DrawerContentComponentProps> = (props) => {
       }))();
   }, []);
 
-  const activeRoute = props.state.routeNames[props.state.index] || "";
+  const activeRoute = pathname || "";
 
   const userRole = localUser?.allowedRoles?.[0] || "employee";
 
