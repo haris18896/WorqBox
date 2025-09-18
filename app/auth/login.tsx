@@ -84,14 +84,21 @@ export default function Login() {
           username: values.email,
           password: values.password,
         }).unwrap();
-        // Extract user details from login response (excluding token)
-        const userDetails = {
+
+        const user = {
           id: result.id,
           employeeId: result.employeeId,
           fullName: result.fullName,
           email: result.email,
           imageUrl: result.imageUrl,
           username: result.username,
+          allowedRoles: result.allowedRoles,
+        };
+
+        await storageService.setItem("user", JSON.stringify(user));
+
+        const userDetails = {
+          ...user,
           allowedRoles: result.allowedRoles,
           allowedModules: result.allowedModules,
           allowedPagePermissions: result.allowedPagePermissions,
