@@ -1,3 +1,4 @@
+import { BarHeader } from "@/components/ui";
 import { useTheme } from "@/theme";
 import React from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
@@ -40,6 +41,7 @@ export default function Reports() {
 
   return (
     <View style={styles.container}>
+      <BarHeader title="Project Management" variant="default" />
       <ScrollView style={styles.content}>
         <View style={styles.card}>
           <Text style={styles.cardTitle}>Project Reports</Text>

@@ -61,9 +61,6 @@ export const NetworkStatusBanner: React.FC<NetworkStatusBannerProps> = ({
               },
             ]}
             onPress={async () => {
-              // Add immediate visual feedback
-              alert("Retry button pressed! Check console for logs.");
-
               if (isRetrying) {
                 return;
               }
