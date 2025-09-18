@@ -1,3 +1,4 @@
+import { BarHeader } from "@/components/ui";
 import { useTheme } from "@/theme";
 import React from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
@@ -40,6 +41,7 @@ export default function SurveyForms() {
 
   return (
     <View style={styles.container}>
+      <BarHeader title="Survey" variant="default" />
       <ScrollView style={styles.content}>
         <View style={styles.card}>
           <Text style={styles.cardTitle}>Survey Forms</Text>
