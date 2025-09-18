@@ -1,3 +1,4 @@
+import { storageService } from "@/services/storage";
 import type { TypedUseSelectorHook } from "react-redux";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "./index";
@@ -16,8 +17,11 @@ export const useIsAuthenticated = () => {
 };
 
 // Custom hook to get current user
-export const useCurrentUser = () => {
-  return useAppSelector((state) => state.auth.user);
+export const useCurrentUser = async () => {
+  const user = await storageService.getItem("user");
+
+  return user;
+  // return useAppSelector((state) => state.auth.user);
 };
 
 // Custom hook to get loading states from multiple APIs

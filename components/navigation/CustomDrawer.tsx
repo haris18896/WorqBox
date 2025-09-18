@@ -1,5 +1,6 @@
-import { useAppDispatch, useAppSelector } from "@/store";
-import { logout, selectUser } from "@/store/slices/authSlice";
+import { storageService } from "@/services/storage";
+import { useAppDispatch } from "@/store";
+import { logout } from "@/store/slices/authSlice";
 import { useTheme } from "@/theme";
 import { spacing } from "@/theme/stylingConstants";
 import { Feather } from "@expo/vector-icons";
@@ -8,10 +9,10 @@ import {
   DrawerContentScrollView,
 } from "@react-navigation/drawer";
 import { useRouter } from "expo-router";
-import React from "react";
+import React, { useEffect } from "react";
 import {
-  Alert,
   Image,
+  Platform,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -151,43 +152,40 @@ const DrawerItem: React.FC<DrawerItemProps> = ({
 export const CustomDrawer: React.FC<DrawerContentComponentProps> = (props) => {
   const { palette } = useTheme();
   const dispatch = useAppDispatch();
-  const user = useAppSelector(selectUser);
-  const router = useRouter();
 
-  // Get current route name for active state
+  const router = useRouter();
+  const [localUser, setLocalUser] = React.useState<any>(null);
+
+  useEffect(() => {
+    (async () =>
+      await storageService.getItem("user").then((stored) => {
+        setLocalUser(JSON.parse(stored as string));
+      }))();
+  }, []);
+
   const activeRoute = props.state.routeNames[props.state.index] || "";
 
-  // Get user role - use first role from allowedRoles or fallback to 'employee'
-  const userRole = user?.allowedRoles?.[0] || "employee";
+  const userRole = localUser?.allowedRoles?.[0] || "employee";
+
   const visibleItems = getVisibleNavigationItems(userRole);
 
   const handleNavigate = (href: string, item: NavigationItem) => {
-    // Use the href directly from the navigation config
     router.push(href as any);
     props.navigation.closeDrawer();
   };
 
-  const handleLogout = () => {
-    Alert.alert("Logout", "Are you sure you want to logout?", [
-      {
-        text: "Cancel",
-        style: "cancel",
-      },
-      {
-        text: "Logout",
-        style: "destructive",
-        onPress: () => {
-          dispatch(logout());
-          router.replace("/auth/login");
-        },
-      },
-    ]);
+  const handleLogout = async () => {
+    dispatch(logout());
+    router.replace("/auth/login");
+
+    await storageService.clear();
   };
 
   const styles = StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: palette.surface.primary,
+      paddingVertical: Platform.OS === "ios" ? spacing["3xl"] : 0,
     },
     header: {
       backgroundColor: palette.primary.main,
@@ -230,21 +228,21 @@ export const CustomDrawer: React.FC<DrawerContentComponentProps> = (props) => {
       flex: 1,
     },
     footer: {
-      borderTopWidth: 1,
       borderTopColor: palette.border.primary,
       padding: spacing.md,
     },
     logoutButton: {
       flexDirection: "row",
       alignItems: "center",
+      justifyContent: "center",
       paddingVertical: spacing.sm,
       paddingHorizontal: spacing.md,
       borderRadius: 8,
-      backgroundColor: "transparent",
+      backgroundColor: palette.error.main,
     },
     logoutText: {
       fontSize: 16,
-      color: palette.error.main,
+      color: palette.text.inverse,
       marginLeft: spacing.sm,
       fontWeight: "500",
     },
@@ -257,9 +255,9 @@ export const CustomDrawer: React.FC<DrawerContentComponentProps> = (props) => {
         <View style={styles.header}>
           <View style={styles.profileSection}>
             <View style={styles.avatar}>
-              {user?.imageUrl ? (
+              {localUser?.imageUrl ? (
                 <Image
-                  source={{ uri: user.imageUrl }}
+                  source={{ uri: localUser.imageUrl }}
                   style={styles.avatarImage}
                 />
               ) : (
@@ -268,10 +266,10 @@ export const CustomDrawer: React.FC<DrawerContentComponentProps> = (props) => {
             </View>
             <View style={styles.userInfo}>
               <Text style={styles.userName}>
-                {user?.fullName || "User Name"}
+                {localUser?.fullName || "User Name"}
               </Text>
               <Text style={styles.userEmail}>
-                {user?.email || "user@example.com"}
+                {localUser?.email || "user@example.com"}
               </Text>
             </View>
           </View>
@@ -302,7 +300,7 @@ export const CustomDrawer: React.FC<DrawerContentComponentProps> = (props) => {
             onPress={handleLogout}
             activeOpacity={0.7}
           >
-            <Feather name="log-out" size={20} color={palette.error.main} />
+            <Feather name="log-out" size={20} color={palette.text.inverse} />
             <Text style={styles.logoutText}>Logout</Text>
           </TouchableOpacity>
         </View>
