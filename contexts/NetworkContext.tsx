@@ -37,7 +37,6 @@ export const NetworkProvider: React.FC<NetworkProviderProps> = ({
     try {
       const networkState = await NetInfo.fetch();
 
-      // Test actual internet connectivity with a reliable endpoint
       const createTimeoutPromise = (url: string) => {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 5000);
@@ -70,7 +69,24 @@ export const NetworkProvider: React.FC<NetworkProviderProps> = ({
           Alert.alert(
             "Connection Restored",
             "Your internet connection has been restored.",
-            [{ text: "OK", style: "default" }]
+            [
+              {
+                text: "OK",
+                style: "default",
+                onPress: async () => {
+                  try {
+                    await networkStatus.refreshNetworkStatus();
+                    setTimeout(() => {
+                      console.log(
+                        "Network state refreshed after connection restored"
+                      );
+                    }, 100);
+                  } catch (error) {
+                    console.log("Error refreshing network state:", error);
+                  }
+                },
+              },
+            ]
           );
         }
       } else {

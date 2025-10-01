@@ -16,6 +16,20 @@ export const useNetworkStatus = () => {
     isWifiEnabled: null,
   });
 
+  const refreshNetworkStatus = async () => {
+    try {
+      const state = await NetInfo.fetch();
+      setNetworkStatus({
+        isConnected: state.isConnected,
+        isInternetReachable: state.isInternetReachable,
+        type: state.type,
+        isWifiEnabled: state.isWifiEnabled ?? null,
+      });
+    } catch (error) {
+      console.log("Error refreshing network status:", error);
+    }
+  };
+
   useEffect(() => {
     const unsubscribe = NetInfo.addEventListener((state) => {
       setNetworkStatus({
@@ -40,5 +54,6 @@ export const useNetworkStatus = () => {
     isOnline,
     isOffline,
     isLoading: networkStatus.isConnected === null,
+    refreshNetworkStatus,
   };
 };
