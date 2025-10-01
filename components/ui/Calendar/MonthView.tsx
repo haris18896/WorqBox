@@ -1,9 +1,9 @@
 import { spacing, useTheme } from "@/theme";
 import { Ionicons } from "@expo/vector-icons";
-import dayjs from "dayjs";
+import moment from "moment";
 import React, { useMemo } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { Calendar } from "react-native-big-calendar";
+import { Calendar } from "react-native-calendars";
 import { MonthViewProps } from "./calendar.d";
 
 export const MonthView: React.FC<MonthViewProps> = ({
@@ -11,6 +11,7 @@ export const MonthView: React.FC<MonthViewProps> = ({
   selectedDate,
   onEventPress,
   onEventLongPress,
+  onDateChange,
   theme,
   style,
 }) => {
@@ -31,11 +32,12 @@ export const MonthView: React.FC<MonthViewProps> = ({
       elevation: 5,
     },
     calendar: {
-      backgroundColor: palette.background.primary,
+      backgroundColor: palette.background.secondary,
       borderRadius: 12,
     },
     monthCardsContainer: {
-      padding: spacing.md,
+      paddingVertical: spacing.md,
+      paddingHorizontal: spacing.xs,
     },
     monthCard: {
       borderRadius: 8,
@@ -92,92 +94,110 @@ export const MonthView: React.FC<MonthViewProps> = ({
     },
   });
 
-  // Get events for the selected date
-  const selectedDateEvents = useMemo(() => {
-    const selectedDateKey = dayjs(selectedDate).format("YYYY-MM-DD");
+  // Get events for the entire month
+  const monthEvents = useMemo(() => {
+    const monthStart = moment(selectedDate).startOf("month");
+    const monthEnd = moment(selectedDate).endOf("month");
 
     return events.filter((event) => {
-      const eventStart = dayjs(event.start).format("YYYY-MM-DD");
-      const eventEnd = dayjs(event.end).format("YYYY-MM-DD");
+      const eventStart = moment(event.start);
+      const eventEnd = moment(event.end);
+      return eventStart.isBefore(monthEnd) && eventEnd.isAfter(monthStart);
+    });
+  }, [events, selectedDate]);
+
+  // Get events for the selected date
+  const selectedDateEvents = useMemo(() => {
+    const selectedDateKey = moment(selectedDate).format("YYYY-MM-DD");
+
+    return events.filter((event) => {
+      const eventStart = moment(event.start).format("YYYY-MM-DD");
+      const eventEnd = moment(event.end).format("YYYY-MM-DD");
       return (
         eventStart === selectedDateKey ||
         eventEnd === selectedDateKey ||
-        (dayjs(event.start).isBefore(dayjs(selectedDate)) &&
-          dayjs(event.end).isAfter(dayjs(selectedDate)))
+        (moment(event.start).isBefore(moment(selectedDate)) &&
+          moment(event.end).isAfter(moment(selectedDate)))
       );
     });
   }, [events, selectedDate]);
 
-  // Calendar theme
-  const calendarTheme = useMemo(
-    () => ({
-      palette: {
-        primary: {
-          main: palette.primary.main,
-          contrastText: palette.text.inverse,
-        },
-        nowIndicator: palette.primary.main,
-        gray: {
-          100: palette.background.secondary,
-          200: palette.border.primary,
-          300: palette.text.secondary,
-          500: palette.text.primary,
-          800: palette.text.primary,
-        },
-        moreLabel: palette.text.secondary,
-      },
-      isRTL: false,
-      typography: {
-        fontFamily: "Poppins-Regular",
-        xs: {
-          fontSize: 10,
-          fontWeight: "500" as const,
-        },
-        sm: {
-          fontSize: 12,
-          fontWeight: "500" as const,
-        },
-        xl: {
-          fontSize: 14,
-          fontWeight: "600" as const,
-        },
-        moreLabel: {
-          fontSize: 10,
-          fontWeight: "600" as const,
-        },
-      },
-      eventCellOverlappings: [
-        { main: palette.success.main, contrastText: palette.text.inverse },
-        { main: palette.warning.main, contrastText: palette.text.inverse },
-        { main: palette.error.main, contrastText: palette.text.inverse },
-        { main: palette.info.main, contrastText: palette.text.inverse },
-      ],
-      moreLabel: {
-        fontSize: 10,
-        fontWeight: "600" as const,
-        color: palette.text.secondary,
-      },
-    }),
-    [palette]
-  );
-
   const formatTime = (date: Date) => {
-    return dayjs(date).format("HH:mm");
+    return moment(date).format("hh:mm A");
   };
+
+  // Convert events to react-native-calendars format
+  const markedDates = useMemo(() => {
+    const marked: any = {};
+
+    monthEvents.forEach((event) => {
+      const dateKey = moment(event.start).format("YYYY-MM-DD");
+      if (!marked[dateKey]) {
+        marked[dateKey] = {
+          marked: true,
+          dotColor: event.color || palette.primary.main,
+          selectedColor: palette.primary.main,
+        };
+      }
+    });
+
+    // Mark selected date
+    const selectedDateKey = moment(selectedDate).format("YYYY-MM-DD");
+    if (marked[selectedDateKey]) {
+      marked[selectedDateKey].selected = true;
+      marked[selectedDateKey].selectedColor = palette.primary.main;
+    } else {
+      marked[selectedDateKey] = {
+        selected: true,
+        selectedColor: palette.primary.main,
+      };
+    }
+
+    return marked;
+  }, [monthEvents, selectedDate, palette]);
 
   return (
     <View style={[styles.container, style]}>
       <Calendar
-        events={events}
-        height={300}
-        mode="month"
-        date={selectedDate}
-        theme={calendarTheme}
-        onPressEvent={onEventPress}
+        current={moment(selectedDate).format("YYYY-MM-DD")}
+        onDayPress={(day) => {
+          const newDate = new Date(day.dateString);
+          // Call onDateChange if available
+          if (onDateChange) {
+            onDateChange(newDate);
+          }
+        }}
+        markedDates={markedDates}
+        theme={{
+          backgroundColor: palette.background.secondary,
+          calendarBackground: palette.background.secondary,
+          textSectionTitleColor: palette.text.primary,
+          selectedDayBackgroundColor: palette.primary.main,
+          selectedDayTextColor: palette.text.inverse,
+          todayTextColor: palette.primary.main,
+          dayTextColor: palette.text.primary,
+          textDisabledColor: palette.text.secondary,
+          dotColor: palette.primary.main,
+          selectedDotColor: palette.text.inverse,
+          arrowColor: palette.primary.main,
+          monthTextColor: palette.text.primary,
+          indicatorColor: palette.primary.main,
+          textDayFontWeight: "500",
+          textMonthFontWeight: "600",
+          textDayHeaderFontWeight: "500",
+          textDayFontSize: 16,
+          textMonthFontSize: 18,
+          textDayHeaderFontSize: 14,
+        }}
+        style={styles.calendar}
       />
 
       <View style={styles.monthCardsContainer}>
-        {selectedDateEvents.length === 0 ? (
+        {monthEvents.length === 0 ? (
+          <View style={styles.noEventsContainer}>
+            <Text style={styles.noEventsText}>No events for this month</Text>
+          </View>
+        ) : selectedDateEvents.length === 0 ? (
           <View style={styles.noEventsContainer}>
             <Text style={styles.noEventsText}>No events for this day</Text>
           </View>
@@ -222,7 +242,7 @@ export const MonthView: React.FC<MonthViewProps> = ({
                   </Text>
                 )}
                 <Text style={styles.monthCardDescription}>
-                  {dayjs(event.start).format("dddd, MMMM D")}
+                  {moment(event.start).format("dddd, MMMM D")}
                 </Text>
               </View>
             </TouchableOpacity>

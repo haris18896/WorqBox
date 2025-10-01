@@ -1,6 +1,6 @@
 import { spacing, useTheme } from "@/theme";
 import { Ionicons } from "@expo/vector-icons";
-import dayjs from "dayjs";
+import moment from "moment";
 import React, { useCallback, useMemo, useState } from "react";
 import {
   ScrollView,
@@ -19,6 +19,7 @@ export const DayView: React.FC<DayViewProps> = ({
   onEventLongPress,
   onTimeSlotPress,
   onTimeSlotLongPress,
+  onDateChange,
   theme,
   style,
 }) => {
@@ -138,7 +139,7 @@ export const DayView: React.FC<DayViewProps> = ({
       backgroundColor: palette.background.secondary,
       borderRadius: 8,
       padding: spacing.lg,
-      marginTop: spacing.md,
+      marginBottom: spacing.md,
       alignItems: "center",
     },
     noEventsText: {
@@ -150,12 +151,12 @@ export const DayView: React.FC<DayViewProps> = ({
 
   // Get events for the selected date
   const dayEvents = useMemo(() => {
-    const startOfDay = dayjs(selectedDate).startOf("day");
-    const endOfDay = dayjs(selectedDate).endOf("day");
+    const startOfDay = moment(selectedDate).startOf("day");
+    const endOfDay = moment(selectedDate).endOf("day");
 
     return events.filter((event) => {
-      const eventStart = dayjs(event.start);
-      const eventEnd = dayjs(event.end);
+      const eventStart = moment(event.start);
+      const eventEnd = moment(event.end);
       return eventStart.isBefore(endOfDay) && eventEnd.isAfter(startOfDay);
     });
   }, [events, selectedDate]);
@@ -165,7 +166,7 @@ export const DayView: React.FC<DayViewProps> = ({
     const grouped: { [hour: number]: CalendarEvent[] } = {};
 
     dayEvents.forEach((event) => {
-      const hour = dayjs(event.start).hour();
+      const hour = moment(event.start).hour();
       if (!grouped[hour]) {
         grouped[hour] = [];
       }
@@ -180,7 +181,7 @@ export const DayView: React.FC<DayViewProps> = ({
     if (hourEvents.length === 0) return { visible: null, hidden: [] };
 
     const sortedEvents = [...hourEvents].sort((a, b) => {
-      return dayjs(a.start).diff(dayjs(b.start));
+      return moment(a.start).diff(moment(b.start));
     });
 
     if (sortedEvents.length === 1) {
@@ -195,7 +196,7 @@ export const DayView: React.FC<DayViewProps> = ({
 
   const handleTimeSlotPress = useCallback(
     (hour: number) => {
-      const timeSlotDate = dayjs(selectedDate)
+      const timeSlotDate = moment(selectedDate)
         .hour(hour)
         .minute(0)
         .second(0)
@@ -207,7 +208,7 @@ export const DayView: React.FC<DayViewProps> = ({
 
   const handleTimeSlotLongPress = useCallback(
     (hour: number) => {
-      const timeSlotDate = dayjs(selectedDate)
+      const timeSlotDate = moment(selectedDate)
         .hour(hour)
         .minute(0)
         .second(0)
@@ -228,7 +229,7 @@ export const DayView: React.FC<DayViewProps> = ({
     <View style={[styles.container, style]}>
       <View style={styles.header}>
         <Text style={styles.dateText}>
-          {dayjs(selectedDate).format("dddd, MMMM D")}
+          {moment(selectedDate).format("dddd, MMMM D")}
         </Text>
       </View>
 
@@ -236,10 +237,15 @@ export const DayView: React.FC<DayViewProps> = ({
         style={styles.timelineContainer}
         showsVerticalScrollIndicator={false}
       >
+        {dayEvents.length === 0 && (
+          <View style={styles.noEventsContainer}>
+            <Text style={styles.noEventsText}>No events for this day</Text>
+          </View>
+        )}
         {Array.from({ length: 24 }).map((_, hour) => {
           const hourEvents = eventsByHour[hour] || [];
           const { visible, hidden } = handleOverlaps(hourEvents);
-          const dropdownKey = `${dayjs(selectedDate).format(
+          const dropdownKey = `${moment(selectedDate).format(
             "YYYY-MM-DD"
           )}-${hour}`;
           const isDropdownOpen = expandedDropdown === dropdownKey;
@@ -302,8 +308,8 @@ export const DayView: React.FC<DayViewProps> = ({
                             />
                             <View style={styles.dropdownInfo}>
                               <Text style={styles.dropdownTime}>
-                                {dayjs(event.start).format("HH:mm")} -{" "}
-                                {dayjs(event.end).format("HH:mm")}
+                                {moment(event.start).format("hh:mm a")} -{" "}
+                                {moment(event.end).format("hh:mm a")}
                               </Text>
                               <Text style={styles.dropdownTitle}>
                                 {event.title}
@@ -320,12 +326,6 @@ export const DayView: React.FC<DayViewProps> = ({
           );
         })}
       </ScrollView>
-
-      {dayEvents.length === 0 && (
-        <View style={styles.noEventsContainer}>
-          <Text style={styles.noEventsText}>No events for this day</Text>
-        </View>
-      )}
     </View>
   );
 };

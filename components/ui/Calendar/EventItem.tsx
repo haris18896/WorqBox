@@ -1,6 +1,6 @@
 import { spacing, useTheme } from "@/theme";
 import { Ionicons } from "@expo/vector-icons";
-import dayjs from "dayjs";
+import moment from "moment";
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { EventItemProps } from "./calendar.d";
@@ -62,7 +62,7 @@ export const EventItem: React.FC<EventItemProps> = ({
   });
 
   const formatTime = (date: Date) => {
-    return dayjs(date).format("HH:mm");
+    return moment(date).format("hh:mm a");
   };
 
   const handlePress = () => {
@@ -87,7 +87,7 @@ export const EventItem: React.FC<EventItemProps> = ({
         style={styles.icon}
       />
       <View style={styles.content}>
-        <Text style={styles.title} numberOfLines={compact ? 1 : 2}>
+        <Text style={styles.title} numberOfLines={2}>
           {event.title}
         </Text>
         <Text style={styles.time}>

@@ -1,7 +1,6 @@
-import { useTheme } from "@/theme";
-import dayjs from "dayjs";
+import moment from "moment";
 import React, { useCallback, useMemo, useState } from "react";
-import { RefreshControl, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { CalendarEvent, CalendarProps, CalendarView } from "./calendar.d";
 import { CalendarHeader } from "./CalendarHeader";
 import { DayView } from "./DayView";
@@ -34,8 +33,6 @@ export const Calendar: React.FC<CalendarProps> = ({
   onRefresh,
   refreshing = false,
 }) => {
-  const { palette } = useTheme();
-
   // Internal state
   const [internalView, setInternalView] = useState<CalendarView>(defaultView);
   const [internalSelectedDate, setInternalSelectedDate] = useState<Date>(
@@ -92,7 +89,7 @@ export const Calendar: React.FC<CalendarProps> = ({
 
   // Handle previous navigation
   const handlePrevious = useCallback(() => {
-    const newDate = dayjs(currentSelectedDate)
+    const newDate = moment(currentSelectedDate)
       .subtract(
         1,
         currentView === "day"
@@ -107,7 +104,7 @@ export const Calendar: React.FC<CalendarProps> = ({
 
   // Handle next navigation
   const handleNext = useCallback(() => {
-    const newDate = dayjs(currentSelectedDate)
+    const newDate = moment(currentSelectedDate)
       .add(
         1,
         currentView === "day"
@@ -139,6 +136,8 @@ export const Calendar: React.FC<CalendarProps> = ({
   const handleEventLongPress = useCallback(
     (event: CalendarEvent) => {
       onEventLongPress?.(event);
+      setSelectedEvent(event);
+      setModalVisible(true);
     },
     [onEventLongPress]
   );
@@ -166,43 +165,14 @@ export const Calendar: React.FC<CalendarProps> = ({
     },
     [onEventLongPress]
   );
-
-  // Render current view
-  const renderCurrentView = useCallback(() => {
-    const commonProps = {
-      events,
-      selectedDate: currentSelectedDate,
-      onEventPress: handleEventPress,
-      onEventLongPress: handleEventLongPress,
-      theme,
-    };
-
-    switch (currentView) {
-      case "day":
-        return (
-          <DayView
-            {...commonProps}
-            onTimeSlotPress={onTimeSlotPress}
-            onTimeSlotLongPress={onTimeSlotLongPress}
-          />
-        );
-      case "week":
-        return <WeekView {...commonProps} />;
-      case "month":
-        return <MonthView {...commonProps} />;
-      default:
-        return <WeekView {...commonProps} />;
-    }
-  }, [
-    currentView,
+  const commonProps = {
     events,
-    currentSelectedDate,
-    handleEventPress,
-    handleEventLongPress,
-    onTimeSlotPress,
-    onTimeSlotLongPress,
+    selectedDate: currentSelectedDate,
+    onEventPress: handleEventPress,
+    onEventLongPress: handleEventLongPress,
+    onDateChange: handleDateChange,
     theme,
-  ]);
+  };
 
   return (
     <View style={[styles.container, style]}>
@@ -222,18 +192,9 @@ export const Calendar: React.FC<CalendarProps> = ({
       )}
 
       <View style={styles.content}>
-        {onRefresh ? (
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            tintColor={palette.primary.main}
-            colors={["transparent"]}
-          >
-            {renderCurrentView()}
-          </RefreshControl>
-        ) : (
-          renderCurrentView()
-        )}
+        {currentView === "day" && day && <DayView {...commonProps} />}
+        {currentView === "week" && week && <WeekView {...commonProps} />}
+        {currentView === "month" && month && <MonthView {...commonProps} />}
       </View>
 
       <EventModal

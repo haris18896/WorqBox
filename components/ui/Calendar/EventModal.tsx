@@ -1,6 +1,6 @@
 import { spacing, useTheme } from "@/theme";
 import { Ionicons } from "@expo/vector-icons";
-import dayjs from "dayjs";
+import moment from "moment";
 import React from "react";
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { EventModalProps } from "./calendar.d";
@@ -124,7 +124,7 @@ export const EventModal: React.FC<EventModalProps> = ({
   if (!event) return null;
 
   const formatTime = (date: Date) => {
-    return dayjs(date).format("HH:mm");
+    return moment(date).format("HH:mm");
   };
 
   return (
@@ -157,7 +157,7 @@ export const EventModal: React.FC<EventModalProps> = ({
                   {formatTime(event.start)} - {formatTime(event.end)}
                 </Text>
                 <Text style={styles.eventDate}>
-                  {dayjs(event.start).format("dddd, MMMM D, YYYY")}
+                  {moment(event.start).format("dddd, MMMM D, YYYY")}
                 </Text>
               </View>
             </View>

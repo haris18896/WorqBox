@@ -102,6 +102,7 @@ export interface DayViewProps {
   onEventLongPress?: (event: CalendarEvent) => void;
   onTimeSlotPress?: (date: Date) => void;
   onTimeSlotLongPress?: (date: Date) => void;
+  onDateChange?: (date: Date) => void;
   theme?: CalendarTheme;
   style?: any;
 }
@@ -111,6 +112,7 @@ export interface WeekViewProps {
   selectedDate: Date;
   onEventPress?: (event: CalendarEvent) => void;
   onEventLongPress?: (event: CalendarEvent) => void;
+  onDateChange?: (date: Date) => void;
   theme?: CalendarTheme;
   style?: any;
 }
@@ -120,6 +122,7 @@ export interface MonthViewProps {
   selectedDate: Date;
   onEventPress?: (event: CalendarEvent) => void;
   onEventLongPress?: (event: CalendarEvent) => void;
+  onDateChange?: (date: Date) => void;
   theme?: CalendarTheme;
   style?: any;
 }

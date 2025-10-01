@@ -1,8 +1,7 @@
 import { spacing, useTheme } from "@/theme";
-import dayjs from "dayjs";
+import moment from "moment";
 import React, { useMemo } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { Calendar } from "react-native-big-calendar";
 import { CalendarEvent, WeekViewProps } from "./calendar.d";
 import { EventItem } from "./EventItem";
 
@@ -11,7 +10,7 @@ export const WeekView: React.FC<WeekViewProps> = ({
   selectedDate,
   onEventPress,
   onEventLongPress,
-  theme,
+  onDateChange,
   style,
 }) => {
   const { palette } = useTheme();
@@ -35,12 +34,12 @@ export const WeekView: React.FC<WeekViewProps> = ({
       borderRadius: 12,
     },
     weeklyGrid: {
-      marginTop: -4,
       flexDirection: "row",
       backgroundColor: palette.background.primary,
       borderBottomLeftRadius: 12,
       borderBottomRightRadius: 12,
       padding: spacing.sm,
+      marginTop: spacing.md,
     },
     dayColumn: {
       flex: 1,
@@ -83,16 +82,25 @@ export const WeekView: React.FC<WeekViewProps> = ({
       color: palette.text.secondary,
       fontStyle: "italic",
     },
+    weekHeader: {
+      paddingHorizontal: spacing.md,
+      alignItems: "center",
+    },
+    weekTitle: {
+      fontSize: 18,
+      fontWeight: "600",
+      color: palette.text.primary,
+    },
   });
 
   // Get events for the week
   const weekEvents = useMemo(() => {
-    const weekStart = dayjs(selectedDate).startOf("week");
-    const weekEnd = dayjs(selectedDate).endOf("week");
+    const weekStart = moment(selectedDate).startOf("week");
+    const weekEnd = moment(selectedDate).endOf("week");
 
     return events.filter((event) => {
-      const eventStart = dayjs(event.start);
-      const eventEnd = dayjs(event.end);
+      const eventStart = moment(event.start);
+      const eventEnd = moment(event.end);
       return eventStart.isBefore(weekEnd) && eventEnd.isAfter(weekStart);
     });
   }, [events, selectedDate]);
@@ -102,7 +110,7 @@ export const WeekView: React.FC<WeekViewProps> = ({
     const grouped: { [day: string]: CalendarEvent[] } = {};
 
     weekEvents.forEach((event) => {
-      const dayKey = dayjs(event.start).format("YYYY-MM-DD");
+      const dayKey = moment(event.start).format("YYYY-MM-DD");
       if (!grouped[dayKey]) {
         grouped[dayKey] = [];
       }
@@ -112,119 +120,55 @@ export const WeekView: React.FC<WeekViewProps> = ({
     return grouped;
   }, [weekEvents]);
 
-  // Calendar theme
-  const calendarTheme = useMemo(
-    () => ({
-      palette: {
-        primary: {
-          main: palette.primary.main,
-          contrastText: palette.text.inverse,
-        },
-        nowIndicator: palette.primary.main,
-        gray: {
-          100: palette.background.secondary,
-          200: palette.border.primary,
-          300: palette.text.secondary,
-          500: palette.text.primary,
-          800: palette.text.primary,
-        },
-        moreLabel: palette.text.secondary,
-      },
-      isRTL: false,
-      typography: {
-        fontFamily: "Poppins-Regular",
-        xs: {
-          fontSize: 10,
-          fontWeight: "500" as const,
-        },
-        sm: {
-          fontSize: 12,
-          fontWeight: "500" as const,
-        },
-        xl: {
-          fontSize: 14,
-          fontWeight: "600" as const,
-        },
-        moreLabel: {
-          fontSize: 10,
-          fontWeight: "600" as const,
-        },
-      },
-      eventCellOverlappings: [
-        { main: palette.success.main, contrastText: palette.text.inverse },
-        { main: palette.warning.main, contrastText: palette.text.inverse },
-        { main: palette.error.main, contrastText: palette.text.inverse },
-        { main: palette.info.main, contrastText: palette.text.inverse },
-      ],
-      moreLabel: {
-        fontSize: 10,
-        fontWeight: "600" as const,
-        color: palette.text.secondary,
-      },
-    }),
-    [palette]
-  );
-
-  const weekStart = dayjs(selectedDate).startOf("week");
-
-  if (weekEvents.length === 0) {
-    return (
-      <View style={[styles.container, style]}>
-        <Calendar
-          events={[]}
-          height={200}
-          mode="week"
-          date={selectedDate}
-          theme={calendarTheme}
-        />
-        <View style={styles.noEventsContainer}>
-          <Text style={styles.noEventsText}>No events for this week</Text>
-        </View>
-      </View>
-    );
-  }
+  const weekStart = moment(selectedDate).startOf("week");
 
   return (
     <View style={[styles.container, style]}>
-      <Calendar
-        events={weekEvents}
-        height={200}
-        mode="week"
-        date={selectedDate}
-        theme={calendarTheme}
-        onPressEvent={onEventPress}
-      />
-
-      <View style={styles.weeklyGrid}>
-        {Array.from({ length: 7 }).map((_, index) => {
-          const dayDate = dayjs(weekStart).add(index, "days");
-          const dayKey = dayDate.format("YYYY-MM-DD");
-          const dayEvents = eventsByDay[dayKey] || [];
-
-          return (
-            <View
-              key={index}
-              style={[styles.dayColumn, index === 6 && styles.dayColumnLast]}
-            >
-              <View style={styles.dayHeader}>
-                <Text style={styles.dayName}>{dayDate.format("ddd")}</Text>
-                <Text style={styles.dayDate}>{dayDate.format("D")}</Text>
-              </View>
-              <View style={styles.dayContent}>
-                {dayEvents.map((event) => (
-                  <EventItem
-                    key={event.id}
-                    event={event}
-                    onPress={onEventPress}
-                    onLongPress={onEventLongPress}
-                    compact
-                  />
-                ))}
-              </View>
-            </View>
-          );
-        })}
+      {/* Week Header */}
+      <View style={styles.weekHeader}>
+        <Text style={styles.weekTitle}>
+          {moment(weekStart).format("MMM D")} -{" "}
+          {moment(weekStart).add(6, "days").format("MMM D, YYYY")}
+        </Text>
       </View>
+
+      {/* Weekly Grid */}
+      {weekEvents.length === 0 ? (
+        <View style={styles.noEventsContainer}>
+          <Text style={styles.noEventsText}>No events for this week</Text>
+        </View>
+      ) : (
+        <View style={styles.weeklyGrid}>
+          {Array.from({ length: 7 }).map((_, index) => {
+            const dayDate = moment(weekStart).add(index, "days");
+            const dayKey = dayDate.format("YYYY-MM-DD");
+            const dayEvents = eventsByDay[dayKey] || [];
+
+            return (
+              <View
+                key={index}
+                style={[styles.dayColumn, index === 6 && styles.dayColumnLast]}
+              >
+                <View style={styles.dayHeader}>
+                  <Text style={styles.dayName}>{dayDate.format("ddd")}</Text>
+                  <Text style={styles.dayDate}>{dayDate.format("D")}</Text>
+                </View>
+                <View style={styles.dayContent}>
+                  {dayEvents.map((event) => (
+                    <EventItem
+                      key={event.id}
+                      event={event}
+                      onPress={onEventPress}
+                      onLongPress={onEventLongPress}
+                      compact
+                    />
+                  ))}
+                </View>
+              </View>
+            );
+          })}
+        </View>
+      )}
     </View>
   );
 };

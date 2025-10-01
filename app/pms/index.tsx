@@ -4,13 +4,7 @@ import { useCalendarEvents } from "@/hooks/useCalendarEvents";
 import { useToast } from "@/hooks/useToast";
 import { spacing, useTheme } from "@/theme";
 import React, { useState } from "react";
-import {
-  Alert,
-  RefreshControl,
-  ScrollView,
-  StyleSheet,
-  View,
-} from "react-native";
+import { RefreshControl, ScrollView, StyleSheet, View } from "react-native";
 
 export default function PMSDashboard() {
   const { palette } = useTheme();
@@ -34,60 +28,14 @@ export default function PMSDashboard() {
 
   const handleEventPress = (event: CalendarEvent) => {
     showSuccess(`Event selected: ${event.title}`);
-    Alert.alert(
-      "Event Details",
-      `${
-        event.title
-      }\n\nStart: ${event.start.toLocaleString()}\nEnd: ${event.end.toLocaleString()}`,
-      [{ text: "OK" }]
-    );
   };
 
   const handleEventLongPress = (event: CalendarEvent) => {
     showError(`Long press on: ${event.title}`);
-    Alert.alert(
-      "Event Actions",
-      `What would you like to do with "${event.title}"?`,
-      [
-        { text: "Cancel", style: "cancel" },
-        { text: "Edit", onPress: () => showSuccess("Edit event") },
-        {
-          text: "Delete",
-          onPress: () => {
-            deleteEvent(event.id);
-            showSuccess("Event deleted");
-          },
-          style: "destructive",
-        },
-      ]
-    );
   };
 
   const handleTimeSlotPress = (date: Date) => {
     showSuccess(`Time slot clicked: ${date.toLocaleString()}`);
-    Alert.alert(
-      "Add Event",
-      `Would you like to add an event at ${date.toLocaleTimeString()}?`,
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Add Event",
-          onPress: () => {
-            const newEvent: CalendarEvent = {
-              id: Date.now().toString(),
-              title: "New PMS Event",
-              start: date,
-              end: new Date(date.getTime() + 60 * 60 * 1000), // 1 hour later
-              color: palette.primary.main,
-              backgroundColor: palette.primary.main + "20",
-              textColor: "#FFFFFF",
-            };
-            addEvent(newEvent);
-            showSuccess("Event added");
-          },
-        },
-      ]
-    );
   };
 
   const handleTimeSlotLongPress = (date: Date) => {

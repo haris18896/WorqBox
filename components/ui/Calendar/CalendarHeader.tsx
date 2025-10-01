@@ -1,6 +1,6 @@
 import { spacing, useTheme } from "@/theme";
 import { Ionicons } from "@expo/vector-icons";
-import dayjs from "dayjs";
+import moment from "moment";
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { CalendarHeaderProps } from "./calendar.d";
@@ -94,7 +94,7 @@ export const CalendarHeader: React.FC<CalendarHeaderProps> = ({
   });
 
   const formatDate = (date: Date) => {
-    return dayjs(date).format("MMMM D, YYYY");
+    return moment(date).format("MMMM D, YYYY");
   };
 
   const getViewLabel = (viewType: string) => {
@@ -115,7 +115,7 @@ export const CalendarHeader: React.FC<CalendarHeaderProps> = ({
       {/* Date and Navigation */}
       <View style={styles.headerRow}>
         <Text style={styles.dateText}>{formatDate(selectedDate)}</Text>
-        {showNavigation && (
+        {showNavigation && view !== "month" && (
           <View style={styles.navigationButtons}>
             {showTodayButton && (
               <TouchableOpacity style={styles.todayButton} onPress={onToday}>
