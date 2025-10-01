@@ -13,12 +13,14 @@ export const EventModal: React.FC<EventModalProps> = ({
   onDelete,
   theme,
 }) => {
-  const { palette } = useTheme();
+  const { palette, isDark } = useTheme();
 
   const styles = StyleSheet.create({
     modalOverlay: {
       flex: 1,
-      backgroundColor: "rgba(0, 0, 0, 0.5)",
+      backgroundColor: isDark
+        ? "rgba(255, 255, 255, 0.3)"
+        : "rgba(0, 0, 0, 0.5)",
       justifyContent: "center",
       alignItems: "center",
     },
