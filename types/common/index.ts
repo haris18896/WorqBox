@@ -1,2 +1,2 @@
-export * from "./Navigation";
+export * from "../../components/navigation/Navigation";
 export * from "./Utils";

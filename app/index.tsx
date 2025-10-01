@@ -1,4 +1,4 @@
-import Loading from "@/components/ui/Loading";
+import Loading from "@/components/ui/Loading/Loading";
 import { useAppDispatch, useAppSelector } from "@/store";
 import {
   initializeAuth,

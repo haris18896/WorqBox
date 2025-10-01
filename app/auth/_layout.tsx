@@ -1,4 +1,4 @@
-import AuthGuard from "@/components/auth/AuthGuard";
+import { AuthGuard } from "@/acl";
 import { Stack } from "expo-router";
 
 export default function AuthLayout() {

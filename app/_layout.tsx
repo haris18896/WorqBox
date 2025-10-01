@@ -6,8 +6,8 @@ import "react-native-reanimated";
 
 import { ThemeProvider } from "@/theme";
 import { ACLProvider } from "../acl/context";
-import { CustomDrawer } from "../components/navigation/CustomDrawer";
-import { GlobalOfflineIndicator } from "../components/ui/GlobalOfflineIndicator";
+import { CustomDrawer } from "../components/navigation/SideBar/CustomDrawer";
+import { GlobalOfflineIndicator, ToastProvider } from "../components/ui";
 import { NetworkProvider } from "../contexts/NetworkContext";
 import { ReduxProvider } from "../providers/ReduxProvider";
 
@@ -54,10 +54,6 @@ export default function RootLayout() {
                   options={{ drawerItemStyle: { display: "none" } }}
                 />
                 <Drawer.Screen
-                  name="dashboard"
-                  options={{ drawerItemStyle: { display: "none" } }}
-                />
-                <Drawer.Screen
                   name="pms"
                   options={{ drawerItemStyle: { display: "none" } }}
                 />
@@ -75,6 +71,7 @@ export default function RootLayout() {
                 />
               </Drawer>
               <GlobalOfflineIndicator variant="banner" position="top" />
+              <ToastProvider />
               <StatusBar style="auto" />
             </GestureHandlerRootView>
           </ThemeProvider>

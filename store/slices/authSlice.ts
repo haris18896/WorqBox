@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { storageService } from "../../services/storage";
-import { UserDetails } from "../../types/api";
+import { UserDetails } from "../types/api";
 
 // Auth state interface
 export interface AuthState {

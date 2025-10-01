@@ -1,32 +1,19 @@
-import BarHeader from "@/components/ui/BarHeader";
-import { useAppDispatch, useAppSelector } from "@/store";
-import { logoutUser, selectUser } from "@/store/slices/authSlice";
-import { useTheme } from "@/theme";
-import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
-import React from "react";
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Calendar, CalendarEvent, CalendarView } from "@/components/ui";
+import BarHeader from "@/components/ui/BarHeader/BarHeader";
+import { useCalendarEvents } from "@/hooks/useCalendarEvents";
+import { useToast } from "@/hooks/useToast";
+import { spacing, useTheme } from "@/theme";
+import React, { useState } from "react";
+import { RefreshControl, ScrollView, StyleSheet, View } from "react-native";
 
 export default function PMSDashboard() {
   const { palette } = useTheme();
-  const dispatch = useAppDispatch();
-  const router = useRouter();
-  const user = useAppSelector(selectUser);
+  const { showSuccess, showError } = useToast();
+  const [view, setView] = useState<CalendarView>("week");
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [refreshing, setRefreshing] = useState(false);
 
-  const handleLogout = async () => {
-    await dispatch(logoutUser());
-    router.replace("/auth/login");
-  };
-
-  const handleNavigateToEFS = () => {
-    router.push("/efs");
-  };
+  const { events, addEvent, deleteEvent, loading } = useCalendarEvents();
 
   const styles = StyleSheet.create({
     container: {
@@ -35,100 +22,71 @@ export default function PMSDashboard() {
     },
     content: {
       flex: 1,
-      padding: 20,
-    },
-    card: {
-      backgroundColor: palette.background.secondary,
-      padding: 20,
-      borderRadius: 12,
-      marginBottom: 15,
-      elevation: 2,
-      shadowColor: "#000",
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.1,
-      shadowRadius: 4,
-    },
-    cardTitle: {
-      fontSize: 18,
-      fontWeight: "600",
-      color: palette.text.primary,
-      marginBottom: 10,
-    },
-    cardDescription: {
-      fontSize: 14,
-      color: palette.text.secondary,
-      lineHeight: 20,
-    },
-    actionButton: {
-      flexDirection: "row",
-      alignItems: "center",
-      backgroundColor: palette.primary.main,
-      padding: 15,
-      borderRadius: 8,
-      marginBottom: 10,
-    },
-    actionButtonText: {
-      color: palette.text.inverse,
-      fontSize: 16,
-      fontWeight: "500",
-      marginLeft: 10,
-    },
-    logoutButton: {
-      flexDirection: "row",
-      alignItems: "center",
-      backgroundColor: palette.error.main,
-      padding: 15,
-      borderRadius: 8,
-      marginTop: 20,
-    },
-    logoutButtonText: {
-      color: palette.text.inverse,
-      fontSize: 16,
-      fontWeight: "500",
-      marginLeft: 10,
+      padding: spacing.md,
     },
   });
+
+  const handleEventPress = (event: CalendarEvent) => {
+    showSuccess(`Event selected: ${event.title}`);
+  };
+
+  const handleEventLongPress = (event: CalendarEvent) => {
+    showError(`Long press on: ${event.title}`);
+  };
+
+  const handleTimeSlotPress = (date: Date) => {
+    showSuccess(`Time slot clicked: ${date.toLocaleString()}`);
+  };
+
+  const handleTimeSlotLongPress = (date: Date) => {
+    showError(`Time slot long pressed: ${date.toLocaleString()}`);
+  };
+
+  const handleRefresh = () => {
+    setRefreshing(true);
+    // Simulate API call
+    setTimeout(() => {
+      setRefreshing(false);
+      showSuccess("Calendar refreshed");
+    }, 2000);
+  };
 
   return (
     <View style={styles.container}>
       <BarHeader title="Project Management" variant="large" />
 
-      <ScrollView style={styles.content}>
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Dashboard Overview</Text>
-          <Text style={styles.cardDescription}>
-            Get insights into your projects, track progress, and manage your
-            team effectively.
-          </Text>
-        </View>
-
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Quick Actions</Text>
-          <Text style={styles.cardDescription}>
-            Access frequently used features and navigate to different modules.
-          </Text>
-        </View>
-
-        <TouchableOpacity
-          style={styles.actionButton}
-          onPress={handleNavigateToEFS}
-        >
-          <Ionicons
-            name="people-outline"
-            size={24}
-            color={palette.text.inverse}
+      <ScrollView
+        style={styles.content}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={handleRefresh}
+            tintColor={palette.primary.main}
+            colors={["transparent"]}
           />
-          <Text style={styles.actionButtonText}>Switch to EFS Module</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-          <Ionicons
-            name="log-out-outline"
-            size={24}
-            color={palette.text.inverse}
-          />
-          <Text style={styles.logoutButtonText}>Logout</Text>
-        </TouchableOpacity>
+        }
+      >
+        <Calendar
+          events={events}
+          view={view}
+          day={true}
+          week={true}
+          month={true}
+          defaultView="week"
+          selectedDate={selectedDate}
+          onDateChange={setSelectedDate}
+          onViewChange={setView}
+          onEventPress={handleEventPress}
+          onEventLongPress={handleEventLongPress}
+          onTimeSlotPress={handleTimeSlotPress}
+          onTimeSlotLongPress={handleTimeSlotLongPress}
+          showHeader={true}
+          showNavigation={true}
+          showTodayButton={true}
+          onRefresh={handleRefresh}
+          refreshing={refreshing}
+          loading={loading}
+        />
       </ScrollView>
     </View>
   );

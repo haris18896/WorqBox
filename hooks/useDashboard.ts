@@ -6,7 +6,7 @@ import {
   useGetMyTasksQuery,
   useUpdateTaskStatusMutation,
 } from "../store/api/dashboardApi";
-import { TaskItem } from "../types/api";
+import { TaskItem } from "../store/types/api";
 
 /**
  * Custom hook for dashboard data and actions
