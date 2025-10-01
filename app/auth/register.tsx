@@ -18,8 +18,8 @@ import {
 } from "react-native";
 import * as Yup from "yup";
 
-import Button from "@/components/ui/Button";
-import TextInput from "@/components/ui/TextInput";
+import Button from "@/components/ui/Button/Button";
+import TextInput from "@/components/ui/TextInput/TextInput";
 
 // Import common styles
 import { createAuthStyles } from "@/styles";

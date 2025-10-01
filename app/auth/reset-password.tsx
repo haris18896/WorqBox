@@ -21,8 +21,8 @@ import {
 } from "react-native";
 import * as Yup from "yup";
 
-import Button from "@/components/ui/Button";
-import TextInput from "@/components/ui/TextInput";
+import Button from "@/components/ui/Button/Button";
+import TextInput from "@/components/ui/TextInput/TextInput";
 
 const resetPasswordSchema = Yup.object().shape({
   token: Yup.string().required("Reset token is required"),

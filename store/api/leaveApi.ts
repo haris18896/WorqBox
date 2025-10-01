@@ -1,5 +1,12 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import {
+  baseQueryWithReauth,
+  handleApiError,
+  handleApiSuccess,
+  TAG_TYPES,
+  transformResponse,
+} from "../../utils/api";
+import {
   API_ENDPOINTS,
   BaseApiResponse,
   LeaveRequest,
@@ -7,14 +14,7 @@ import {
   LeaveRequestListParams,
   LeaveType,
   PaginatedResult,
-} from "../../types/api";
-import {
-  baseQueryWithReauth,
-  handleApiError,
-  handleApiSuccess,
-  TAG_TYPES,
-  transformResponse,
-} from "../../utils/api";
+} from "../types/api";
 
 export const leaveApi = createApi({
   reducerPath: "leaveApi",

@@ -5,7 +5,6 @@ import { useRouter } from "expo-router";
 import { useFormik } from "formik";
 import React, { useEffect, useRef, useState } from "react";
 import {
-  Alert,
   Image,
   Keyboard,
   KeyboardAvoidingView,
@@ -17,11 +16,12 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
+import Toast from "react-native-toast-message";
 import * as Yup from "yup";
 
 // Import UI components
-import Button from "@/components/ui/Button";
-import TextInput from "@/components/ui/TextInput";
+import Button from "@/components/ui/Button/Button";
+import TextInput from "@/components/ui/TextInput/TextInput";
 import { storageService } from "@/services/storage";
 import { useAppDispatch } from "@/store";
 import { useLoginMutation } from "@/store/api/authApi";
@@ -122,7 +122,11 @@ export default function Login() {
           errorMessage = error.message;
         }
 
-        Alert.alert("Error", errorMessage);
+        Toast.show({
+          type: "error",
+          text1: "Login Error",
+          text2: errorMessage,
+        });
       }
     },
   });

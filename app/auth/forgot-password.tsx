@@ -18,8 +18,8 @@ import {
 } from "react-native";
 import * as Yup from "yup";
 
-import Button from "@/components/ui/Button";
-import TextInput from "@/components/ui/TextInput";
+import Button from "@/components/ui/Button/Button";
+import TextInput from "@/components/ui/TextInput/TextInput";
 
 // Import common styles
 import { createAuthStyles } from "@/styles";
@@ -189,7 +189,9 @@ export default function ForgotPassword() {
                   placeholder="Enter your email"
                   formikError={formik.errors.email}
                   formikTouched={formik.touched.email}
-                  onChangeText={(text) => formik.setFieldValue("email", text)}
+                  onChangeText={(text: string) =>
+                    formik.setFieldValue("email", text)
+                  }
                   onBlur={() => formik.setFieldTouched("email", true)}
                   onSubmitEditing={() => formik.handleSubmit()}
                 />

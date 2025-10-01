@@ -7,9 +7,9 @@ import {
   Text,
   View,
 } from "react-native";
-import { GlobalOfflineIndicator } from "../components/ui/GlobalOfflineIndicator";
-import { NetworkStatusBanner } from "../components/ui/NetworkStatusBanner";
-import { OfflineNotification } from "../components/ui/OfflineNotification";
+import { GlobalOfflineIndicator } from "../components/ui/OfflineIndicators/GlobalOfflineIndicator";
+import { NetworkStatusBanner } from "../components/ui/OfflineIndicators/NetworkStatusBanner";
+import { OfflineNotification } from "../components/ui/OfflineIndicators/OfflineNotification";
 import { useNetwork } from "../contexts/NetworkContext";
 import { useNetworkStatus } from "../hooks/useNetworkStatus";
 

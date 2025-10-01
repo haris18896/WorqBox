@@ -1,4 +1,4 @@
-import BarHeader from "@/components/ui/BarHeader";
+import BarHeader from "@/components/ui/BarHeader/BarHeader";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { logoutUser, selectUser } from "@/store/slices/authSlice";
 import { useTheme } from "@/theme";

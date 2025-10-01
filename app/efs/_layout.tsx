@@ -1,4 +1,4 @@
-import AuthGuard from "@/components/auth/AuthGuard";
+import { AuthGuard } from "@/acl";
 import { useTheme } from "@/theme";
 import { Stack } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
