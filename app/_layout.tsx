@@ -54,10 +54,6 @@ export default function RootLayout() {
                   options={{ drawerItemStyle: { display: "none" } }}
                 />
                 <Drawer.Screen
-                  name="dashboard"
-                  options={{ drawerItemStyle: { display: "none" } }}
-                />
-                <Drawer.Screen
                   name="pms"
                   options={{ drawerItemStyle: { display: "none" } }}
                 />

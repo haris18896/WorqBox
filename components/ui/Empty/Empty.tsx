@@ -5,8 +5,8 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 // ** Theme
-import { useTheme } from "@/theme";
-import { iconSize, spacing } from "@/theme/stylingConstants";
+import { iconSize, spacing, useTheme } from "@/theme";
+
 import { EmptyProps } from "./Empty.d";
 
 const Empty: React.FC<EmptyProps> = ({

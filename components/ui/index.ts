@@ -17,4 +17,7 @@ export { OfflineNotification } from "./OfflineIndicators/OfflineNotification";
 // Toast Components
 export { ToastProvider } from "./Toast/ToastProvider";
 
+// Calendar Components
+export * from "./Calendar";
+
 // Navigation Components - Using Expo Router's built-in drawer now
