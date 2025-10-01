@@ -4,6 +4,7 @@ import {
   FetchBaseQueryError,
 } from "@reduxjs/toolkit/query";
 import { fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import Toast from "react-native-toast-message";
 import { storageService } from "../services/storage";
 import { logout } from "../store/slices/authSlice";
 import { ApiError, BaseApiResponse } from "../store/types/api";
@@ -136,15 +137,26 @@ export const handleApiError = (
     message = error.message;
   }
 
-  // TODO: Install suitable toast notification and integrate it here
-  console.log("API Error:", message);
+  // Show error toast notification
+  Toast.show({
+    type: "error",
+    text1: "Error",
+    text2: message,
+  });
 
+  console.log("API Error:", message);
   return message;
 };
 
 // Show success notification
 export const handleApiSuccess = (message: string) => {
-  // TODO: Install suitable toast notification and integrate it here
+  // Show success toast notification
+  Toast.show({
+    type: "success",
+    text1: "Success",
+    text2: message,
+  });
+
   console.log("API Success:", message);
 };
 
