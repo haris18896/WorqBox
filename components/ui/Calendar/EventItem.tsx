@@ -34,12 +34,12 @@ export const EventItem: React.FC<EventItemProps> = ({
     title: {
       fontSize: compact ? 12 : 14,
       fontWeight: "600",
-      color: event.textColor || palette.text.primary,
-      marginBottom: 2,
+      color: palette.text.primary,
+      marginTop: 2,
     },
     time: {
       fontSize: compact ? 9 : 12,
-      color: event.textColor || palette.text.secondary,
+      color: palette.text.secondary,
     },
     actions: {
       flexDirection: "row",
