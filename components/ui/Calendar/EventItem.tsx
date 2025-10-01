@@ -38,7 +38,7 @@ export const EventItem: React.FC<EventItemProps> = ({
       marginBottom: 2,
     },
     time: {
-      fontSize: compact ? 10 : 12,
+      fontSize: compact ? 9 : 12,
       color: event.textColor || palette.text.secondary,
     },
     actions: {
@@ -80,18 +80,21 @@ export const EventItem: React.FC<EventItemProps> = ({
       onLongPress={handleLongPress}
       activeOpacity={0.7}
     >
-      <Ionicons
-        name="calendar-outline"
-        size={compact ? 14 : 16}
-        color={event.color || palette.primary.main}
-        style={styles.icon}
-      />
+      {!compact && (
+        <Ionicons
+          name="calendar-outline"
+          size={compact ? 14 : 16}
+          color={event.color || palette.primary.main}
+          style={styles.icon}
+        />
+      )}
       <View style={styles.content}>
-        <Text style={styles.title} numberOfLines={2}>
-          {event.title}
-        </Text>
         <Text style={styles.time}>
           {formatTime(event.start)} - {formatTime(event.end)}
+        </Text>
+
+        <Text style={styles.title} numberOfLines={2}>
+          {event.title}
         </Text>
       </View>
       {event.children && (

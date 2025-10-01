@@ -35,18 +35,16 @@ export const WeekView: React.FC<WeekViewProps> = ({
     },
     weeklyGrid: {
       flexDirection: "row",
-      backgroundColor: palette.background.primary,
-      borderBottomLeftRadius: 12,
-      borderBottomRightRadius: 12,
-      padding: spacing.sm,
+      backgroundColor: palette.background.secondary,
+      borderRadius: spacing.sm,
       marginTop: spacing.md,
+      paddingVertical: spacing.sm,
     },
     dayColumn: {
       flex: 1,
       borderRightWidth: 1,
       borderColor: palette.border.primary,
       paddingHorizontal: spacing.xs,
-      backgroundColor: palette.background.primary,
     },
     dayColumnLast: {
       borderRightWidth: 0,
