@@ -1,4 +1,4 @@
-import { LoginResponse } from "../types/api";
+import { LoginResponse } from "../store/types/api";
 
 // Mock database for user authentication
 export class MockDatabase {

@@ -7,7 +7,7 @@ import { Ionicons } from "@expo/vector-icons";
 // ** Theme
 import { useTheme } from "@/theme";
 import { iconSize, spacing } from "@/theme/stylingConstants";
-import { BottomBarProps } from "@/types";
+import { BottomBarProps } from "../Navigation.d";
 
 const BottomBar: React.FC<BottomBarProps> = ({
   activeTab,

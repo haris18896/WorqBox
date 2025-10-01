@@ -28,7 +28,7 @@ export const navigationConfig: NavigationItem[] = [
         title: "Dashboard",
         href: "/pms",
         icon: "grid",
-        permission: ["Superadmin", "manager", "employee"],
+        permission: ["Superadmin", "manager", "Employee"],
         active_list: ["Project Management", "Dashboard"],
         default: null,
         order: 1,
@@ -82,18 +82,18 @@ export const navigationConfig: NavigationItem[] = [
     title: "Employee Facilitation",
     href: "/efs",
     icon: "user-check",
-    permission: ["Superadmin", "hr", "employee"],
+    permission: ["Superadmin", "hr", "Employee"],
     default: "Dashboard",
     active_list: ["Employee Facilitation", "Dashboard"],
     order: 2,
     visible: true,
-    description: "HR and employee self-service features",
+    description: "HR and Employee self-service features",
     children: [
       {
         title: "Dashboard",
         href: "/efs",
         icon: "grid",
-        permission: ["Superadmin", "hr", "employee"],
+        permission: ["Superadmin", "hr", "Employee"],
         active_list: ["Employee Facilitation", "Dashboard"],
         default: null,
         order: 1,
@@ -103,7 +103,7 @@ export const navigationConfig: NavigationItem[] = [
         title: "Leave Management",
         href: "/efs/leave-management",
         icon: "calendar",
-        permission: ["Superadmin", "hr", "employee"],
+        permission: ["Superadmin", "hr", "Employee"],
         default: "Leave Request",
         active_list: ["Employee Facilitation", "Leave Management"],
         order: 2,
@@ -113,7 +113,7 @@ export const navigationConfig: NavigationItem[] = [
             title: "Leave Request",
             href: "/efs/leave-management/leave-request",
             icon: "plus-circle",
-            permission: ["employee", "hr", "Superadmin"],
+            permission: ["Employee", "hr", "Superadmin"],
             active_list: [
               "Employee Facilitation",
               "Leave Management",
@@ -144,7 +144,7 @@ export const navigationConfig: NavigationItem[] = [
         title: "Salary Calculator",
         href: "/efs/salary-calculator",
         icon: "dollar-sign",
-        permission: ["employee", "hr", "Superadmin"],
+        permission: ["Employee", "hr", "Superadmin"],
         active_list: ["Employee Facilitation", "Salary Calculator"],
         default: null,
         order: 3,
@@ -154,7 +154,7 @@ export const navigationConfig: NavigationItem[] = [
         title: "Survey",
         href: "/efs/survey-forms",
         icon: "clipboard",
-        permission: ["employee", "hr", "Superadmin"],
+        permission: ["Employee", "hr", "Superadmin"],
         active_list: ["Employee Facilitation", "Survey"],
         default: null,
         order: 4,
@@ -166,7 +166,7 @@ export const navigationConfig: NavigationItem[] = [
     title: "Profile",
     href: "/profile",
     icon: "user",
-    permission: ["Superadmin", "manager", "employee", "hr"],
+    permission: ["Superadmin", "manager", "Employee", "hr"],
     default: null,
     active_list: ["Profile"],
     order: 3,
@@ -178,6 +178,7 @@ export const navigationConfig: NavigationItem[] = [
 export const getVisibleNavigationItems = (
   userRole: string
 ): NavigationItem[] => {
+  console.log("userRole : ", userRole);
   const filterItems = (items: NavigationItem[]): NavigationItem[] => {
     return items
       .filter((item) => {

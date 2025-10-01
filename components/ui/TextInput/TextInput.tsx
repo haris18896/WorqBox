@@ -15,7 +15,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "@/theme";
 import { scaleFontSize, scaleSize, WP } from "@/theme/responsive";
 import { inputSize, spacing } from "@/theme/stylingConstants";
-import { TextInputIconType, TextInputProps } from "@/types";
+import { TextInputIconType, TextInputProps } from "./TextInput.d";
 
 // Icon mapping for different input types
 const iconMap: Record<TextInputIconType, string> = {

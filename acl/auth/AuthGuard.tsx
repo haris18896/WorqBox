@@ -6,7 +6,7 @@ import {
 } from "@/store/slices/authSlice";
 import { Redirect } from "expo-router";
 import React, { useEffect } from "react";
-import { Loading } from "../ui";
+import { Loading } from "../../components/ui";
 
 interface AuthGuardProps {
   children: React.ReactNode;

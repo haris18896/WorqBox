@@ -1,7 +1,7 @@
 import React from "react";
 import { Platform, SafeAreaView, StyleSheet } from "react-native";
-import { useNetwork } from "../../contexts/NetworkContext";
-import { isTablet, isWeb } from "../../theme/responsive";
+import { useNetwork } from "../../../contexts/NetworkContext";
+import { isTablet, isWeb } from "../../../theme/responsive";
 import { NetworkStatusBanner } from "./NetworkStatusBanner";
 import { OfflineNotification } from "./OfflineNotification";
 

@@ -1,6 +1,6 @@
 import React from "react";
-import { Permission as PermissionType, Role } from "../../acl/types";
 import { useACL } from "../../hooks/useACL";
+import { Permission as PermissionType, Role } from "../types";
 
 interface PermissionProps {
   children?: React.ReactNode;

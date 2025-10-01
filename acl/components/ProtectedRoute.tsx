@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { Permission, Role } from "../../acl/types";
 import { useACL } from "../../hooks/useACL";
+import { Permission, Role } from "../types";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;

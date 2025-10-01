@@ -6,8 +6,8 @@ import "react-native-reanimated";
 
 import { ThemeProvider } from "@/theme";
 import { ACLProvider } from "../acl/context";
-import { CustomDrawer } from "../components/navigation/CustomDrawer";
-import { GlobalOfflineIndicator } from "../components/ui/GlobalOfflineIndicator";
+import { CustomDrawer } from "../components/navigation/SideBar/CustomDrawer";
+import { GlobalOfflineIndicator } from "../components/ui/OfflineIndicators/GlobalOfflineIndicator";
 import { NetworkProvider } from "../contexts/NetworkContext";
 import { ReduxProvider } from "../providers/ReduxProvider";
 

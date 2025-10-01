@@ -7,7 +7,7 @@ import { Ionicons } from "@expo/vector-icons";
 // ** Theme
 import { useTheme } from "@/theme";
 import { iconSize, spacing } from "@/theme/stylingConstants";
-import { EmptyProps } from "@/types";
+import { EmptyProps } from "./Empty.d";
 
 const Empty: React.FC<EmptyProps> = ({
   title = "No data found",

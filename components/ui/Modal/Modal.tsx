@@ -15,7 +15,7 @@ import { Ionicons } from "@expo/vector-icons";
 // ** Theme
 import { useTheme } from "@/theme";
 import { iconSize, spacing } from "@/theme/stylingConstants";
-import { ModalProps } from "@/types";
+import { ModalProps } from "./Modal.d";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 

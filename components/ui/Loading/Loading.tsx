@@ -11,7 +11,7 @@ import {
 // ** Theme
 import { useTheme } from "@/theme";
 import { iconSize, spacing } from "@/theme/stylingConstants";
-import { LoadingProps } from "@/types";
+import { LoadingProps } from "./Loading.d";
 
 const Loading: React.FC<LoadingProps> = ({
   visible,

@@ -1,9 +1,9 @@
 import { isTablet, isWeb, scaleSize } from "@/theme";
 import React from "react";
 import { Animated, Platform, StyleSheet, Text, View } from "react-native";
-import { useNetwork } from "../../contexts/NetworkContext";
-import { useNetworkStatus } from "../../hooks/useNetworkStatus";
-import { useThemeColor } from "../../hooks/useThemeColor";
+import { useNetwork } from "../../../contexts/NetworkContext";
+import { useNetworkStatus } from "../../../hooks/useNetworkStatus";
+import { useThemeColor } from "../../../hooks/useThemeColor";
 
 interface OfflineNotificationProps {
   showWhenOffline?: boolean;

@@ -4,7 +4,7 @@ import { StyleSheet, Text, TextStyle, View, ViewStyle } from "react-native";
 // ** Theme
 import { useTheme } from "@/theme";
 import { badgeSize } from "@/theme/stylingConstants";
-import { BadgeProps } from "@/types";
+import { BadgeProps } from "./Badge.d";
 
 const Badge: React.FC<BadgeProps> = ({
   children,

@@ -13,7 +13,7 @@ import { selectUser } from "@/store/slices/authSlice";
 // ** Theme
 import { useTheme } from "@/theme";
 import { iconSize, spacing } from "@/theme/stylingConstants";
-import { BarHeaderProps } from "@/types";
+import { BarHeaderProps } from "./BarHeader.d";
 
 const BarHeader: React.FC<BarHeaderProps> = ({
   onBack,

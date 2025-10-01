@@ -1,5 +1,5 @@
-import { getVisibleNavigationItems } from "@/components/navigation/navigationConfig";
-import BarHeader from "@/components/ui/BarHeader";
+import { getVisibleNavigationItems } from "@/components/navigation/SideBar/navigationConfig";
+import BarHeader from "@/components/ui/BarHeader/BarHeader";
 import { useAppSelector } from "@/store";
 import { selectUser } from "@/store/slices/authSlice";
 import { useTheme } from "@/theme";

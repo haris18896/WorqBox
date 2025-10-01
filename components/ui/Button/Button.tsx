@@ -12,7 +12,7 @@ import {
 import { useTheme } from "@/theme";
 import { scaleSize } from "@/theme/responsive";
 import { buttonSize, spacing } from "@/theme/stylingConstants";
-import { ButtonProps } from "@/types";
+import { ButtonProps } from "./Button.d";
 
 const Button: React.FC<ButtonProps> = ({
   title,

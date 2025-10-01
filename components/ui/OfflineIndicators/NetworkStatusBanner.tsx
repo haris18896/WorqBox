@@ -6,14 +6,14 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { useNetworkStatus } from "../../hooks/useNetworkStatus";
-import { getColorPalette, useSystemTheme } from "../../theme/Colors";
+import { useNetworkStatus } from "../../../hooks/useNetworkStatus";
+import { getColorPalette, useSystemTheme } from "../../../theme/Colors";
 import {
   isTablet,
   isWeb,
   scaleFontSize,
   scaleSize,
-} from "../../theme/responsive";
+} from "../../../theme/responsive";
 
 interface NetworkStatusBannerProps {
   onRetry?: () => Promise<void>;

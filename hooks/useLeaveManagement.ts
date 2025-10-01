@@ -7,7 +7,7 @@ import {
   useGetMyLeaveRequestListQuery,
   useUpdateLeaveRequestMutation,
 } from "../store/api/leaveApi";
-import { LeaveRequest, LeaveRequestListParams } from "../types/api";
+import { LeaveRequest, LeaveRequestListParams } from "../store/types/api";
 
 /**
  * Custom hook for leave management

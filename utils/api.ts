@@ -6,7 +6,7 @@ import {
 import { fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { storageService } from "../services/storage";
 import { logout } from "../store/slices/authSlice";
-import { ApiError, BaseApiResponse } from "../types/api";
+import { ApiError, BaseApiResponse } from "../store/types/api";
 
 // Base URL for the API
 export const API_BASE_URL =

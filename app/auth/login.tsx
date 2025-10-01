@@ -20,8 +20,8 @@ import {
 import * as Yup from "yup";
 
 // Import UI components
-import Button from "@/components/ui/Button";
-import TextInput from "@/components/ui/TextInput";
+import Button from "@/components/ui/Button/Button";
+import TextInput from "@/components/ui/TextInput/TextInput";
 import { storageService } from "@/services/storage";
 import { useAppDispatch } from "@/store";
 import { useLoginMutation } from "@/store/api/authApi";

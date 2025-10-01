@@ -1,6 +1,13 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { storageService } from "../../services/storage";
 import {
+  baseQueryWithReauth,
+  handleApiError,
+  handleApiSuccess,
+  TAG_TYPES,
+  transformResponse,
+} from "../../utils/api";
+import {
   API_ENDPOINTS,
   BaseApiResponse,
   ForgotPasswordRequest,
@@ -9,14 +16,7 @@ import {
   RegisterRequest,
   ResetPasswordRequest,
   UserDetails,
-} from "../../types/api";
-import {
-  baseQueryWithReauth,
-  handleApiError,
-  handleApiSuccess,
-  TAG_TYPES,
-  transformResponse,
-} from "../../utils/api";
+} from "../types/api";
 
 export const authApi = createApi({
   reducerPath: "authApi",

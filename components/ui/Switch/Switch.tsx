@@ -3,7 +3,7 @@ import { Switch as RNSwitch, StyleSheet, View, ViewStyle } from "react-native";
 
 // ** Theme
 import { useTheme } from "@/theme";
-import { SwitchProps } from "@/types";
+import { SwitchProps } from "./Switch.d";
 
 const Switch: React.FC<SwitchProps> = ({
   value,

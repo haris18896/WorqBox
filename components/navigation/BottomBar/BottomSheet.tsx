@@ -15,7 +15,7 @@ import { Ionicons } from "@expo/vector-icons";
 // ** Theme
 import { useTheme } from "@/theme";
 import { iconSize, spacing } from "@/theme/stylingConstants";
-import { BottomSheetProps } from "@/types";
+import { BottomSheetProps } from "../Navigation.d";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 

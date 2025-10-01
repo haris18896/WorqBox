@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui";
-import BarHeader from "@/components/ui/BarHeader";
+import BarHeader from "@/components/ui/BarHeader/BarHeader";
 import { useAppSelector } from "@/store";
 import { selectUser } from "@/store/slices/authSlice";
 import { useTheme } from "@/theme";
