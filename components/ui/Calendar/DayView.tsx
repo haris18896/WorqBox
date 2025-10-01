@@ -224,21 +224,6 @@ export const DayView: React.FC<DayViewProps> = ({
     return `${hour - 12} PM`;
   };
 
-  if (dayEvents.length === 0) {
-    return (
-      <View style={[styles.container, style]}>
-        <View style={styles.header}>
-          <Text style={styles.dateText}>
-            {dayjs(selectedDate).format("dddd, MMMM D")}
-          </Text>
-        </View>
-        <View style={styles.noEventsContainer}>
-          <Text style={styles.noEventsText}>No events for this day</Text>
-        </View>
-      </View>
-    );
-  }
-
   return (
     <View style={[styles.container, style]}>
       <View style={styles.header}>
@@ -335,6 +320,12 @@ export const DayView: React.FC<DayViewProps> = ({
           );
         })}
       </ScrollView>
+
+      {dayEvents.length === 0 && (
+        <View style={styles.noEventsContainer}>
+          <Text style={styles.noEventsText}>No events for this day</Text>
+        </View>
+      )}
     </View>
   );
 };

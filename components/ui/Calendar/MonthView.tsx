@@ -165,23 +165,6 @@ export const MonthView: React.FC<MonthViewProps> = ({
     return dayjs(date).format("HH:mm");
   };
 
-  if (selectedDateEvents.length === 0) {
-    return (
-      <View style={[styles.container, style]}>
-        <Calendar
-          events={[]}
-          height={300}
-          mode="month"
-          date={selectedDate}
-          theme={calendarTheme}
-        />
-        <View style={styles.noEventsContainer}>
-          <Text style={styles.noEventsText}>No events for this day</Text>
-        </View>
-      </View>
-    );
-  }
-
   return (
     <View style={[styles.container, style]}>
       <Calendar
@@ -194,51 +177,57 @@ export const MonthView: React.FC<MonthViewProps> = ({
       />
 
       <View style={styles.monthCardsContainer}>
-        {selectedDateEvents.map((event) => (
-          <TouchableOpacity
-            key={event.id}
-            style={[
-              styles.monthCard,
-              {
-                backgroundColor:
-                  event.backgroundColor || palette.background.secondary,
-                borderLeftColor: event.color || palette.primary.main,
-                borderLeftWidth: 3,
-              },
-            ]}
-            onPress={() => onEventPress?.(event)}
-            onLongPress={() => onEventLongPress?.(event)}
-            activeOpacity={0.7}
-          >
-            <View style={styles.monthCardHeader}>
-              <Ionicons
-                name="calendar-outline"
-                size={20}
-                color={event.color || palette.primary.main}
-                style={styles.monthCardIcon}
-              />
-              <View style={styles.monthCardTime}>
-                <Text style={styles.monthCardTimeText}>
-                  {formatTime(event.start)} - {formatTime(event.end)}
+        {selectedDateEvents.length === 0 ? (
+          <View style={styles.noEventsContainer}>
+            <Text style={styles.noEventsText}>No events for this day</Text>
+          </View>
+        ) : (
+          selectedDateEvents.map((event) => (
+            <TouchableOpacity
+              key={event.id}
+              style={[
+                styles.monthCard,
+                {
+                  backgroundColor:
+                    event.backgroundColor || palette.background.secondary,
+                  borderLeftColor: event.color || palette.primary.main,
+                  borderLeftWidth: 3,
+                },
+              ]}
+              onPress={() => onEventPress?.(event)}
+              onLongPress={() => onEventLongPress?.(event)}
+              activeOpacity={0.7}
+            >
+              <View style={styles.monthCardHeader}>
+                <Ionicons
+                  name="calendar-outline"
+                  size={20}
+                  color={event.color || palette.primary.main}
+                  style={styles.monthCardIcon}
+                />
+                <View style={styles.monthCardTime}>
+                  <Text style={styles.monthCardTimeText}>
+                    {formatTime(event.start)} - {formatTime(event.end)}
+                  </Text>
+                </View>
+              </View>
+
+              <View style={styles.monthCardContent}>
+                <Text style={styles.monthCardTitle}>{event.title}</Text>
+                {event.children && (
+                  <Text style={styles.monthCardDetails}>
+                    {typeof event.children === "string"
+                      ? event.children
+                      : "Additional details"}
+                  </Text>
+                )}
+                <Text style={styles.monthCardDescription}>
+                  {dayjs(event.start).format("dddd, MMMM D")}
                 </Text>
               </View>
-            </View>
-
-            <View style={styles.monthCardContent}>
-              <Text style={styles.monthCardTitle}>{event.title}</Text>
-              {event.children && (
-                <Text style={styles.monthCardDetails}>
-                  {typeof event.children === "string"
-                    ? event.children
-                    : "Additional details"}
-                </Text>
-              )}
-              <Text style={styles.monthCardDescription}>
-                {dayjs(event.start).format("dddd, MMMM D")}
-              </Text>
-            </View>
-          </TouchableOpacity>
-        ))}
+            </TouchableOpacity>
+          ))
+        )}
       </View>
     </View>
   );

@@ -56,7 +56,7 @@ export const CalendarHeader: React.FC<CalendarHeaderProps> = ({
       borderRadius: 6,
     },
     todayButton: {
-      backgroundColor: palette.primary.main,
+      backgroundColor: palette.secondary.main,
       paddingHorizontal: spacing.sm,
       paddingVertical: spacing.xs,
       borderRadius: 6,
@@ -81,7 +81,7 @@ export const CalendarHeader: React.FC<CalendarHeaderProps> = ({
       alignItems: "center",
     },
     viewToggleButtonActive: {
-      backgroundColor: palette.primary.main,
+      backgroundColor: palette.secondary.main,
     },
     viewToggleText: {
       fontSize: 14,
