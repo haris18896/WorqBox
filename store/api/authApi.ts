@@ -46,7 +46,7 @@ export const authApi = createApi({
           username: credentials.username,
           token: mockToken,
           lastPasswordChange: new Date().toISOString(),
-          allowedRoles: ["Employee", "User"],
+          allowedRoles: ["Superadmin", "User"],
           allowedModules: [
             { id: 1, name: "Dashboard" },
             { id: 2, name: "Leave Management" },

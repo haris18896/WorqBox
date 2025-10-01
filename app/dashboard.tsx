@@ -1,7 +1,4 @@
-import { getVisibleNavigationItems } from "@/components/navigation/SideBar/navigationConfig";
 import BarHeader from "@/components/ui/BarHeader/BarHeader";
-import { useAppSelector } from "@/store";
-import { selectUser } from "@/store/slices/authSlice";
 import { useTheme } from "@/theme";
 import { spacing } from "@/theme/stylingConstants";
 import { Feather } from "@expo/vector-icons";
@@ -18,12 +15,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Dashboard() {
   const { palette } = useTheme();
-  const user = useAppSelector(selectUser);
   const router = useRouter();
-
-  // Get user role and visible navigation items
-  const userRole = user?.allowedRoles?.[0] || "employee";
-  const visibleItems = getVisibleNavigationItems(userRole);
 
   const handleNavigate = (route: string) => {
     router.push(route as any);

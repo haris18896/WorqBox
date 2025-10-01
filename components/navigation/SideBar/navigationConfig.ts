@@ -178,7 +178,6 @@ export const navigationConfig: NavigationItem[] = [
 export const getVisibleNavigationItems = (
   userRole: string
 ): NavigationItem[] => {
-  console.log("userRole : ", userRole);
   const filterItems = (items: NavigationItem[]): NavigationItem[] => {
     return items
       .filter((item) => {

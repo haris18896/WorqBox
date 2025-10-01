@@ -183,7 +183,7 @@ export const CustomDrawer: React.FC<DrawerContentComponentProps> = (props) => {
 
   const activeRoute = pathname || "";
 
-  const userRole = localUser?.allowedRoles?.[0] || "employee";
+  const userRole = localUser?.allowedRoles?.[0] || "Superadmin";
 
   const visibleItems = getVisibleNavigationItems(userRole);
 
