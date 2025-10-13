@@ -173,9 +173,11 @@ export default function Reports() {
           variant="default" // bottom, fullscreen, centered (default)
           animationType="fade" // fade, slide
         >
-          <Text>Modal content</Text>
-          <Text>Modal content</Text>
-          <Text>Modal content</Text>
+          <View>
+            <Text style={styles.cardDescription}>Modal content</Text>
+            <Text style={styles.cardDescription}>Modal content</Text>
+            <Text style={styles.cardDescription}>Modal content</Text>
+          </View>
         </Modal>
       </ScrollView>
     </View>
