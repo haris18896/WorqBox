@@ -1,10 +1,13 @@
-import { BarHeader } from "@/components/ui";
+import { Badge, BarHeader, Empty, Modal, Switch } from "@/components/ui";
 import { useTheme } from "@/theme";
-import React from "react";
+import React, { useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 
 export default function Reports() {
   const { palette } = useTheme();
+
+  const [modal, setModal] = useState(false);
+  const [switchValue, setSwitchValue] = useState(true);
 
   const styles = StyleSheet.create({
     container: {
@@ -74,6 +77,106 @@ export default function Reports() {
             deliverables, and milestones.
           </Text>
         </View>
+
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            gap: 5,
+            flexWrap: "wrap",
+          }}
+        >
+          <Badge>Bage 1</Badge>
+          <Badge variant="secondary">Bage 2</Badge>
+          <Badge variant="success">Bage 3</Badge>
+          <Badge variant="warning">Bage 4</Badge>
+          <Badge variant="error">Bage 5</Badge>
+          <Badge variant="neutral">Bage 6</Badge>
+          <Badge size="small">Bage 7</Badge>
+          <Badge size="large">Bage 8</Badge>
+        </View>
+
+        <View
+          style={{
+            marginTop: 20,
+            flexDirection: "row",
+            gap: 5,
+            flexWrap: "wrap",
+          }}
+        >
+          <Switch
+            value={switchValue}
+            onValueChange={setSwitchValue}
+            variant="primary"
+            size="medium"
+          />
+          <Switch
+            value={switchValue}
+            onValueChange={setSwitchValue}
+            variant="secondary"
+            size="medium"
+          />
+          <Switch
+            value={switchValue}
+            onValueChange={setSwitchValue}
+            variant="success"
+            size="medium"
+          />
+          <Switch
+            value={switchValue}
+            onValueChange={setSwitchValue}
+            variant="warning"
+            size="medium"
+          />
+          <Switch
+            value={switchValue}
+            onValueChange={setSwitchValue}
+            variant="error"
+            size="medium"
+          />
+
+          <Switch
+            value={switchValue}
+            onValueChange={setSwitchValue}
+            variant="success"
+            size="small"
+          />
+
+          <Switch
+            value={switchValue}
+            onValueChange={setSwitchValue}
+            variant="warning"
+            size="large"
+          />
+        </View>
+
+        <View>
+          <Empty
+            title="No data found"
+            subtitle="No data found"
+            actionText="open modal"
+            onActionPress={() => setModal(true)}
+          >
+            <Text style={styles.cardDescription}>Children goes here</Text>
+          </Empty>
+        </View>
+
+        {/* <View>
+          <Loading visible={true} text="Fetching items" />
+        </View> */}
+
+        <Modal
+          title={"Modal View"}
+          subtitle={"Add/Edit, Delete modal example"}
+          visible={modal}
+          onClose={() => setModal(false)}
+          variant="default" // bottom, fullscreen, centered (default)
+          animationType="fade" // fade, slide
+        >
+          <Text>Modal content</Text>
+          <Text>Modal content</Text>
+          <Text>Modal content</Text>
+        </Modal>
       </ScrollView>
     </View>
   );

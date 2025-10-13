@@ -58,7 +58,7 @@ const Empty: React.FC<EmptyProps> = ({
       color: palette.text.secondary,
       textAlign: "center",
       lineHeight: 20,
-      marginBottom: spacing.xl,
+      marginBottom: spacing.md,
       ...subtitleStyle,
     },
     actionButton: {
@@ -76,7 +76,7 @@ const Empty: React.FC<EmptyProps> = ({
       fontWeight: "600",
     },
     childrenContainer: {
-      marginTop: spacing.lg,
+      marginTop: spacing.md,
       alignItems: "center",
     },
   });
