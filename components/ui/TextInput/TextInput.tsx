@@ -59,7 +59,6 @@ const TextInput = forwardRef<RNTextInput, TextInputProps>(
       if (nextInputRef?.current) {
         nextInputRef.current.focus();
       } else {
-        // If no next input, blur current input
         (ref as React.RefObject<RNTextInput>)?.current?.blur();
       }
     };
@@ -74,7 +73,6 @@ const TextInput = forwardRef<RNTextInput, TextInputProps>(
 
     const handleBlur = useCallback(
       (e: any) => {
-        // On web, add a small delay to prevent immediate blur when clicking password toggle
         if (Platform.OS === "web") {
           setTimeout(() => {
             setIsFocused(false);
@@ -90,6 +88,25 @@ const TextInput = forwardRef<RNTextInput, TextInputProps>(
 
     const togglePasswordVisibility = () => {
       setIsPasswordVisible(!isPasswordVisible);
+
+      if (Platform.OS === "web") {
+        setTimeout(() => {
+          const textInputElement = (ref as React.RefObject<RNTextInput>)
+            ?.current;
+          if (textInputElement) {
+            textInputElement.focus();
+          }
+        }, 10);
+      }
+    };
+
+    const handleContainerPress = () => {
+      if (Platform.OS === "web" && !disabled) {
+        const textInputElement = (ref as React.RefObject<RNTextInput>)?.current;
+        if (textInputElement) {
+          textInputElement.focus();
+        }
+      }
     };
 
     const getSizeStyles = () => {
@@ -200,6 +217,12 @@ const TextInput = forwardRef<RNTextInput, TextInputProps>(
             : inputSize.md.fontSize,
         color: disabled ? palette.text.tertiary : palette.text.secondary,
         paddingVertical: 0,
+        ...(Platform.OS === "web" && {
+          outline: "none",
+          border: "none",
+          backgroundColor: "transparent",
+          boxShadow: "none",
+        }),
         ...styleData?.inputStyles,
       },
       passwordToggle: {
@@ -219,11 +242,11 @@ const TextInput = forwardRef<RNTextInput, TextInputProps>(
       <View style={styles.container}>
         {title && <Text style={styles.label}>{title}</Text>}
 
-        <View
+        <TouchableOpacity
           style={styles.inputContainer}
-          onStartShouldSetResponder={
-            Platform.OS === "web" ? () => false : undefined
-          }
+          onPress={handleContainerPress}
+          activeOpacity={1}
+          disabled={disabled}
         >
           {leftIcon && (
             <View style={styles.iconContainer}>
@@ -261,9 +284,6 @@ const TextInput = forwardRef<RNTextInput, TextInputProps>(
               onPress={disabled ? undefined : togglePasswordVisibility}
               activeOpacity={disabled ? 1 : 0.7}
               disabled={disabled}
-              onPressIn={
-                Platform.OS === "web" ? (e) => e.preventDefault() : undefined
-              }
             >
               <Ionicons
                 name={isPasswordVisible ? "eye-outline" : "eye-off-outline"}
@@ -278,7 +298,7 @@ const TextInput = forwardRef<RNTextInput, TextInputProps>(
               />
             </TouchableOpacity>
           )}
-        </View>
+        </TouchableOpacity>
 
         {showError && <Text style={styles.errorText}>{formikError}</Text>}
       </View>

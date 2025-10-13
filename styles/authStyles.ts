@@ -284,7 +284,6 @@ export const createAuthStyles = (palette: any) =>
       borderColor: palette.border.secondary,
       borderRadius: scaleSize(4),
       marginRight: spacing.sm,
-      marginTop: spacing.xs,
       alignItems: "center",
       justifyContent: "center",
       backgroundColor: "transparent",
