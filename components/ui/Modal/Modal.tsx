@@ -223,10 +223,6 @@ const CustomModal: React.FC<ModalProps> = ({
     }
   };
 
-  const handleContainerPress = () => {
-    // Prevent closing when tapping on the modal content
-  };
-
   if (!visible) return null;
 
   const getAnimationStyle = () => {
@@ -255,12 +251,6 @@ const CustomModal: React.FC<ModalProps> = ({
         <Animated.View
           style={[styles.container, style, getAnimationStyle() as any]}
         >
-          <TouchableOpacity
-            style={StyleSheet.absoluteFill}
-            activeOpacity={1}
-            onPress={handleContainerPress}
-          />
-
           {(title || subtitle) && (
             <View style={styles.header}>
               <View style={styles.headerContent}>
