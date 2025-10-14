@@ -4,15 +4,14 @@ export interface BaseApiResponse<T = any> {
   isSuccess: boolean;
   errors?: string[];
   message?: string;
+  responseMessage?: string;
 }
 
 export interface PaginationInfo {
-  totalPages: number;
-  totalCount: number;
-  currentPage: number;
+  pageNumber: number;
   pageSize: number;
-  hasNext: boolean;
-  hasPrev: boolean;
+  totalCount: number;
+  totalPages: number;
 }
 
 export interface PaginatedResult<T> {
@@ -221,6 +220,8 @@ export interface ValidationError {
   message: string;
 }
 
+// Employee API Types
+
 export const API_ENDPOINTS = {
   // Auth endpoints
   LOGIN: "/Account/login",
@@ -244,7 +245,8 @@ export const API_ENDPOINTS = {
 
   // PMS (Project Management System) endpoints
   // Projects
-  GET_PROJECTS: "/Project/GetProjects",
+  GET_MAIN_PROJECTS: "/Project/GetProjects",
+  GET_CLIENT_PROJECTS: "/Project/GetProjects",
 
   // Project Clients
   GET_PROJECT_CLIENTS: "/ProjectClient/GetProjectClients",
@@ -258,4 +260,7 @@ export const API_ENDPOINTS = {
   GET_TIME_LOGS_REPORTING: "/Reporting/GetTimeLogsReporting",
   EXPORT_TIME_LOGS_CSV: "/Reporting/ExportTimeLogsReporting",
   EXPORT_TIME_LOGS_PDF: "/Reporting/ExportTimeLogsReportingPdf",
+
+  // Employees
+  GET_EMPLOYEES: "/Employee/GetEmployees",
 };

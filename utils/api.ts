@@ -192,6 +192,13 @@ export const TAG_TYPES = {
   CalendarTasks: "CalendarTasks",
   LeaveRequests: "LeaveRequests",
   LeaveTypes: "LeaveTypes",
+
+  // PMS
+  MainProjects: "MainProjects",
+  ClientProjects: "ClientProjects",
+  Reports: "Reports",
+  Employees: "Employees",
+  TimeLogs: "TimeLogs",
 } as const;
 
 // Utility to create invalidation tags

@@ -68,6 +68,7 @@ const BarHeader: React.FC<BarHeaderProps> = ({
       justifyContent: "space-between",
       backgroundColor: palette.surface.primary,
       paddingHorizontal: spacing.lg,
+      zIndex: 99999,
       paddingVertical: variantStyles.paddingVertical,
       ...style,
     },

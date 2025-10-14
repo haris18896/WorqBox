@@ -1,72 +1,174 @@
-import { BarHeader } from "@/components/ui";
-import { useTheme } from "@/theme";
-import { useRouter } from "expo-router";
-import React from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import React, { useState } from "react";
+import { FlatList, RefreshControl, StyleSheet, Text, View } from "react-native";
+
+// Utils
+import { ColorPalette, spacing, useTheme } from "@/theme";
+
+// ** Custom Components
+import { ProjectCard } from "@/components/pms/ProjectCard";
+import { BarHeader, Button, Empty, Loading } from "@/components/ui";
+
+// ** Store
+import { useGetMainProjectsQuery } from "@/store/api/modules/pms/pmsProjects";
+
+// ** Types
+import { Project } from "@/store/api/modules/pms/pmsTypes";
 
 export default function ProjectsMain() {
   const { palette } = useTheme();
-  const router = useRouter();
+  const [refreshing, setRefreshing] = useState(false);
 
-  const styles = StyleSheet.create({
+  const {
+    data: projectsResponse,
+    isLoading,
+    error,
+    refetch,
+  } = useGetMainProjectsQuery();
+
+  const projects = projectsResponse?.items || [];
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await refetch();
+    setRefreshing(false);
+  };
+
+  const handleAddProject = () => {
+    // TODO: Open modal for adding project
+    console.log("Add Project clicked");
+  };
+
+  const handleProjectPress = (project: Project) => {
+    console.log("Project pressed:", project.name);
+    // TODO: Navigate to project details
+  };
+
+  const renderHeader = () => (
+    <View style={styles(palette).header}>
+      <Text style={styles(palette).headerTitle}>Main Projects</Text>
+      <Button
+        title="Add Project"
+        onPress={handleAddProject}
+        variant="primary"
+      />
+    </View>
+  );
+
+  const renderItem = ({ item }: { item: Project }) => (
+    <ProjectCard project={item} onPress={handleProjectPress} />
+  );
+
+  const renderEmpty = () => (
+    <View style={styles(palette).emptyContainer}>
+      <Empty
+        title="No Projects Yet"
+        subtitle="Start by creating your first project"
+      />
+    </View>
+  );
+
+  if (isLoading && !refreshing) {
+    return (
+      <View style={styles(palette).container}>
+        <BarHeader title="Projects" variant="default" />
+        <Loading visible={true} text="Fetching projects" />
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={styles(palette).container}>
+        <BarHeader title="Projects" variant="default" />
+        <View style={styles(palette).errorContainer}>
+          <Text style={styles(palette).errorText}>
+            Failed to load projects. Please try again.
+          </Text>
+          <Text
+            style={[styles(palette).errorText, { fontSize: 12, marginTop: 8 }]}
+          >
+            Error: {JSON.stringify(error)}
+          </Text>
+          <Button title="Retry" onPress={handleRefresh} variant="outline" />
+        </View>
+      </View>
+    );
+  }
+
+  return (
+    <View style={styles(palette).container}>
+      <BarHeader title="Projects" variant="default" />
+      <FlatList
+        data={projects}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id.toString()}
+        ListHeaderComponent={renderHeader}
+        ListEmptyComponent={renderEmpty}
+        contentContainerStyle={
+          projects.length === 0 ? { flex: 1 } : styles(palette).listContainer
+        }
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={handleRefresh}
+            tintColor={palette.primary.main}
+            colors={[palette.primary.main]}
+          />
+        }
+        showsVerticalScrollIndicator={false}
+      />
+    </View>
+  );
+}
+
+const styles = (palette: ColorPalette) =>
+  StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: palette.background.primary,
     },
     content: {
       flex: 1,
-      padding: 20,
     },
-    card: {
-      backgroundColor: palette.background.secondary,
-      padding: 20,
-      borderRadius: 12,
-      marginBottom: 15,
-      elevation: 2,
-      shadowColor: "#000",
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.1,
-      shadowRadius: 4,
+    header: {
+      padding: 16,
+      paddingBottom: 8,
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      marginBottom: spacing["sm"],
     },
-    cardTitle: {
-      fontSize: 18,
-      fontWeight: "600",
+    headerTitle: {
+      fontSize: 24,
+      fontWeight: "700",
       color: palette.text.primary,
-      marginBottom: 10,
+      marginBottom: 8,
     },
-    cardDescription: {
+    headerSubtitle: {
       fontSize: 14,
       color: palette.text.secondary,
-      lineHeight: 20,
+      marginBottom: 16,
     },
-    actionButton: {
-      flexDirection: "row",
+    listContainer: {
+      padding: 16,
+      paddingTop: 8,
+    },
+    emptyContainer: {
+      flex: 1,
+      justifyContent: "center",
       alignItems: "center",
-      backgroundColor: palette.primary.main,
-      padding: 15,
-      borderRadius: 8,
-      marginBottom: 10,
+      paddingVertical: 60,
     },
-    actionButtonText: {
-      color: palette.text.inverse,
+    errorContainer: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      padding: 20,
+    },
+    errorText: {
       fontSize: 16,
-      fontWeight: "500",
-      marginLeft: 10,
+      color: palette.error?.main || "#ef4444",
+      textAlign: "center",
+      marginBottom: 16,
     },
   });
-
-  return (
-    <View style={styles.container}>
-      <BarHeader title="Project Management" variant="default" />
-      <ScrollView style={styles.content}>
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Main Project Overview</Text>
-          <Text style={styles.cardDescription}>
-            Manage all your projects in one place. Create new projects, track
-            progress, and collaborate with your team.
-          </Text>
-        </View>
-      </ScrollView>
-    </View>
-  );
-}

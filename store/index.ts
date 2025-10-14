@@ -9,6 +9,8 @@ import { leaveApi } from "./api/leaveApi";
 import { pmsApi } from "./api/modules/pms/pmsApi";
 
 // Import regular slices
+import { pmsProjectsApi } from "./api/modules/pms/pmsProjects";
+import { pmsReportingApi } from "./api/modules/pms/pmsReportingApi";
 import authSlice from "./slices/authSlice";
 
 export const store = configureStore({
@@ -18,7 +20,11 @@ export const store = configureStore({
     [authApi.reducerPath]: authApi.reducer,
     [dashboardApi.reducerPath]: dashboardApi.reducer,
     [leaveApi.reducerPath]: leaveApi.reducer,
+
+    // PMS
     [pmsApi.reducerPath]: pmsApi.reducer,
+    [pmsProjectsApi.reducerPath]: pmsProjectsApi.reducer,
+    [pmsReportingApi.reducerPath]: pmsReportingApi.reducer,
 
     // Regular slices
     auth: authSlice,
@@ -37,7 +43,9 @@ export const store = configureStore({
       authApi.middleware,
       dashboardApi.middleware,
       leaveApi.middleware,
-      pmsApi.middleware
+      pmsApi.middleware,
+      pmsProjectsApi.middleware,
+      pmsReportingApi.middleware
     ),
   devTools: __DEV__,
 });
