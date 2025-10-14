@@ -2,6 +2,7 @@ import {
   API_ENDPOINTS,
   BaseApiResponse,
   PaginatedResult,
+  PaginationParams,
 } from "@/store/types/api";
 import {
   baseQueryWithReauth,
@@ -52,31 +53,58 @@ export const pmsProjectsApi = createApi({
     }),
 
     // GET CLIENT PROJECTS
-    getClientProjects: builder.query<ClientProject[], void>({
-      query: () => ({
-        url: API_ENDPOINTS.GET_CLIENT_PROJECTS,
-        method: "GET",
-      }),
-      transformResponse: (response: BaseApiResponse<ClientProject[]>) => {
+    getClientProjects: builder.query<
+      PaginatedResult<ClientProject>,
+      PaginationParams
+    >({
+      query: (params: PaginationParams = {}) => {
+        const searchParams = new URLSearchParams();
+
+        if (params.pageNumber) {
+          searchParams.append("pageNumber", params.pageNumber.toString());
+        }
+        if (params.pageSize) {
+          searchParams.append("pageSize", params.pageSize.toString());
+        }
+        if (params.sortOrder !== undefined) {
+          searchParams.append("sortOrder", params.sortOrder.toString());
+        }
+
+        return {
+          url: `${
+            API_ENDPOINTS.GET_CLIENT_PROJECTS
+          }?${searchParams.toString()}`,
+          method: "GET",
+        };
+      },
+      transformResponse: (
+        response: BaseApiResponse<PaginatedResult<ClientProject>>
+      ) => {
         return transformResponse(response);
       },
-      onQueryStarted: async (arg: void, { queryFulfilled }: any) => {
+      onQueryStarted: async (
+        arg: PaginationParams,
+        { queryFulfilled }: any
+      ) => {
         try {
           await queryFulfilled;
         } catch (error) {
           handleApiError(error, "Failed to fetch client projects");
         }
       },
-      providesTags: (result: ClientProject[] | undefined) =>
-        result
-          ? [
-              ...result.map(({ id }: ClientProject) => ({
-                type: TAG_TYPES.ClientProjects,
-                id,
-              })),
-              { type: TAG_TYPES.ClientProjects, id: "LIST" },
-            ]
-          : [{ type: TAG_TYPES.ClientProjects, id: "LIST" }],
+      providesTags: (result: PaginatedResult<ClientProject> | undefined) => {
+        // Defensive check to ensure result has items array
+        if (result && Array.isArray(result.items)) {
+          return [
+            ...result.items.map(({ id }: ClientProject) => ({
+              type: TAG_TYPES.ClientProjects,
+              id,
+            })),
+            { type: TAG_TYPES.ClientProjects, id: "LIST" },
+          ];
+        }
+        return [{ type: TAG_TYPES.ClientProjects, id: "LIST" }];
+      },
     }),
   }),
 });

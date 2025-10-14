@@ -1,52 +1,16 @@
+import React from "react";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+
+// ** Utils
 import { ColorPalette, useTheme } from "@/theme";
 import { isTablet, isWeb } from "@/theme/responsive";
-import { getInitials, stripHtmlTags } from "@/utils/textUtils";
-import React from "react";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { AvatarProps, ProjectCardProps } from "./index.d";
+import { stripHtmlTags } from "@/utils/textUtils";
 
-const Avatar: React.FC<AvatarProps> = ({ imageUrl, name, size = 40 }) => {
-  const { palette } = useTheme();
+// ** Components
+import { Avatar } from "@/components/ui";
 
-  const styles = StyleSheet.create({
-    avatar: {
-      width: size,
-      height: size,
-      borderRadius: size / 2,
-      backgroundColor: palette.primary.main,
-      justifyContent: "center",
-      alignItems: "center",
-      overflow: "hidden",
-    },
-    avatarImage: {
-      width: "100%",
-      height: "100%",
-    },
-    avatarText: {
-      color: palette.text.inverse,
-      fontSize: size * 0.4,
-      fontWeight: "600",
-    },
-  });
-
-  if (imageUrl) {
-    return (
-      <View style={styles.avatar}>
-        <Image
-          source={{ uri: imageUrl }}
-          style={styles.avatarImage}
-          resizeMode="cover"
-        />
-      </View>
-    );
-  }
-
-  return (
-    <View style={styles.avatar}>
-      <Text style={styles.avatarText}>{getInitials(name)}</Text>
-    </View>
-  );
-};
+// ** Types
+import { ProjectCardProps } from "./index.d";
 
 export const ProjectCard: React.FC<ProjectCardProps> = ({
   project,
@@ -79,7 +43,11 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
     >
       <View style={styles(palette).header}>
         <View style={styles(palette).projectAvatar}>
-          <Avatar imageUrl={project.iconUrl} name={project.name} size={56} />
+          <Avatar
+            imageUrl={project.iconUrl || undefined}
+            name={project.name}
+            size={56}
+          />
         </View>
         <View style={styles(palette).headerContent}>
           <Text style={styles(palette).projectName} numberOfLines={1}>
@@ -132,7 +100,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
             {project.projectOwner && (
               <View style={styles(palette).avatarWrapper}>
                 <Avatar
-                  imageUrl={project.projectOwner.profilePictureUrl}
+                  imageUrl={project.projectOwner.profilePictureUrl || undefined}
                   name={`${project.projectOwner.firstName} ${project.projectOwner.lastName}`}
                   size={32}
                 />
@@ -141,7 +109,9 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
             {project.businessAnalyst && (
               <View style={styles(palette).avatarWrapper}>
                 <Avatar
-                  imageUrl={project.businessAnalyst.profilePictureUrl}
+                  imageUrl={
+                    project.businessAnalyst.profilePictureUrl || undefined
+                  }
                   name={`${project.businessAnalyst.firstName} ${project.businessAnalyst.lastName}`}
                   size={32}
                 />

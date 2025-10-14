@@ -68,7 +68,7 @@ export default function ProjectsMain() {
   );
 
   const renderItem = ({ item, index }: { item: Project; index: number }) => (
-    <ProjectCard project={item} onPress={handleProjectPress} />
+    <ProjectCard key={index} project={item} onPress={handleProjectPress} />
   );
 
   const renderEmpty = () => (
@@ -129,8 +129,8 @@ export default function ProjectsMain() {
           />
         }
         showsVerticalScrollIndicator={false}
-        itemSpacing={12}
-        columnSpacing={16}
+        itemSpacing={2}
+        columnSpacing={12}
       />
     </View>
   );

@@ -246,7 +246,7 @@ export const API_ENDPOINTS = {
   // PMS (Project Management System) endpoints
   // Projects
   GET_MAIN_PROJECTS: "/Project/GetProjects",
-  GET_CLIENT_PROJECTS: "/Project/GetProjects",
+  GET_CLIENT_PROJECTS: "/ProjectClient/GetProjectClients",
 
   // Project Clients
   GET_PROJECT_CLIENTS: "/ProjectClient/GetProjectClients",

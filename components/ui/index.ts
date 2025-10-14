@@ -1,5 +1,6 @@
 // Core UI Components
 export { default as BottomSheet } from "../navigation/BottomBar/BottomSheet";
+export { default as Avatar } from "./Avatar";
 export { default as Badge } from "./Badge/Badge";
 export { default as BarHeader } from "./BarHeader/BarHeader";
 export { default as Button } from "./Button/Button";

@@ -13,16 +13,14 @@ export interface ResponsiveFlatListProps<T>
   renderItem: (props: { item: T; index: number }) => React.ReactElement;
   itemSpacing?: number;
   columnSpacing?: number;
-  forceColumns?: number; // Override automatic column detection
+  forceColumns?: number;
 }
 
-// Get number of columns based on screen size using existing responsive utilities
 const getColumnCount = (): number => {
   if (isWeb()) {
-    // For web, check if it's a very large screen (2560px+)
     const { width } = Dimensions.get("window");
-    if (width >= 2560) return 3;
-    return 2;
+    if (width >= 2560) return 4;
+    return 3;
   }
   if (isTablet()) return 2;
   return 1;
@@ -60,7 +58,7 @@ export const ResponsiveFlatList = <T,>({
             marginRight: isLastInRow ? 0 : columnSpacing,
             marginBottom: isLastRow ? 0 : itemSpacing,
             flex: numColumns === 1 ? undefined : 1,
-            minHeight: numColumns === 1 ? undefined : 200, // Ensure consistent height in multi-column layout
+            minHeight: numColumns === 1 ? undefined : 200,
           },
         ]}
       >
@@ -84,7 +82,7 @@ export const ResponsiveFlatList = <T,>({
       numColumns={numColumns}
       contentContainerStyle={responsiveContentContainerStyle}
       style={responsiveStyle}
-      key={`${numColumns}-columns`} // Force re-render when columns change
+      key={`${numColumns}-columns`}
     />
   );
 };
