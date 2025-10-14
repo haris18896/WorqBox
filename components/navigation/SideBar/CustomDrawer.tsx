@@ -203,7 +203,7 @@ export const CustomDrawer: React.FC<DrawerContentComponentProps> = (props) => {
     container: {
       flex: 1,
       backgroundColor: palette.surface.primary,
-      paddingVertical: Platform.OS === "ios" ? spacing["3xl"] : 0,
+      paddingVertical: Platform.OS === "ios" ? spacing["md"] : 0,
     },
     header: {
       backgroundColor: palette.primary.main,

@@ -6,6 +6,7 @@ import { authApi } from "./api/authApi";
 import { baseApi } from "./api/baseApi";
 import { dashboardApi } from "./api/dashboardApi";
 import { leaveApi } from "./api/leaveApi";
+import { pmsApi } from "./api/modules/pms/pmsApi";
 
 // Import regular slices
 import authSlice from "./slices/authSlice";
@@ -17,6 +18,7 @@ export const store = configureStore({
     [authApi.reducerPath]: authApi.reducer,
     [dashboardApi.reducerPath]: dashboardApi.reducer,
     [leaveApi.reducerPath]: leaveApi.reducer,
+    [pmsApi.reducerPath]: pmsApi.reducer,
 
     // Regular slices
     auth: authSlice,
@@ -34,7 +36,8 @@ export const store = configureStore({
       baseApi.middleware,
       authApi.middleware,
       dashboardApi.middleware,
-      leaveApi.middleware
+      leaveApi.middleware,
+      pmsApi.middleware
     ),
   devTools: __DEV__,
 });
