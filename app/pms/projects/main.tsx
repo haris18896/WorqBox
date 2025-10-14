@@ -1,12 +1,21 @@
 import React, { useState } from "react";
-import { FlatList, RefreshControl, StyleSheet, Text, View } from "react-native";
+import { RefreshControl, StyleSheet, Text, View } from "react-native";
+
+// ** Third Party Packages
+import { Ionicons } from "@expo/vector-icons";
 
 // Utils
 import { ColorPalette, spacing, useTheme } from "@/theme";
 
 // ** Custom Components
 import { ProjectCard } from "@/components/pms/ProjectCard";
-import { BarHeader, Button, Empty, Loading } from "@/components/ui";
+import {
+  BarHeader,
+  Button,
+  Empty,
+  Loading,
+  ResponsiveFlatList,
+} from "@/components/ui";
 
 // ** Store
 import { useGetMainProjectsQuery } from "@/store/api/modules/pms/pmsProjects";
@@ -49,12 +58,16 @@ export default function ProjectsMain() {
       <Button
         title="Add Project"
         onPress={handleAddProject}
-        variant="primary"
+        variant="secondary"
+        size="small"
+        leftIcon={
+          <Ionicons name="add" size={20} color={palette.text.inverse} />
+        }
       />
     </View>
   );
 
-  const renderItem = ({ item }: { item: Project }) => (
+  const renderItem = ({ item, index }: { item: Project; index: number }) => (
     <ProjectCard project={item} onPress={handleProjectPress} />
   );
 
@@ -98,7 +111,7 @@ export default function ProjectsMain() {
   return (
     <View style={styles(palette).container}>
       <BarHeader title="Projects" variant="default" />
-      <FlatList
+      <ResponsiveFlatList
         data={projects}
         renderItem={renderItem}
         keyExtractor={(item) => item.id.toString()}
@@ -116,6 +129,8 @@ export default function ProjectsMain() {
           />
         }
         showsVerticalScrollIndicator={false}
+        itemSpacing={12}
+        columnSpacing={16}
       />
     </View>
   );

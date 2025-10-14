@@ -120,7 +120,7 @@ export const useCalendarEvents = (dateRange?: {
 
   // Fetch calendar tasks from API
   const {
-    data: calendarTasks = [],
+    data: calendarTasksResponse,
     isLoading,
     error,
     refetch,
@@ -132,8 +132,9 @@ export const useCalendarEvents = (dateRange?: {
 
   // Transform API data to CalendarEvent format
   const events = useMemo(() => {
+    const calendarTasks = calendarTasksResponse?.items || [];
     return calendarTasks.map(transformCalendarTaskToEvent);
-  }, [calendarTasks]);
+  }, [calendarTasksResponse]);
 
   // Local state for manually added events (if needed)
   const [localEvents, setLocalEvents] = useState<CalendarEvent[]>([]);

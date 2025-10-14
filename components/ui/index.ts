@@ -6,6 +6,7 @@ export { default as Button } from "./Button/Button";
 export { default as Empty } from "./Empty/Empty";
 export { default as Loading } from "./Loading/Loading";
 export { default as Modal } from "./Modal/Modal";
+export { default as ResponsiveFlatList } from "./ResponsiveFlatList";
 export { default as Switch } from "./Switch/Switch";
 export { default as TextInput } from "./TextInput/TextInput";
 

@@ -1,4 +1,5 @@
 import { ColorPalette, useTheme } from "@/theme";
+import { isTablet, isWeb } from "@/theme/responsive";
 import { getInitials, stripHtmlTags } from "@/utils/textUtils";
 import React from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -54,6 +55,12 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
 }) => {
   const { palette } = useTheme();
 
+  const getDescriptionLines = (): number => {
+    if (isWeb()) return 4;
+    if (isTablet()) return 3;
+    return 2;
+  };
+
   const formatDate = (dateString: string): string => {
     const date = new Date(dateString);
     return date.toLocaleDateString("en-US", {
@@ -84,11 +91,26 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
         </View>
       </View>
 
-      {project.description ? (
-        <Text style={styles(palette).description} numberOfLines={2}>
-          {stripHtmlTags(project.description, 120)}
-        </Text>
-      ) : null}
+      <View style={styles(palette).descriptionContainer}>
+        {project.description ? (
+          <Text
+            style={styles(palette).description}
+            numberOfLines={getDescriptionLines()}
+          >
+            {stripHtmlTags(
+              project.description,
+              isWeb() ? 200 : isTablet() ? 160 : 120
+            )}
+          </Text>
+        ) : (
+          <Text
+            style={styles(palette).description}
+            numberOfLines={getDescriptionLines()}
+          >
+            No description available
+          </Text>
+        )}
+      </View>
 
       <View style={styles(palette).footer}>
         <View style={styles(palette).dateContainer}>
@@ -146,6 +168,8 @@ const styles = (palette: ColorPalette) =>
       shadowRadius: 8,
       borderWidth: 1,
       borderColor: palette.border?.secondary || "rgba(0,0,0,0.05)",
+      minHeight: 200, // Ensure consistent minimum height
+      flex: 1, // Allow cards to expand equally in responsive layout
     },
     header: {
       flexDirection: "row",
@@ -169,11 +193,15 @@ const styles = (palette: ColorPalette) =>
       color: palette.text.secondary,
       fontWeight: "500",
     },
+    descriptionContainer: {
+      flex: 1,
+      justifyContent: "flex-start",
+      marginBottom: 16,
+    },
     description: {
       fontSize: 14,
       color: palette.text.secondary,
       lineHeight: 20,
-      marginBottom: 16,
     },
     footer: {
       flexDirection: "row",

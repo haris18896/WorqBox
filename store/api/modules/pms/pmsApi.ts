@@ -136,16 +136,19 @@ export const pmsApi = createApi({
           handleApiError(error, "Failed to fetch PMS tasks");
         }
       },
-      providesTags: (result: PaginatedResult<PMSTask> | undefined) =>
-        result
-          ? [
-              ...result.items.map(({ id }: PMSTask) => ({
-                type: TAG_TYPES.Tasks,
-                id,
-              })),
-              { type: TAG_TYPES.Tasks, id: "LIST" },
-            ]
-          : [{ type: TAG_TYPES.Tasks, id: "LIST" }],
+      providesTags: (result: PaginatedResult<PMSTask> | undefined) => {
+        // Defensive check to ensure result has items array
+        if (result && Array.isArray(result.items)) {
+          return [
+            ...result.items.map(({ id }: PMSTask) => ({
+              type: TAG_TYPES.Tasks,
+              id,
+            })),
+            { type: TAG_TYPES.Tasks, id: "LIST" },
+          ];
+        }
+        return [{ type: TAG_TYPES.Tasks, id: "LIST" }];
+      },
     }),
 
     // GET PROJECTS LOOKUP
@@ -164,59 +167,68 @@ export const pmsApi = createApi({
           handleApiError(error, "Failed to fetch projects");
         }
       },
-      providesTags: (result: Project[] | undefined) =>
-        result
-          ? [
-              ...result.map(({ id }: Project) => ({
-                type: "Projects" as const,
-                id,
-              })),
-              { type: "Projects" as const, id: "LIST" },
-            ]
-          : [{ type: "Projects" as const, id: "LIST" }],
+      providesTags: (result: Project[] | undefined) => {
+        // Defensive check to ensure result is an array
+        if (result && Array.isArray(result)) {
+          return [
+            ...result.map(({ id }: Project) => ({
+              type: "Projects" as const,
+              id,
+            })),
+            { type: "Projects" as const, id: "LIST" },
+          ];
+        }
+        return [{ type: "Projects" as const, id: "LIST" }];
+      },
     }),
 
     // GET MY CALENDAR TASKS
-    getMyCalendarTasks: builder.query<CalendarTask[], GetMyCalendarTasksParams>(
-      {
-        query: (params: GetMyCalendarTasksParams) => {
-          const searchParams = new URLSearchParams();
-          searchParams.append("startDate", params.startDate);
-          searchParams.append("endDate", params.endDate);
-          if (params.dateField) {
-            searchParams.append("dateField", params.dateField);
-          }
+    getMyCalendarTasks: builder.query<
+      PaginatedResult<CalendarTask>,
+      GetMyCalendarTasksParams
+    >({
+      query: (params: GetMyCalendarTasksParams) => {
+        const searchParams = new URLSearchParams();
+        searchParams.append("startDate", params.startDate);
+        searchParams.append("endDate", params.endDate);
+        if (params.dateField) {
+          searchParams.append("dateField", params.dateField);
+        }
 
-          return {
-            url: `/Dashboard/GetMyCalenderTasks?${searchParams.toString()}`,
-            method: "GET",
-          };
-        },
-        transformResponse: (response: BaseApiResponse<CalendarTask[]>) => {
-          return transformResponse(response);
-        },
-        onQueryStarted: async (
-          arg: GetMyCalendarTasksParams,
-          { queryFulfilled }: any
-        ) => {
-          try {
-            await queryFulfilled;
-          } catch (error) {
-            handleApiError(error, "Failed to fetch calendar tasks");
-          }
-        },
-        providesTags: (result: CalendarTask[] | undefined) =>
-          result
-            ? [
-                ...result.map(({ id }: CalendarTask) => ({
-                  type: TAG_TYPES.CalendarTasks,
-                  id,
-                })),
-                { type: TAG_TYPES.CalendarTasks, id: "LIST" },
-              ]
-            : [{ type: TAG_TYPES.CalendarTasks, id: "LIST" }],
-      }
-    ),
+        return {
+          url: `/Dashboard/GetMyCalenderTasks?${searchParams.toString()}`,
+          method: "GET",
+        };
+      },
+      transformResponse: (
+        response: BaseApiResponse<PaginatedResult<CalendarTask>>
+      ) => {
+        return transformResponse(response);
+      },
+      onQueryStarted: async (
+        arg: GetMyCalendarTasksParams,
+        { queryFulfilled }: any
+      ) => {
+        try {
+          await queryFulfilled;
+        } catch (error) {
+          handleApiError(error, "Failed to fetch calendar tasks");
+        }
+      },
+      providesTags: (result: PaginatedResult<CalendarTask> | undefined) => {
+        // Defensive check to ensure result has items array
+        if (result && Array.isArray(result.items)) {
+          return [
+            ...result.items.map(({ id }: CalendarTask) => ({
+              type: TAG_TYPES.CalendarTasks,
+              id,
+            })),
+            { type: TAG_TYPES.CalendarTasks, id: "LIST" },
+          ];
+        }
+        return [{ type: TAG_TYPES.CalendarTasks, id: "LIST" }];
+      },
+    }),
 
     // GET PROJECT CREDENTIALS
     getProjectCredentials: builder.query<
@@ -259,16 +271,21 @@ export const pmsApi = createApi({
           handleApiError(error, "Failed to fetch project credentials");
         }
       },
-      providesTags: (result: PaginatedResult<ProjectCredential> | undefined) =>
-        result
-          ? [
-              ...result.items.map(({ id }: ProjectCredential) => ({
-                type: "ProjectCredentials" as const,
-                id,
-              })),
-              { type: "ProjectCredentials" as const, id: "LIST" },
-            ]
-          : [{ type: "ProjectCredentials" as const, id: "LIST" }],
+      providesTags: (
+        result: PaginatedResult<ProjectCredential> | undefined
+      ) => {
+        // Defensive check to ensure result has items array
+        if (result && Array.isArray(result.items)) {
+          return [
+            ...result.items.map(({ id }: ProjectCredential) => ({
+              type: "ProjectCredentials" as const,
+              id,
+            })),
+            { type: "ProjectCredentials" as const, id: "LIST" },
+          ];
+        }
+        return [{ type: "ProjectCredentials" as const, id: "LIST" }];
+      },
     }),
   }),
 });
