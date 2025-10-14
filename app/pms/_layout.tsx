@@ -20,7 +20,7 @@ export default function PMSLayout() {
             headerShown: false,
           }}
         >
-          <Stack.Screen name="index" />
+          <Stack.Screen name="Dashboard" />
           <Stack.Screen name="projects" />
           <Stack.Screen name="reports" />
         </Stack>

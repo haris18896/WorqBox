@@ -19,7 +19,7 @@ export default function EFSLayout() {
             headerShown: false,
           }}
         >
-          <Stack.Screen name="index" />
+          <Stack.Screen name="Dashboard" />
           <Stack.Screen name="leave-management" />
           <Stack.Screen name="salary-calculator" />
           <Stack.Screen name="survey-forms" />

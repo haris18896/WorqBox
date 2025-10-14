@@ -26,7 +26,7 @@ export const navigationConfig: NavigationItem[] = [
     children: [
       {
         title: "Dashboard",
-        href: "/pms",
+        href: "/pms/Dashboard",
         icon: "grid",
         permission: ["Superadmin", "manager", "Employee"],
         active_list: ["Project Management", "Dashboard"],
@@ -80,7 +80,7 @@ export const navigationConfig: NavigationItem[] = [
   },
   {
     title: "Employee Facilitation",
-    href: "/efs",
+    href: "/efs/Dashboard",
     icon: "user-check",
     permission: ["Superadmin", "hr", "Employee"],
     default: "Dashboard",
@@ -91,7 +91,7 @@ export const navigationConfig: NavigationItem[] = [
     children: [
       {
         title: "Dashboard",
-        href: "/efs",
+        href: "/efs/Dashboard",
         icon: "grid",
         permission: ["Superadmin", "hr", "Employee"],
         active_list: ["Employee Facilitation", "Dashboard"],
