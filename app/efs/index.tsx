@@ -1,32 +1,10 @@
 import BarHeader from "@/components/ui/BarHeader/BarHeader";
-import { useAppDispatch, useAppSelector } from "@/store";
-import { logoutUser, selectUser } from "@/store/slices/authSlice";
 import { useTheme } from "@/theme";
-import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
 import React from "react";
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 
 export default function EFSDashboard() {
   const { palette } = useTheme();
-  const dispatch = useAppDispatch();
-  const router = useRouter();
-  const user = useAppSelector(selectUser);
-
-  const handleLogout = async () => {
-    await dispatch(logoutUser());
-    router.replace("/auth/login");
-  };
-
-  const handleNavigateToPMS = () => {
-    router.push("/pms");
-  };
 
   const styles = StyleSheet.create({
     container: {
@@ -95,41 +73,12 @@ export default function EFSDashboard() {
 
       <ScrollView style={styles.content}>
         <View style={styles.card}>
-          <Text style={styles.cardTitle}>Dashboard Overview</Text>
+          <Text style={styles.cardTitle}>EFS Dashboard</Text>
           <Text style={styles.cardDescription}>
             Access employee services, manage leave requests, and utilize various
             employee tools.
           </Text>
         </View>
-
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Quick Actions</Text>
-          <Text style={styles.cardDescription}>
-            Navigate to different employee services and manage your work-life
-            balance.
-          </Text>
-        </View>
-
-        <TouchableOpacity
-          style={styles.actionButton}
-          onPress={handleNavigateToPMS}
-        >
-          <Ionicons
-            name="briefcase-outline"
-            size={24}
-            color={palette.text.inverse}
-          />
-          <Text style={styles.actionButtonText}>Switch to PMS Module</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-          <Ionicons
-            name="log-out-outline"
-            size={24}
-            color={palette.text.inverse}
-          />
-          <Text style={styles.logoutButtonText}>Logout</Text>
-        </TouchableOpacity>
       </ScrollView>
     </View>
   );

@@ -12,7 +12,9 @@ import { ApiError, BaseApiResponse } from "../store/types/api";
 // Base URL for the API
 export const API_BASE_URL =
   process.env.EXPO_PUBLIC_API_URL ||
-  "https://rq-worqbox-api-dev.azurewebsites.net/api";
+  "https://rq-worqbox-api-dev2.azurewebsites.net/api/v1";
+
+// https://rq-worqbox-api-dev2.azurewebsites.net/api/v1
 
 // Custom base query with automatic token injection and refresh logic
 const baseQuery = fetchBaseQuery({
@@ -44,6 +46,26 @@ export const baseQueryWithReauth: BaseQueryFn<
   FetchBaseQueryError
 > = async (args, api, extraOptions) => {
   let result = await baseQuery(args, api, extraOptions);
+
+  if (
+    result.data &&
+    typeof result.data === "object" &&
+    "isSuccess" in result.data
+  ) {
+    const apiResponse = result.data as BaseApiResponse<any>;
+    if (!apiResponse.isSuccess) {
+      return {
+        error: {
+          status: 400,
+          data: {
+            message: apiResponse.message || "API request failed",
+            errors: apiResponse.errors,
+            isSuccess: false,
+          },
+        },
+      };
+    }
+  }
 
   // Commented out refresh token logic since API doesn't provide refresh tokens
   if (result.error && result.error.status === 401) {
@@ -98,10 +120,7 @@ export const baseQueryWithReauth: BaseQueryFn<
 
 // Transform API response to extract result data
 export const transformResponse = <T>(response: BaseApiResponse<T>): T => {
-  if (response.isSuccess) {
-    return response.result;
-  }
-  throw new Error(response.message || "API request failed");
+  return response.result;
 };
 
 // Transform API error to a more usable format

@@ -241,4 +241,21 @@ export const API_ENDPOINTS = {
   CREATE_LEAVE_REQUEST: "/Leave/CreateUpdateLeaveRequest",
   UPDATE_LEAVE_REQUEST: "/Leave/CreateUpdateLeaveRequest",
   CANCEL_LEAVE_REQUEST: "/Leave/CancelLeaveRequest",
+
+  // PMS (Project Management System) endpoints
+  // Projects
+  GET_PROJECTS: "/Project/GetProjects",
+
+  // Project Clients
+  GET_PROJECT_CLIENTS: "/ProjectClient/GetProjectClients",
+
+  // Lookups
+  GET_PROJECTS_LOOKUP: "/Lookup/GetProjects",
+  GET_EMPLOYEES_LOOKUP: "/Lookup/GetEmployees",
+
+  // Reporting
+  REPORTING_STATS: "/Reporting/ReportingStats",
+  GET_TIME_LOGS_REPORTING: "/Reporting/GetTimeLogsReporting",
+  EXPORT_TIME_LOGS_CSV: "/Reporting/ExportTimeLogsReporting",
+  EXPORT_TIME_LOGS_PDF: "/Reporting/ExportTimeLogsReportingPdf",
 };

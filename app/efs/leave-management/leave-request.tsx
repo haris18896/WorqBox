@@ -50,22 +50,6 @@ export default function LeaveRequest() {
             including dates, reason, and type of leave.
           </Text>
         </View>
-
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Leave Types</Text>
-          <Text style={styles.cardDescription}>
-            Choose from various leave types including annual leave, sick leave,
-            maternity/paternity leave, and emergency leave.
-          </Text>
-        </View>
-
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Leave Balance</Text>
-          <Text style={styles.cardDescription}>
-            Check your current leave balance and ensure you have sufficient
-            leave days available for your request.
-          </Text>
-        </View>
       </ScrollView>
     </View>
   );

@@ -1,15 +1,8 @@
 import { BarHeader } from "@/components/ui";
 import { useTheme } from "@/theme";
-import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React from "react";
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 
 export default function ProjectsMain() {
   const { palette } = useTheme();
@@ -67,32 +60,12 @@ export default function ProjectsMain() {
       <BarHeader title="Project Management" variant="default" />
       <ScrollView style={styles.content}>
         <View style={styles.card}>
-          <Text style={styles.cardTitle}>Project Overview</Text>
+          <Text style={styles.cardTitle}>Main Project Overview</Text>
           <Text style={styles.cardDescription}>
             Manage all your projects in one place. Create new projects, track
             progress, and collaborate with your team.
           </Text>
         </View>
-
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Active Projects</Text>
-          <Text style={styles.cardDescription}>
-            View and manage your currently active projects. Monitor deadlines
-            and resource allocation.
-          </Text>
-        </View>
-
-        <TouchableOpacity
-          style={styles.actionButton}
-          onPress={() => router.push("/pms/projects/client")}
-        >
-          <Ionicons
-            name="business-outline"
-            size={24}
-            color={palette.text.inverse}
-          />
-          <Text style={styles.actionButtonText}>Manage Clients</Text>
-        </TouchableOpacity>
       </ScrollView>
     </View>
   );

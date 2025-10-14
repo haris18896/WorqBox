@@ -44,26 +44,10 @@ export default function ClientManagement() {
       <BarHeader title="Project Management" variant="default" />
       <ScrollView style={styles.content}>
         <View style={styles.card}>
-          <Text style={styles.cardTitle}>Client Management</Text>
+          <Text style={styles.cardTitle}>Client Projects Management</Text>
           <Text style={styles.cardDescription}>
             Manage your client relationships, track client information, and
             maintain project associations.
-          </Text>
-        </View>
-
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Client List</Text>
-          <Text style={styles.cardDescription}>
-            View all your clients, their contact information, and current
-            project status.
-          </Text>
-        </View>
-
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Client Communications</Text>
-          <Text style={styles.cardDescription}>
-            Track all communications with clients, meeting notes, and project
-            updates.
           </Text>
         </View>
       </ScrollView>

@@ -1,14 +1,14 @@
 import { Stack } from "expo-router";
 
-export default function LeaveManagementLayout() {
+export default function ProjectsLayout() {
   return (
     <Stack
       screenOptions={{
         headerShown: false,
       }}
     >
-      <Stack.Screen name="leave-request" />
-      <Stack.Screen name="approval-request" />
+      <Stack.Screen name="assets" />
+      <Stack.Screen name="assetTypes" />
     </Stack>
   );
 }

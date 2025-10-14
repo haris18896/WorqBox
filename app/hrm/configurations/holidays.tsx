@@ -3,7 +3,7 @@ import { useTheme } from "@/theme";
 import React from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 
-export default function SalaryCalculator() {
+export default function Holidays() {
   const { palette } = useTheme();
 
   const styles = StyleSheet.create({
@@ -41,13 +41,13 @@ export default function SalaryCalculator() {
 
   return (
     <View style={styles.container}>
-      <BarHeader title="Salary Calculator" variant="large" />
+      <BarHeader title="Survey" variant="default" />
       <ScrollView style={styles.content}>
         <View style={styles.card}>
-          <Text style={styles.cardTitle}>Salary Calculator</Text>
+          <Text style={styles.cardTitle}>Holidays</Text>
           <Text style={styles.cardDescription}>
-            Calculate your net salary based on various parameters including
-            basic salary, allowances, and deductions.
+            Participate in company surveys and provide valuable feedback to help
+            improve workplace culture and processes.
           </Text>
         </View>
       </ScrollView>

@@ -50,30 +50,6 @@ export default function SurveyForms() {
             improve workplace culture and processes.
           </Text>
         </View>
-
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Employee Feedback</Text>
-          <Text style={styles.cardDescription}>
-            Share your thoughts on various aspects of your work experience
-            including management, facilities, and benefits.
-          </Text>
-        </View>
-
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Performance Surveys</Text>
-          <Text style={styles.cardDescription}>
-            Complete performance-related surveys including self-assessment and
-            peer review forms.
-          </Text>
-        </View>
-
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Training Feedback</Text>
-          <Text style={styles.cardDescription}>
-            Provide feedback on training programs and suggest areas for
-            improvement or new training topics.
-          </Text>
-        </View>
       </ScrollView>
     </View>
   );

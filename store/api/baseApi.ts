@@ -1,3 +1,4 @@
+/* eslint-disable no-empty-pattern */
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { baseQueryWithReauth, TAG_TYPES } from "../../utils/api";
 

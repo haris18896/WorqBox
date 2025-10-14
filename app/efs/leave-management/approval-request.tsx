@@ -50,22 +50,6 @@ export default function ApprovalRequest() {
             details and make informed decisions.
           </Text>
         </View>
-
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Approval History</Text>
-          <Text style={styles.cardDescription}>
-            Track previously approved or rejected leave requests with detailed
-            approval history and comments.
-          </Text>
-        </View>
-
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Team Calendar</Text>
-          <Text style={styles.cardDescription}>
-            View team availability and ensure adequate coverage before approving
-            leave requests.
-          </Text>
-        </View>
       </ScrollView>
     </View>
   );
