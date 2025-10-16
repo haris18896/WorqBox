@@ -72,6 +72,7 @@ export const EmployeeGroupedReports: React.FC<EmployeeGroupedReportsProps> = ({
             columnSpacing={16}
             showsVerticalScrollIndicator={false}
             scrollEnabled={false}
+            nestedScrollEnabled={true}
           />
         </View>
       </View>

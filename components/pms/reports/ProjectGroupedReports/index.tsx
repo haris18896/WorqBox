@@ -95,7 +95,7 @@ export const ProjectGroupedReports: React.FC<ProjectGroupedReportsProps> = ({
 const styles = (palette: ColorPalette) =>
   StyleSheet.create({
     container: {
-      gap: 24,
+      gap: 12,
     },
     projectGroup: {
       backgroundColor: palette.background.primary,
@@ -150,7 +150,7 @@ const styles = (palette: ColorPalette) =>
       fontWeight: "500",
     },
     logsContainer: {
-      marginTop: 8,
+      marginTop: 1,
     },
     logsGrid: {
       paddingHorizontal: 0,
