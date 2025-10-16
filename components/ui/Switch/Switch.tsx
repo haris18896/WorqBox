@@ -1,5 +1,11 @@
 import React from "react";
-import { Switch as RNSwitch, StyleSheet, View, ViewStyle } from "react-native";
+import {
+  ColorValue,
+  Switch as RNSwitch,
+  StyleSheet,
+  View,
+  ViewStyle,
+} from "react-native";
 
 // ** Theme
 import { useTheme } from "@/theme";
@@ -25,7 +31,9 @@ const Switch: React.FC<SwitchProps> = ({
             false: isDisabled ? palette.neutral.light : palette.neutral.main,
             true: isDisabled ? palette.neutral.light : palette.secondary.main,
           },
-          thumbColor: isDisabled ? palette.neutral.light : palette.text.inverse,
+          thumbColor: isDisabled
+            ? palette.neutral.light
+            : palette.text.secondary,
         };
       case "success":
         return {
@@ -33,7 +41,7 @@ const Switch: React.FC<SwitchProps> = ({
             false: isDisabled ? palette.neutral.light : palette.neutral.main,
             true: isDisabled ? palette.neutral.light : palette.success.main,
           },
-          thumbColor: isDisabled ? palette.neutral.light : palette.text.inverse,
+          thumbColor: isDisabled ? palette : palette.text.secondary,
         };
       case "warning":
         return {
@@ -41,7 +49,9 @@ const Switch: React.FC<SwitchProps> = ({
             false: isDisabled ? palette.neutral.light : palette.neutral.main,
             true: isDisabled ? palette.neutral.light : palette.warning.main,
           },
-          thumbColor: isDisabled ? palette.neutral.light : palette.text.inverse,
+          thumbColor: isDisabled
+            ? palette.neutral.light
+            : palette.text.secondary,
         };
       case "error":
         return {
@@ -49,7 +59,9 @@ const Switch: React.FC<SwitchProps> = ({
             false: isDisabled ? palette.neutral.light : palette.neutral.main,
             true: isDisabled ? palette.neutral.light : palette.error.main,
           },
-          thumbColor: isDisabled ? palette.neutral.light : palette.text.inverse,
+          thumbColor: isDisabled
+            ? palette.neutral.light
+            : palette.text.secondary,
         };
       default: // primary
         return {
@@ -57,7 +69,9 @@ const Switch: React.FC<SwitchProps> = ({
             false: isDisabled ? palette.neutral.light : palette.neutral.main,
             true: isDisabled ? palette.neutral.light : palette.primary.main,
           },
-          thumbColor: isDisabled ? palette.neutral.light : palette.text.inverse,
+          thumbColor: isDisabled
+            ? palette.neutral.light
+            : palette.text.secondary,
         };
     }
   };
@@ -97,7 +111,7 @@ const Switch: React.FC<SwitchProps> = ({
         onValueChange={onValueChange}
         disabled={disabled}
         trackColor={switchProps.trackColor}
-        thumbColor={switchProps.thumbColor}
+        thumbColor={switchProps.thumbColor as ColorValue}
         ios_backgroundColor={switchProps.trackColor.false}
       />
     </View>

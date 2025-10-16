@@ -72,8 +72,10 @@ export default function Reports() {
   const employeeOptions: MultiSelectOption[] =
     employees?.items?.map((employee) => ({
       id: employee.id,
-      label: employee.fullName,
-      value: employee,
+      label: `${employee.firstName || ""} ${employee.middleName || ""} ${
+        employee.lastName || ""
+      }`,
+      value: employee.id,
     })) || [];
 
   // Group By options
@@ -360,8 +362,8 @@ export default function Reports() {
     },
   });
 
-  const renderTimeLogItem = (log: TimeLog) => (
-    <View style={styles.timeLogItem}>
+  const renderTimeLogItem = (log: TimeLog, index: string | number) => (
+    <View key={index} style={styles.timeLogItem}>
       <View style={styles.timeLogHeader}>
         <Text style={styles.timeLogTitle} numberOfLines={2}>
           {log.taskName}
@@ -432,7 +434,7 @@ export default function Reports() {
           </Text>
         )}
 
-        {logs.map(renderTimeLogItem)}
+        {logs.map((log, index) => renderTimeLogItem(log, index))}
       </View>
     ));
   };
@@ -585,7 +587,7 @@ export default function Reports() {
                 onValueChange={(value) =>
                   setIsBillable(value ? true : undefined)
                 }
-                variant="primary"
+                variant="secondary"
                 size="medium"
               />
             </View>

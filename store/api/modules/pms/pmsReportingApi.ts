@@ -108,10 +108,6 @@ export const pmsReportingApi = createApi({
           searchParams.append("IsBillable", params.isBillable.toString());
         }
 
-        console.log(
-          "check endpoint : ",
-          `/Reporting/GetTimeLogsReporting?${searchParams.toString()}`
-        );
         return {
           url: `/Reporting/GetTimeLogsReporting?${searchParams.toString()}`,
           method: "GET",

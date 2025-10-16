@@ -4,11 +4,14 @@ import { inputSize, spacing } from "@/theme/stylingConstants";
 import { Ionicons } from "@expo/vector-icons";
 import React, { useEffect, useState } from "react";
 import {
+  Modal,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   View,
 } from "react-native";
 import {
@@ -177,21 +180,40 @@ const MultiSelectDropdown: React.FC<MultiSelectDropdownProps> = ({
     chevronIcon: {
       marginLeft: spacing.sm,
     },
+    modalOverlay: {
+      flex: 1,
+      backgroundColor: "rgba(0, 0, 0, 0.5)",
+      justifyContent: "center",
+      alignItems: "center",
+      paddingTop: 100,
+    },
     dropdown: {
-      position: "absolute",
-      top: "100%",
-      left: 0,
-      right: 0,
       backgroundColor: palette.background.primary,
-      borderRadius: 8,
+      borderRadius: 12,
       borderWidth: 1,
       borderColor: palette.border.primary,
-      zIndex: 9999,
-      elevation: 10,
+      width: "90%",
+      maxHeight: 400,
       shadowColor: "#000",
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.25,
-      shadowRadius: 4,
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.3,
+      shadowRadius: 8,
+      elevation: 15,
+    },
+    modalHeader: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+    },
+    modalTitle: {
+      fontSize: 16,
+      fontWeight: "600",
+      color: palette.text.primary,
+    },
+    closeButton: {
+      padding: 4,
     },
     searchInput: {
       borderWidth: 1,
@@ -205,6 +227,7 @@ const MultiSelectDropdown: React.FC<MultiSelectDropdownProps> = ({
     },
     optionsList: {
       maxHeight: maxHeight,
+      flexGrow: 0,
     },
     optionItem: {
       flexDirection: "row",
@@ -330,45 +353,72 @@ const MultiSelectDropdown: React.FC<MultiSelectDropdownProps> = ({
           />
         </TouchableOpacity>
 
-        {isOpen && (
-          <Pressable
-            style={styles.dropdown}
-            onPress={(e) => e.stopPropagation()}
-          >
-            {searchable && (
-              <TextInput
-                style={styles.searchInput}
-                placeholder="Search..."
-                placeholderTextColor={palette.text.tertiary}
-                value={searchQuery}
-                onChangeText={setSearchQuery}
-              />
-            )}
+        <Modal
+          visible={isOpen}
+          transparent
+          animationType="fade"
+          onRequestClose={() => setIsOpen(false)}
+        >
+          <TouchableWithoutFeedback onPress={() => setIsOpen(false)}>
+            <View style={styles.modalOverlay}>
+              <TouchableWithoutFeedback onPress={(e) => e.stopPropagation()}>
+                <View style={styles.dropdown}>
+                  <View style={styles.modalHeader}>
+                    <Text style={styles.modalTitle}>
+                      {title || "Select Items"}
+                    </Text>
+                    <TouchableOpacity
+                      onPress={() => setIsOpen(false)}
+                      style={styles.closeButton}
+                    >
+                      <Ionicons
+                        name="close"
+                        size={20}
+                        color={palette.text.secondary}
+                      />
+                    </TouchableOpacity>
+                  </View>
 
-            <View style={styles.optionsList}>
-              {filteredOptions.map((item) => {
-                const isSelected = selectedValues.includes(item.id);
-                return (
-                  <TouchableOpacity
-                    key={item.id.toString()}
-                    onPress={() => toggleSelection(item.id)}
-                    activeOpacity={0.7}
+                  {searchable && (
+                    <TextInput
+                      style={styles.searchInput}
+                      placeholder="Search..."
+                      placeholderTextColor={palette.text.tertiary}
+                      value={searchQuery}
+                      onChangeText={setSearchQuery}
+                    />
+                  )}
+
+                  <ScrollView
+                    style={styles.optionsList}
+                    showsVerticalScrollIndicator={true}
                   >
-                    {renderOption
-                      ? renderOption(item, isSelected)
-                      : renderDefaultOption(item, isSelected)}
-                  </TouchableOpacity>
-                );
-              })}
-            </View>
+                    {filteredOptions.map((item) => {
+                      const isSelected = selectedValues.includes(item.id);
+                      return (
+                        <TouchableOpacity
+                          key={item.id.toString()}
+                          onPress={() => toggleSelection(item.id)}
+                          activeOpacity={0.7}
+                        >
+                          {renderOption
+                            ? renderOption(item, isSelected)
+                            : renderDefaultOption(item, isSelected)}
+                        </TouchableOpacity>
+                      );
+                    })}
+                  </ScrollView>
 
-            <View style={styles.footer}>
-              <Text style={styles.footerText}>
-                {selectedValues.length} selected
-              </Text>
+                  <View style={styles.footer}>
+                    <Text style={styles.footerText}>
+                      {selectedValues.length} selected
+                    </Text>
+                  </View>
+                </View>
+              </TouchableWithoutFeedback>
             </View>
-          </Pressable>
-        )}
+          </TouchableWithoutFeedback>
+        </Modal>
       </View>
     </Pressable>
   );

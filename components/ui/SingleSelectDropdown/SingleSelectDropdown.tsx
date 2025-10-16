@@ -4,12 +4,14 @@ import { inputSize, spacing } from "@/theme/stylingConstants";
 import { Ionicons } from "@expo/vector-icons";
 import React, { useEffect, useState } from "react";
 import {
-    Pressable,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Modal,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
 } from "react-native";
 import { SingleSelectDropdownProps } from "./SingleSelectDropdown.d";
 
@@ -155,21 +157,25 @@ const SingleSelectDropdown: React.FC<SingleSelectDropdownProps> = ({
     chevronIcon: {
       marginLeft: spacing.sm,
     },
+    modalOverlay: {
+      flex: 1,
+      backgroundColor: "rgba(0, 0, 0, 0.5)",
+      justifyContent: "center",
+      alignItems: "center",
+    },
     dropdown: {
-      position: "absolute",
-      top: "100%",
-      left: 0,
-      right: 0,
       backgroundColor: palette.background.primary,
       borderRadius: 8,
       borderWidth: 1,
       borderColor: palette.border.primary,
-      zIndex: 9999,
-      elevation: 10,
+      minWidth: 200,
+      maxWidth: "90%",
+      maxHeight: 300,
       shadowColor: "#000",
       shadowOffset: { width: 0, height: 2 },
       shadowOpacity: 0.25,
       shadowRadius: 4,
+      elevation: 10,
     },
     searchInput: {
       borderWidth: 1,
@@ -255,49 +261,59 @@ const SingleSelectDropdown: React.FC<SingleSelectDropdownProps> = ({
           />
         </TouchableOpacity>
 
-        {isOpen && (
-          <Pressable
-            style={styles.dropdown}
-            onPress={(e) => e.stopPropagation()}
-          >
-            {searchable && (
-              <TextInput
-                style={styles.searchInput}
-                placeholder="Search..."
-                placeholderTextColor={palette.text.tertiary}
-                value={searchQuery}
-                onChangeText={setSearchQuery}
-              />
-            )}
+        <Modal
+          visible={isOpen}
+          transparent
+          animationType="fade"
+          onRequestClose={() => setIsOpen(false)}
+        >
+          <TouchableWithoutFeedback onPress={() => setIsOpen(false)}>
+            <View style={styles.modalOverlay}>
+              <TouchableWithoutFeedback onPress={(e) => e.stopPropagation()}>
+                <View style={styles.dropdown}>
+                  {searchable && (
+                    <TextInput
+                      style={styles.searchInput}
+                      placeholder="Search..."
+                      placeholderTextColor={palette.text.tertiary}
+                      value={searchQuery}
+                      onChangeText={setSearchQuery}
+                    />
+                  )}
 
-            <View style={styles.optionsList}>
-              {filteredOptions.map((item) => {
-                const isSelected = selectedValue === item.id;
-                return (
-                  <TouchableOpacity
-                    key={item.id.toString()}
-                    onPress={() => handleSelection(item.id)}
-                    activeOpacity={0.7}
-                  >
-                    <View style={styles.optionItem}>
-                      <View
-                        style={[
-                          styles.radioButton,
-                          isSelected
-                            ? styles.radioButtonSelected
-                            : styles.radioButtonUnselected,
-                        ]}
-                      >
-                        {isSelected && <View style={styles.radioButtonInner} />}
-                      </View>
-                      <Text style={styles.optionText}>{item.label}</Text>
-                    </View>
-                  </TouchableOpacity>
-                );
-              })}
+                  <View style={styles.optionsList}>
+                    {filteredOptions.map((item) => {
+                      const isSelected = selectedValue === item.id;
+                      return (
+                        <TouchableOpacity
+                          key={item.id.toString()}
+                          onPress={() => handleSelection(item.id)}
+                          activeOpacity={0.7}
+                        >
+                          <View style={styles.optionItem}>
+                            <View
+                              style={[
+                                styles.radioButton,
+                                isSelected
+                                  ? styles.radioButtonSelected
+                                  : styles.radioButtonUnselected,
+                              ]}
+                            >
+                              {isSelected && (
+                                <View style={styles.radioButtonInner} />
+                              )}
+                            </View>
+                            <Text style={styles.optionText}>{item.label}</Text>
+                          </View>
+                        </TouchableOpacity>
+                      );
+                    })}
+                  </View>
+                </View>
+              </TouchableWithoutFeedback>
             </View>
-          </Pressable>
-        )}
+          </TouchableWithoutFeedback>
+        </Modal>
       </View>
     </Pressable>
   );
