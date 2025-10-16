@@ -1,7 +1,7 @@
-import { BarHeader } from "@/components/ui";
+import { BarHeader, ComingUp } from "@/components/ui";
 import { useTheme } from "@/theme";
 import React from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
 
 export default function SalaryCalculator() {
   const { palette } = useTheme();
@@ -13,43 +13,36 @@ export default function SalaryCalculator() {
     },
     content: {
       flex: 1,
+
       padding: 20,
     },
-    card: {
-      backgroundColor: palette.background.secondary,
-      padding: 20,
-      borderRadius: 12,
-      marginBottom: 15,
-      elevation: 2,
-      shadowColor: "#000",
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.1,
-      shadowRadius: 4,
-    },
-    cardTitle: {
-      fontSize: 18,
-      fontWeight: "600",
-      color: palette.text.primary,
-      marginBottom: 10,
-    },
-    cardDescription: {
-      fontSize: 14,
-      color: palette.text.secondary,
-      lineHeight: 20,
+    containerStyling: {
+      justifyContent: "center",
+      flex: 1,
     },
   });
 
   return (
     <View style={styles.container}>
       <BarHeader title="Salary Calculator" variant="large" />
-      <ScrollView style={styles.content}>
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Salary Calculator</Text>
-          <Text style={styles.cardDescription}>
-            Calculate your net salary based on various parameters including
-            basic salary, allowances, and deductions.
-          </Text>
-        </View>
+      <ScrollView
+        style={styles.content}
+        contentContainerStyle={styles.containerStyling}
+      >
+        <ComingUp
+          title="Coming Up Soon"
+          subtitle="We're working on something amazing!"
+          icon="rocket-outline"
+          estimatedDate="2025-12-31"
+          features={[
+            "Salary Lists",
+            "Add Salary",
+            "Edit Salary",
+            "Delete Salary",
+          ]}
+          progress={10}
+          variant="detailed"
+        />
       </ScrollView>
     </View>
   );

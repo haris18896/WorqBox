@@ -4,6 +4,7 @@ export { default as Avatar } from "./Avatar";
 export { default as Badge } from "./Badge/Badge";
 export { default as BarHeader } from "./BarHeader/BarHeader";
 export { default as Button } from "./Button/Button";
+export { default as ComingUp } from "./ComingUp/ComingUp";
 export { default as DatePicker } from "./DatePicker/DatePicker";
 export { default as Empty } from "./Empty/Empty";
 export { default as Loading } from "./Loading/Loading";
