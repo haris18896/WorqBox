@@ -25,7 +25,7 @@ export const pmsReportingApi = createApi({
     // GET EMPLOYEES
     getEmployees: builder.query<PaginatedResult<EmployeeObject>, void>({
       query: () => ({
-        url: "/Employee/GetEmployees",
+        url: "/Lookup/GetEmployees",
         method: "GET",
       }),
       transformResponse: (

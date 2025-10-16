@@ -15,6 +15,7 @@ import { ProjectGroupedReportsProps } from "./index.d";
 
 export const ProjectGroupedReports: React.FC<ProjectGroupedReportsProps> = ({
   groupedTimeLogs,
+  employeeProfilePictureMap,
 }) => {
   const { palette } = useTheme();
 
@@ -69,7 +70,13 @@ export const ProjectGroupedReports: React.FC<ProjectGroupedReportsProps> = ({
           <ResponsiveFlatList
             data={logs}
             renderItem={({ item, index }) => (
-              <TimeLogCard key={index} timeLog={item} />
+              <TimeLogCard
+                key={index}
+                timeLog={item}
+                employeeProfilePictureUrl={
+                  employeeProfilePictureMap[item.employeeId]
+                }
+              />
             )}
             keyExtractor={(item, index) => `${item.id}-${index}`}
             contentContainerStyle={styles(palette).logsGrid}

@@ -83,9 +83,7 @@ export default function Reports() {
   const employeeOptions: MultiSelectOption[] =
     employees?.items?.map((employee) => ({
       id: employee.id,
-      label: `${employee.firstName || ""} ${employee.middleName || ""} ${
-        employee.lastName || ""
-      }`,
+      label: employee.fullName,
       value: employee.id,
     })) || [];
 
@@ -161,6 +159,15 @@ export default function Reports() {
   };
 
   const groupedTimeLogs = getGroupedTimeLogs();
+
+  // Create a mapping of employee IDs to profile picture URLs
+  const employeeProfilePictureMap = React.useMemo(() => {
+    const map: { [key: number]: string } = {};
+    employees?.items?.forEach((employee) => {
+      map[employee.id] = employee.profilePictureUrl;
+    });
+    return map;
+  }, [employees]);
 
   const styles = StyleSheet.create({
     container: {
@@ -324,7 +331,13 @@ export default function Reports() {
   }: {
     item: TimeLog;
     index: number;
-  }) => <TimeLogCard key={index} timeLog={item} />;
+  }) => (
+    <TimeLogCard
+      key={index}
+      timeLog={item}
+      employeeProfilePictureUrl={employeeProfilePictureMap[item.employeeId]}
+    />
+  );
 
   const renderGroupedResults = () => {
     if (timeLogsLoading) {
@@ -372,11 +385,21 @@ export default function Reports() {
     }
 
     if (groupBy === "project") {
-      return <ProjectGroupedReports groupedTimeLogs={groupedTimeLogs} />;
+      return (
+        <ProjectGroupedReports
+          groupedTimeLogs={groupedTimeLogs}
+          employeeProfilePictureMap={employeeProfilePictureMap}
+        />
+      );
     }
 
     if (groupBy === "employee") {
-      return <EmployeeGroupedReports groupedTimeLogs={groupedTimeLogs} />;
+      return (
+        <EmployeeGroupedReports
+          groupedTimeLogs={groupedTimeLogs}
+          employeeProfilePictureMap={employeeProfilePictureMap}
+        />
+      );
     }
 
     return null;

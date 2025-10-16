@@ -16,6 +16,7 @@ import { TimeLogCardProps } from "./index.d";
 export const TimeLogCard: React.FC<TimeLogCardProps> = ({
   timeLog,
   onPress,
+  employeeProfilePictureUrl,
 }) => {
   const { palette } = useTheme();
 
@@ -97,7 +98,7 @@ export const TimeLogCard: React.FC<TimeLogCardProps> = ({
       {/* Employee Info */}
       <View style={styles(palette).employeeContainer}>
         <Avatar
-          imageUrl={undefined}
+          imageUrl={employeeProfilePictureUrl}
           name={`${timeLog.employeeFirstName} ${timeLog.employeeLastName}`}
           size={32}
         />
