@@ -16,7 +16,7 @@ import { MultiSelectOption } from "@/components/ui/MultiSelectDropdown/MultiSele
 import { useGetMainProjectsQuery } from "@/store/api/modules/pms/pmsProjects";
 import {
   useGetEmployeesQuery,
-  useGetReportingStatsQuery,
+  useLazyGetReportingStatsQuery,
   useLazyGetTimeLogsReportingQuery,
 } from "@/store/api/modules/pms/pmsReportingApi";
 import { TimeLog } from "@/store/api/modules/pms/pmsTypes";
@@ -63,7 +63,9 @@ export default function Reports() {
     useGetEmployeesQuery();
   const { data: projects, isLoading: projectsLoading } =
     useGetMainProjectsQuery();
-  const { data: reportingStats } = useGetReportingStatsQuery();
+
+  const [getReportingStats, { data: reportingStats }] =
+    useLazyGetReportingStatsQuery();
 
   const [
     getTimeLogs,
@@ -94,7 +96,7 @@ export default function Reports() {
     { id: "employee", label: "Group by Employee", value: "employee" },
   ];
 
-  // Fetch time logs when filters change
+  // Fetch time logs and reporting stats when filters change
   useEffect(() => {
     const params = {
       projectIds: selectedProjects.length > 0 ? selectedProjects : undefined,
@@ -109,6 +111,7 @@ export default function Reports() {
 
     // Always fetch with current filter values
     getTimeLogs(params);
+    getReportingStats(params);
   }, [
     selectedProjects,
     selectedEmployees,
@@ -116,6 +119,7 @@ export default function Reports() {
     endDate,
     isBillable,
     getTimeLogs,
+    getReportingStats,
   ]);
 
   // Reset all filters

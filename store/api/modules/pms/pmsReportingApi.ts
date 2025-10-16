@@ -53,15 +53,48 @@ export const pmsReportingApi = createApi({
     }),
 
     // GET REPORTING STATS
-    getReportingStats: builder.query<ReportingStats, void>({
-      query: () => ({
-        url: "/Reporting/ReportingStats",
-        method: "GET",
-      }),
+    getReportingStats: builder.query<ReportingStats, TimeLogParams>({
+      query: (params: TimeLogParams) => {
+        const searchParams = new URLSearchParams();
+
+        if (params.pageNumber) {
+          searchParams.append("PageNumber", params.pageNumber.toString());
+        }
+        if (params.pageSize) {
+          searchParams.append("PageSize", params.pageSize.toString());
+        }
+        if (params.sortOrder !== undefined) {
+          searchParams.append("SortOrder", params.sortOrder.toString());
+        }
+        if (params.projectIds && params.projectIds.length > 0) {
+          params.projectIds.forEach((id) => {
+            searchParams.append("projectIds", id.toString());
+          });
+        }
+        if (params.employeeIds && params.employeeIds.length > 0) {
+          params.employeeIds.forEach((id) => {
+            searchParams.append("employeeIds", id.toString());
+          });
+        }
+        if (params.startDate) {
+          searchParams.append("StartDate", params.startDate);
+        }
+        if (params.endDate) {
+          searchParams.append("EndDate", params.endDate);
+        }
+        if (params.isBillable !== undefined) {
+          searchParams.append("IsBillable", params.isBillable.toString());
+        }
+
+        return {
+          url: `/Reporting/ReportingStats?${searchParams.toString()}`,
+          method: "GET",
+        };
+      },
       transformResponse: (response: BaseApiResponse<ReportingStats>) => {
         return transformResponse(response);
       },
-      onQueryStarted: async (arg: void, { queryFulfilled }: any) => {
+      onQueryStarted: async (arg: TimeLogParams, { queryFulfilled }: any) => {
         try {
           await queryFulfilled;
         } catch (error) {
