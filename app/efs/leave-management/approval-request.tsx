@@ -1,56 +1,343 @@
-import { BarHeader } from "@/components/ui";
+import ApprovedRequestCard from "@/components/efs/approvedRequestCard";
+import { BarHeader, ResponsiveFlatList } from "@/components/ui";
+import {
+  useGetLeaveRequestsByAdminQuery,
+  useGetLeaveStatusCountAdminQuery,
+} from "@/store/api/modules/efs/efsLeaves";
 import { useTheme } from "@/theme";
-import React from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { borderRadius, shadow, spacing } from "@/theme/stylingConstants";
+import { Ionicons } from "@expo/vector-icons";
+import React, { useEffect, useState } from "react";
+import {
+  ActivityIndicator,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 export default function ApprovalRequest() {
   const { palette } = useTheme();
+  const [selectedStatus, setSelectedStatus] = useState<
+    "all" | "pending" | "approved" | "rejected"
+  >("all");
+  const [searchKeyword, setSearchKeyword] = useState("");
+  const [searchText, setSearchText] = useState("");
+
+  const { data: statusCounts, isLoading: statusLoading } =
+    useGetLeaveStatusCountAdminQuery();
+
+  const { data: leaveRequests, isLoading: requestsLoading } =
+    useGetLeaveRequestsByAdminQuery({
+      pageNumber: 1,
+      pageSize: 50,
+      keyword: searchKeyword,
+    });
+
+  // Debounce search
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setSearchKeyword(searchText);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [searchText]);
+
+  const filteredRequests =
+    leaveRequests?.items.filter((request) => {
+      switch (selectedStatus) {
+        case "pending":
+          return !request.isApproved && !request.isRejected;
+        case "approved":
+          return request.isApproved;
+        case "rejected":
+          return request.isRejected;
+        default:
+          return true;
+      }
+    }) || [];
+
+  const handleApprove = (id: number) => {
+    console.log("Approve request:", id);
+    // TODO: Implement approve functionality
+  };
+
+  const handleReject = (id: number) => {
+    console.log("Reject request:", id);
+    // TODO: Implement reject functionality
+  };
+
+  const handleViewDetails = (id: number) => {
+    console.log("View details for request:", id);
+    // TODO: Implement view details functionality
+  };
+
+  const renderStatusToggler = () => {
+    const statusOptions = [
+      {
+        key: "all",
+        label: "All",
+        count: statusCounts
+          ? statusCounts.pendingRequestCount +
+            statusCounts.approveRequestCount +
+            statusCounts.rejectedRequestCount
+          : 0,
+      },
+      {
+        key: "pending",
+        label: "Pending",
+        count: statusCounts?.pendingRequestCount || 0,
+      },
+      {
+        key: "approved",
+        label: "Approved",
+        count: statusCounts?.approveRequestCount || 0,
+      },
+      {
+        key: "rejected",
+        label: "Rejected",
+        count: statusCounts?.rejectedRequestCount || 0,
+      },
+    ];
+
+    return (
+      <View style={styles.statusToggler}>
+        {statusOptions.map((option) => (
+          <TouchableOpacity
+            key={option.key}
+            style={[
+              styles.statusButton,
+              selectedStatus === option.key && styles.statusButtonActive,
+            ]}
+            onPress={() => setSelectedStatus(option.key as any)}
+            activeOpacity={0.8}
+          >
+            <Text
+              style={[
+                styles.statusButtonText,
+                selectedStatus === option.key && styles.statusButtonTextActive,
+              ]}
+            >
+              {option.label}
+            </Text>
+            <View
+              style={[
+                styles.statusCount,
+                selectedStatus === option.key && styles.statusCountActive,
+              ]}
+            >
+              <Text
+                style={[
+                  styles.statusCountText,
+                  selectedStatus === option.key && styles.statusCountTextActive,
+                ]}
+              >
+                {option.count}
+              </Text>
+            </View>
+          </TouchableOpacity>
+        ))}
+      </View>
+    );
+  };
+
+  const renderLeaveRequest = ({ item }: { item: any }) => (
+    <ApprovedRequestCard
+      leaveRequest={item}
+      onApprove={handleApprove}
+      onReject={handleReject}
+      onViewDetails={handleViewDetails}
+      showActions={selectedStatus === "all" || selectedStatus === "pending"}
+    />
+  );
 
   const styles = StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: palette.background.primary,
     },
-    content: {
-      flex: 1,
-      padding: 20,
-    },
-    card: {
-      backgroundColor: palette.background.secondary,
-      padding: 20,
-      borderRadius: 12,
-      marginBottom: 15,
-      elevation: 2,
-      shadowColor: "#000",
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.1,
-      shadowRadius: 4,
+    headerCard: {
+      backgroundColor: palette.surface.primary,
+      paddingHorizontal: spacing.md,
+      paddingVertical: spacing.md,
+      borderRadius: borderRadius.lg,
+      marginBottom: spacing.md,
+      ...shadow.sm,
     },
     cardTitle: {
       fontSize: 18,
       fontWeight: "600",
       color: palette.text.primary,
-      marginBottom: 10,
+      marginBottom: spacing.sm,
     },
     cardDescription: {
       fontSize: 14,
       color: palette.text.secondary,
       lineHeight: 20,
+      marginBottom: spacing.md,
+    },
+    statusToggler: {
+      flexDirection: "row",
+      backgroundColor: palette.surface.secondary,
+      borderRadius: borderRadius.md,
+      padding: spacing.xs,
+    },
+    statusButton: {
+      flex: 1,
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
+      paddingVertical: spacing.sm,
+      paddingHorizontal: spacing.md,
+      borderRadius: borderRadius.sm,
+    },
+    statusButtonActive: {
+      backgroundColor: palette.primary.main,
+    },
+    statusButtonText: {
+      fontSize: 14,
+      fontWeight: "500",
+      color: palette.text.secondary,
+    },
+    statusButtonTextActive: {
+      color: palette.text.inverse,
+    },
+    statusCount: {
+      backgroundColor: palette.surface.primary,
+      borderRadius: borderRadius.full,
+      minWidth: 20,
+      height: 20,
+      alignItems: "center",
+      justifyContent: "center",
+      marginLeft: spacing.xs,
+    },
+    statusCountActive: {
+      backgroundColor: palette.text.inverse,
+    },
+    statusCountText: {
+      fontSize: 10,
+      fontWeight: "600",
+      color: palette.text.primary,
+    },
+    statusCountTextActive: {
+      color: palette.primary.main,
+    },
+    loadingContainer: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      padding: spacing.xl,
+    },
+    loadingText: {
+      marginTop: spacing.md,
+      fontSize: 16,
+      color: palette.text.secondary,
+    },
+    emptyContainer: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      padding: spacing.xl,
+    },
+    emptyText: {
+      fontSize: 16,
+      color: palette.text.tertiary,
+      textAlign: "center",
+    },
+    listContainer: {
+      flex: 1,
+    },
+    searchContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+      backgroundColor: palette.surface.secondary,
+      borderRadius: borderRadius.md,
+      paddingHorizontal: spacing.md,
+      paddingVertical: spacing.sm,
+      marginBottom: spacing.md,
+    },
+    searchIcon: {
+      fontSize: 16,
+      color: palette.text.tertiary,
+      marginRight: spacing.sm,
+    },
+    searchInput: {
+      flex: 1,
+      fontSize: 14,
+      color: palette.text.primary,
+      paddingVertical: spacing.xs,
+    },
+    clearButton: {
+      padding: spacing.xs,
+    },
+    clearIcon: {
+      fontSize: 16,
+      color: palette.text.tertiary,
     },
   });
 
+  if (statusLoading || requestsLoading) {
+    return (
+      <View style={styles.container}>
+        <BarHeader title="Leave Approval Requests" variant="large" />
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={palette.primary.main} />
+          <Text style={styles.loadingText}>Loading requests...</Text>
+        </View>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
-      <BarHeader title="WorqBox Dashboard" variant="large" />
-      <ScrollView style={styles.content}>
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Pending Approvals</Text>
-          <Text style={styles.cardDescription}>
-            Review and approve leave requests from team members. View request
-            details and make informed decisions.
-          </Text>
+      <BarHeader title="Leave Approval Requests" variant="large" />
+
+      <View style={styles.headerCard}>
+        <View style={styles.searchContainer}>
+          <Ionicons name="search-outline" style={styles.searchIcon} />
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Search by employee name or email..."
+            placeholderTextColor={palette.text.tertiary}
+            value={searchText}
+            onChangeText={setSearchText}
+            returnKeyType="search"
+          />
+          {searchText.length > 0 && (
+            <TouchableOpacity
+              style={styles.clearButton}
+              onPress={() => setSearchText("")}
+            >
+              <Ionicons name="close-circle" style={styles.clearIcon} />
+            </TouchableOpacity>
+          )}
         </View>
-      </ScrollView>
+        {renderStatusToggler()}
+      </View>
+
+      <View style={styles.listContainer}>
+        {filteredRequests.length > 0 ? (
+          <ResponsiveFlatList
+            data={filteredRequests}
+            renderItem={renderLeaveRequest}
+            keyExtractor={(item) => item.id.toString()}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{ padding: spacing.md }}
+          />
+        ) : (
+          <View style={styles.emptyContainer}>
+            <Ionicons
+              name="document-outline"
+              size={48}
+              color={palette.text.tertiary}
+            />
+            <Text style={styles.emptyText}>
+              No {selectedStatus === "all" ? "" : selectedStatus} requests found
+            </Text>
+          </View>
+        )}
+      </View>
     </View>
   );
 }

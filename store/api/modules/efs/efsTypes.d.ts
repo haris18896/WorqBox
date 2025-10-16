@@ -64,10 +64,9 @@ export interface LeaveRequest {
 }
 
 export interface LeaveStatusCount {
-  pending?: number;
-  approved?: number;
-  rejected?: number;
-  total?: number;
+  pendingRequestCount: number;
+  approveRequestCount: number;
+  rejectedRequestCount: number;
 }
 
 export interface LeaveRequestParams extends PaginationParams {
