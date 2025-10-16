@@ -243,24 +243,22 @@ export const API_ENDPOINTS = {
   UPDATE_LEAVE_REQUEST: "/Leave/CreateUpdateLeaveRequest",
   CANCEL_LEAVE_REQUEST: "/Leave/CancelLeaveRequest",
 
-  // PMS (Project Management System) endpoints
-  // Projects
+  // PMS (Project Management System)
   GET_MAIN_PROJECTS: "/Project/GetProjects",
   GET_CLIENT_PROJECTS: "/ProjectClient/GetProjectClients",
-
-  // Project Clients
   GET_PROJECT_CLIENTS: "/ProjectClient/GetProjectClients",
-
-  // Lookups
   GET_PROJECTS_LOOKUP: "/Lookup/GetProjects",
   GET_EMPLOYEES_LOOKUP: "/Lookup/GetEmployees",
-
-  // Reporting
   REPORTING_STATS: "/Reporting/ReportingStats",
   GET_TIME_LOGS_REPORTING: "/Reporting/GetTimeLogsReporting",
   EXPORT_TIME_LOGS_CSV: "/Reporting/ExportTimeLogsReporting",
   EXPORT_TIME_LOGS_PDF: "/Reporting/ExportTimeLogsReportingPdf",
 
-  // Employees
-  GET_EMPLOYEES: "/Employee/GetEmployees",
+  // EFS (Employee Facilitation System)
+  GET_ADMIN_DASHBOARD: "/Dashboard/GetAdminDashboard",
+  GET_MY_LEAVE_REQUESTS: "/Leave/GetMyRequestListing",
+  GET_LEAVE_REQUESTS_BY_ADMIN: "/Leave/GetLeaveRequestsByAdmin",
+  GET_LEAVE_TYPES: "/Lookup/GetLeaveTypes",
+  GET_LEAVE_STATUS_COUNT: "/Dashboard/GetLeaveStatusCount",
+  GET_LEAVE_STATUS_COUNT_ADMIN: "/Dashboard/GetLeaveStatusCountAdmin",
 };
