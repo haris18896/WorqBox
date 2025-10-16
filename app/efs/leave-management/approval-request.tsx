@@ -160,9 +160,7 @@ export default function ApprovalRequest() {
     headerCard: {
       backgroundColor: palette.surface.primary,
       paddingHorizontal: spacing.md,
-      paddingVertical: spacing.md,
       borderRadius: borderRadius.lg,
-      marginBottom: spacing.md,
       ...shadow.sm,
     },
     cardTitle: {
