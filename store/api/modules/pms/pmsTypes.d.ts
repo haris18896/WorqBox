@@ -59,6 +59,7 @@ export interface Employee {
 }
 
 export interface EmployeeObject {
+  [x: string]: string;
   id: number;
   employeeNumber: string;
   profilePictureUrl: string;

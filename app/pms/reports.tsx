@@ -37,11 +37,19 @@ interface GroupedTimeLogs {
 export default function Reports() {
   const { palette } = useTheme();
 
+  // Calculate default dates
+  const today = new Date();
+  const oneMonthAgo = new Date();
+  oneMonthAgo.setMonth(today.getMonth() - 1);
+
+  const defaultStartDate = oneMonthAgo.toISOString().split("T")[0];
+  const defaultEndDate = today.toISOString().split("T")[0];
+
   // State for filters
   const [selectedProjects, setSelectedProjects] = useState<number[]>([]);
   const [selectedEmployees, setSelectedEmployees] = useState<number[]>([]);
-  const [startDate, setStartDate] = useState<string>("");
-  const [endDate, setEndDate] = useState<string>("");
+  const [startDate, setStartDate] = useState<string>(defaultStartDate);
+  const [endDate, setEndDate] = useState<string>(defaultEndDate);
   const [isBillable, setIsBillable] = useState<boolean | undefined>(undefined);
   const [groupBy, setGroupBy] = useState<GroupByOption>("none");
 
@@ -87,26 +95,18 @@ export default function Reports() {
 
   // Fetch time logs when filters change
   useEffect(() => {
-    // Calculate default dates
-    const today = new Date();
-    const oneMonthAgo = new Date();
-    oneMonthAgo.setMonth(today.getMonth() - 1);
-
-    const defaultStartDate = oneMonthAgo.toISOString().split("T")[0];
-    const defaultEndDate = today.toISOString().split("T")[0];
-
     const params = {
       projectIds: selectedProjects.length > 0 ? selectedProjects : undefined,
       employeeIds: selectedEmployees.length > 0 ? selectedEmployees : undefined,
-      startDate: startDate || defaultStartDate,
-      endDate: endDate || defaultEndDate,
+      startDate: startDate,
+      endDate: endDate,
       isBillable: isBillable,
       pageNumber: 1,
       pageSize: 50,
       sortOrder: true,
     };
 
-    // Always fetch with default values or applied filters
+    // Always fetch with current filter values
     getTimeLogs(params);
   }, [
     selectedProjects,
@@ -121,8 +121,8 @@ export default function Reports() {
   const resetFilters = () => {
     setSelectedProjects([]);
     setSelectedEmployees([]);
-    setStartDate("");
-    setEndDate("");
+    setStartDate(defaultStartDate);
+    setEndDate(defaultEndDate);
     setIsBillable(undefined);
     setGroupBy("none");
   };
