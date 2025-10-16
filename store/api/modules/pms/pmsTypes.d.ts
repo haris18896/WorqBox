@@ -99,8 +99,8 @@ export interface TimeLog {
 }
 
 export interface TimeLogParams extends PaginationParams {
-  projectId?: number;
-  employeeId?: number;
+  projectIds?: number[];
+  employeeIds?: number[];
   startDate?: string;
   endDate?: string;
   isBillable?: boolean;

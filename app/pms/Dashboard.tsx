@@ -15,7 +15,6 @@ export default function PMSDashboard() {
 
   const { events, addEvent, deleteEvent, loading } = useCalendarEvents();
 
-  console.log("events : ", events);
   const styles = StyleSheet.create({
     container: {
       flex: 1,

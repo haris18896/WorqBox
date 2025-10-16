@@ -88,11 +88,15 @@ export const pmsReportingApi = createApi({
         if (params.sortOrder !== undefined) {
           searchParams.append("SortOrder", params.sortOrder.toString());
         }
-        if (params.projectId) {
-          searchParams.append("ProjectId", params.projectId.toString());
+        if (params.projectIds && params.projectIds.length > 0) {
+          params.projectIds.forEach((id) => {
+            searchParams.append("projectIds", id.toString());
+          });
         }
-        if (params.employeeId) {
-          searchParams.append("EmployeeId", params.employeeId.toString());
+        if (params.employeeIds && params.employeeIds.length > 0) {
+          params.employeeIds.forEach((id) => {
+            searchParams.append("employeeIds", id.toString());
+          });
         }
         if (params.startDate) {
           searchParams.append("StartDate", params.startDate);
@@ -103,10 +107,11 @@ export const pmsReportingApi = createApi({
         if (params.isBillable !== undefined) {
           searchParams.append("IsBillable", params.isBillable.toString());
         }
-        if (params.isBilled !== undefined) {
-          searchParams.append("IsBilled", params.isBilled.toString());
-        }
 
+        console.log(
+          "check endpoint : ",
+          `/Reporting/GetTimeLogsReporting?${searchParams.toString()}`
+        );
         return {
           url: `/Reporting/GetTimeLogsReporting?${searchParams.toString()}`,
           method: "GET",
