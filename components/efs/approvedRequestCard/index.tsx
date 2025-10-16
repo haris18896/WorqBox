@@ -3,7 +3,7 @@ import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 // ** Theme
-import { useTheme } from "@/theme";
+import { isTablet, useTheme } from "@/theme";
 import { createTypographyStyle } from "@/theme/fonts";
 import { borderRadius, shadow, spacing } from "@/theme/stylingConstants";
 
@@ -58,7 +58,7 @@ const ApprovedRequestCard: React.FC<ApprovedRequestCardProps> = ({
       ...shadow.sm,
       borderWidth: 1,
       borderColor: palette.border.primary,
-      minHeight: 300,
+      minHeight: isTablet() ? 300 : 250,
       justifyContent: "space-between",
       ...style,
     },
