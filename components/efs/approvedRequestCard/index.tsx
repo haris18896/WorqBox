@@ -58,7 +58,7 @@ const ApprovedRequestCard: React.FC<ApprovedRequestCardProps> = ({
       ...shadow.sm,
       borderWidth: 1,
       borderColor: palette.border.primary,
-      minHeight: 250,
+      minHeight: 300,
       justifyContent: "space-between",
       ...style,
     },
@@ -101,7 +101,7 @@ const ApprovedRequestCard: React.FC<ApprovedRequestCardProps> = ({
       color: getStatusColor(),
     },
     leaveDetails: {
-      marginBottom: spacing.sm,
+      //   marginBottom: spacing.sm,
     },
     leaveType: {
       fontSize: 14,
@@ -200,11 +200,11 @@ const ApprovedRequestCard: React.FC<ApprovedRequestCardProps> = ({
       marginTop: spacing.sm,
     },
     topSection: {
-      flex: 1,
+      marginBottom: spacing["xs"],
     },
     middleSection: {
       flex: 1,
-      justifyContent: "center",
+      justifyContent: "flex-start",
     },
     bottomSection: {},
   });
@@ -234,7 +234,7 @@ const ApprovedRequestCard: React.FC<ApprovedRequestCardProps> = ({
             <Ionicons
               name="calendar-outline"
               size={16}
-              color={palette.text.secondary}
+              color={palette.info.main}
             />
             <Text style={styles.dateRange}>
               {formatDate(leaveRequest.fromDate)} -{" "}
@@ -256,7 +256,7 @@ const ApprovedRequestCard: React.FC<ApprovedRequestCardProps> = ({
             <Ionicons
               name="document-text-outline"
               size={16}
-              color={palette.text.secondary}
+              color={palette.warning.main}
             />
             <Text style={styles.description} numberOfLines={2}>
               {leaveRequest.longDescription}
