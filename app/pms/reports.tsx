@@ -1,8 +1,14 @@
 import {
+  EmployeeGroupedReports,
+  ProjectGroupedReports,
+  TimeLogCard,
+} from "@/components/pms";
+import {
   BarHeader,
   DatePicker,
   Empty,
   MultiSelectDropdown,
+  ResponsiveFlatList,
   SingleSelectDropdown,
   Switch,
 } from "@/components/ui";
@@ -16,7 +22,6 @@ import {
 import { TimeLog } from "@/store/api/modules/pms/pmsTypes";
 import { spacing, useTheme } from "@/theme";
 import { isMobile } from "@/theme/responsive";
-import { stripHtmlTags } from "@/utils/textUtils";
 import { Ionicons } from "@expo/vector-icons";
 import React, { useEffect, useState } from "react";
 import {
@@ -39,10 +44,10 @@ export default function Reports() {
 
   // Calculate default dates
   const today = new Date();
-  const oneMonthAgo = new Date();
-  oneMonthAgo.setMonth(today.getMonth() - 1);
+  const oneYearAgo = new Date();
+  oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
 
-  const defaultStartDate = oneMonthAgo.toISOString().split("T")[0];
+  const defaultStartDate = oneYearAgo.toISOString().split("T")[0];
   const defaultEndDate = today.toISOString().split("T")[0];
 
   // State for filters
@@ -52,10 +57,6 @@ export default function Reports() {
   const [endDate, setEndDate] = useState<string>(defaultEndDate);
   const [isBillable, setIsBillable] = useState<boolean | undefined>(undefined);
   const [groupBy, setGroupBy] = useState<GroupByOption>("none");
-
-  // State for UI
-  // const [modal, setModal] = useState(false);
-  // const [switchValue, setSwitchValue] = useState(true);
 
   // API Queries
   const { data: employees, isLoading: employeesLoading } =
@@ -282,62 +283,10 @@ export default function Reports() {
       color: palette.text.primary,
       marginBottom: 16,
     },
-    groupTitle: {
-      fontSize: 16,
-      fontWeight: "600",
-      color: palette.primary.main,
-      marginBottom: 12,
-      marginTop: 16,
-    },
-    timeLogItem: {
-      backgroundColor: palette.background.primary,
-      padding: 16,
-      borderRadius: 8,
-      marginBottom: 8,
-      borderWidth: 1,
-      borderColor: palette.border.primary,
-    },
-    timeLogHeader: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
-      marginBottom: 8,
-    },
-    timeLogTitle: {
-      fontSize: 16,
-      fontWeight: "600",
-      color: palette.text.primary,
-      flex: 1,
-    },
-    timeLogHours: {
-      fontSize: 14,
-      fontWeight: "600",
-      color: palette.primary.main,
-    },
     timeLogDetails: {
       fontSize: 14,
       color: palette.text.secondary,
       marginBottom: 4,
-    },
-    timeLogMeta: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
-    },
-    timeLogDate: {
-      fontSize: 12,
-      color: palette.text.tertiary,
-    },
-    billableBadge: {
-      backgroundColor: palette.success.main,
-      paddingHorizontal: 8,
-      paddingVertical: 4,
-      borderRadius: 12,
-    },
-    billableText: {
-      fontSize: 12,
-      color: palette.text.inverse,
-      fontWeight: "500",
     },
     loadingContainer: {
       padding: 20,
@@ -360,42 +309,18 @@ export default function Reports() {
       justifyContent: "space-between",
       gap: spacing["md"],
     },
+    resultsGrid: {
+      paddingHorizontal: 0,
+    },
   });
 
-  const renderTimeLogItem = (log: TimeLog, index: string | number) => (
-    <View key={index} style={styles.timeLogItem}>
-      <View style={styles.timeLogHeader}>
-        <Text style={styles.timeLogTitle} numberOfLines={2}>
-          {log.taskName}
-        </Text>
-        <Text style={styles.timeLogHours}>{log.timeSpent}h</Text>
-      </View>
-
-      <Text style={styles.timeLogDetails}>Project: {log.projectName}</Text>
-
-      <Text style={styles.timeLogDetails}>
-        Employee: {log.employeeFirstName} {log.employeeLastName}
-      </Text>
-
-      {log.detailMessage && (
-        <Text style={styles.timeLogDetails} numberOfLines={2}>
-          {stripHtmlTags(log.detailMessage, 100)}
-        </Text>
-      )}
-
-      <View style={styles.timeLogMeta}>
-        <Text style={styles.timeLogDate}>
-          {new Date(log.startDate).toLocaleDateString()}
-        </Text>
-
-        {log.isBillable && (
-          <View style={styles.billableBadge}>
-            <Text style={styles.billableText}>Billable</Text>
-          </View>
-        )}
-      </View>
-    </View>
-  );
+  const renderTimeLogItem = ({
+    item,
+    index,
+  }: {
+    item: TimeLog;
+    index: number;
+  }) => <TimeLogCard key={index} timeLog={item} />;
 
   const renderGroupedResults = () => {
     if (timeLogsLoading) {
@@ -426,17 +351,31 @@ export default function Reports() {
       );
     }
 
-    return Object.entries(groupedTimeLogs).map(([groupKey, logs]) => (
-      <View key={groupKey}>
-        {groupBy !== "none" && (
-          <Text style={styles.groupTitle}>
-            {groupKey} ({logs.length} logs)
-          </Text>
-        )}
+    // Render based on grouping option
+    if (groupBy === "none") {
+      return (
+        <ResponsiveFlatList
+          data={timeLogsData.items}
+          renderItem={renderTimeLogItem}
+          keyExtractor={(item, index) => `${item.id}-${index}`}
+          contentContainerStyle={styles.resultsGrid}
+          itemSpacing={12}
+          columnSpacing={16}
+          showsVerticalScrollIndicator={false}
+          scrollEnabled={false}
+        />
+      );
+    }
 
-        {logs.map((log, index) => renderTimeLogItem(log, index))}
-      </View>
-    ));
+    if (groupBy === "project") {
+      return <ProjectGroupedReports groupedTimeLogs={groupedTimeLogs} />;
+    }
+
+    if (groupBy === "employee") {
+      return <EmployeeGroupedReports groupedTimeLogs={groupedTimeLogs} />;
+    }
+
+    return null;
   };
 
   return (
