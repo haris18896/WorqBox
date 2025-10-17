@@ -108,3 +108,61 @@ export interface ClearanceResponse {
   errors: any;
   result: PaginatedResult<EmployeeAssignment>;
 }
+
+// Asset Category Types
+export interface AssetTypesCategory {
+  id: number;
+  name: string;
+}
+
+export interface AssetCategoryParams extends PaginationParams {
+  keyword?: string;
+  pageNumber?: number;
+  pageSize?: number;
+  sortOrder?: boolean;
+}
+
+export interface AssetCategoryResponse {
+  isSuccess: boolean;
+  responseMessage: string;
+  errors: any;
+  result: PaginatedResult<AssetCategory>;
+}
+
+// Asset Types
+export interface Asset {
+  id: number;
+  name: string;
+  serialNumber: string;
+  shortDescription: string;
+  purchaseData: string;
+  purchaseCost: number;
+  assetCategoryId: number;
+  assetCategory: {
+    id: number;
+    name: string;
+  };
+  assignedEmployee: {
+    id: number;
+    employeeNumber: string;
+    profilePictureUrl?: string;
+    fullName: string;
+  } | null;
+  purchaseOrder: any | null;
+}
+
+export interface AssetParams extends PaginationParams {
+  keyword?: string;
+  assetCategoryId?: number;
+  assignedEmployeeId?: number;
+  pageNumber?: number;
+  pageSize?: number;
+  sortOrder?: boolean;
+}
+
+export interface AssetResponse {
+  isSuccess: boolean;
+  responseMessage: string;
+  errors: any;
+  result: PaginatedResult<Asset>;
+}

@@ -267,4 +267,6 @@ export const API_ENDPOINTS = {
   GET_PURCHASE_ORDERS: "/PurchaseOrder",
   GET_VENDORS: "/Vendor/Get",
   GET_CLEARANCE_ASSIGNMENTS: "/Clearance/employee-assignments",
+  GET_ASSET_CATEGORIES: "/AssetCategory",
+  GET_ASSETS: "/Asset/GetAssets",
 };

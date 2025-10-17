@@ -14,7 +14,12 @@ export interface ButtonProps {
   textStyle?: TextStyle;
 }
 
-export type ButtonVariant = "primary" | "secondary" | "outline" | "ghost";
+export type ButtonVariant =
+  | "primary"
+  | "secondary"
+  | "outline"
+  | "ghost"
+  | "error";
 
 export type ButtonSizeType = "small" | "medium" | "large";
 

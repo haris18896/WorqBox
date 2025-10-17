@@ -11,6 +11,7 @@ import { pmsApi } from "./api/modules/pms/pmsApi";
 // Import regular slices
 import { amsClearanceApi } from "./api/modules/ams/amsClearance";
 import { amsDashboardApi } from "./api/modules/ams/amsDashboard";
+import { amsManagementApi } from "./api/modules/ams/amsMangament";
 import { amsPurchaseOrderApi } from "./api/modules/ams/amsPurchaseOrder";
 import { efsDashboardApi } from "./api/modules/efs/efsDashboard";
 import { efsLeavesApi } from "./api/modules/efs/efsLeaves";
@@ -39,6 +40,7 @@ export const store = configureStore({
     [amsDashboardApi.reducerPath]: amsDashboardApi.reducer,
     [amsPurchaseOrderApi.reducerPath]: amsPurchaseOrderApi.reducer,
     [amsClearanceApi.reducerPath]: amsClearanceApi.reducer,
+    [amsManagementApi.reducerPath]: amsManagementApi.reducer,
 
     // Regular slices
     auth: authSlice,
@@ -64,7 +66,8 @@ export const store = configureStore({
       efsLeavesApi.middleware,
       amsDashboardApi.middleware,
       amsPurchaseOrderApi.middleware,
-      amsClearanceApi.middleware
+      amsClearanceApi.middleware,
+      amsManagementApi.middleware
     ),
   devTools: __DEV__,
 });

@@ -49,6 +49,14 @@ const Button: React.FC<ButtonProps> = ({
             : palette.primary.main,
           borderWidth: 2,
         };
+      case "error":
+        return {
+          backgroundColor: isDisabled
+            ? palette.neutral.light
+            : palette.error.main,
+          borderColor: "transparent",
+          borderWidth: 0,
+        };
       case "ghost":
         return {
           backgroundColor: "transparent",
