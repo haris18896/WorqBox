@@ -102,3 +102,9 @@ export const getInitials = (fullName: string): string => {
 
   return fullName.substring(0, 2).toUpperCase();
 };
+
+export const isObjEmpty = (obj: any): boolean => {
+  if (obj === null || obj === undefined) return true;
+  if (typeof obj !== "object") return false;
+  return Object.keys(obj).length === 0;
+};

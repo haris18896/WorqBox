@@ -11,6 +11,7 @@ export { default as Loading } from "./Loading/Loading";
 export { default as Modal } from "./Modal/Modal";
 export { default as MultiSelectDropdown } from "./MultiSelectDropdown/MultiSelectDropdown";
 export { default as ResponsiveFlatList } from "./ResponsiveFlatList";
+export { default as SearchComponent } from "./SearchComponent/SearchComponent";
 export { default as SingleSelectDropdown } from "./SingleSelectDropdown/SingleSelectDropdown";
 export { default as Switch } from "./Switch/Switch";
 export { default as TextInput } from "./TextInput/TextInput";

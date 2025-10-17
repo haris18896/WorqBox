@@ -16,6 +16,7 @@ import {
   LeaveStatusCount,
   LeaveStatusCountParams,
   LeaveType,
+  LeaveTypesResponse,
 } from "./efsTypes";
 
 export const efsLeavesApi = createApi({
@@ -142,14 +143,12 @@ export const efsLeavesApi = createApi({
     }),
 
     // GET LEAVE TYPES
-    getLeaveTypes: builder.query<PaginatedResult<LeaveType>, void>({
+    getLeaveTypes: builder.query<LeaveTypesResponse, void>({
       query: () => ({
         url: API_ENDPOINTS.GET_LEAVE_TYPES,
         method: "GET",
       }),
-      transformResponse: (
-        response: BaseApiResponse<PaginatedResult<LeaveType>>
-      ) => {
+      transformResponse: (response: BaseApiResponse<LeaveTypesResponse>) => {
         return transformResponse(response);
       },
       onQueryStarted: async (arg: void, { queryFulfilled }: any) => {
@@ -159,7 +158,7 @@ export const efsLeavesApi = createApi({
           handleApiError(error, "Failed to fetch leave types");
         }
       },
-      providesTags: (result: PaginatedResult<LeaveType> | undefined) => {
+      providesTags: (result: LeaveTypesResponse | undefined) => {
         if (result && Array.isArray(result.items)) {
           return [
             ...result.items.map(({ id }: LeaveType) => ({
@@ -184,6 +183,11 @@ export const efsLeavesApi = createApi({
         if (params.employeeId) {
           searchParams.append("employeeId", params.employeeId.toString());
         }
+
+        console.log(
+          "check endpoint : ",
+          `${API_ENDPOINTS.GET_LEAVE_STATUS_COUNT}?${searchParams.toString()}`
+        );
 
         return {
           url: `${

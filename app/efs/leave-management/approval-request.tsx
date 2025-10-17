@@ -191,7 +191,7 @@ export default function ApprovalRequest() {
       borderRadius: borderRadius.sm,
     },
     statusButtonActive: {
-      backgroundColor: palette.primary.main,
+      backgroundColor: palette.secondary.main,
     },
     statusButtonText: {
       fontSize: 14,
@@ -199,7 +199,7 @@ export default function ApprovalRequest() {
       color: palette.text.secondary,
     },
     statusButtonTextActive: {
-      color: palette.text.inverse,
+      color: "white",
     },
     statusCount: {
       backgroundColor: palette.surface.primary,
@@ -219,7 +219,7 @@ export default function ApprovalRequest() {
       color: palette.text.primary,
     },
     statusCountTextActive: {
-      color: palette.primary.main,
+      color: palette.text.primary,
     },
     loadingContainer: {
       flex: 1,

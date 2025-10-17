@@ -46,6 +46,13 @@ export interface LeaveType {
   name: string;
 }
 
+export interface LeaveTypesResponse {
+  isSuccess: boolean;
+  responseMessage: string;
+  errors: any;
+  items: LeaveType[];
+}
+
 export interface LeaveRequest {
   id: number;
   fromDate: string;

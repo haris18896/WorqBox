@@ -136,7 +136,7 @@ export const navigationConfig: NavigationItem[] = [
             default: null,
             order: 2,
             visible: true,
-            badgeCount: 3,
+            // badgeCount: 5,
           },
         ],
       },
