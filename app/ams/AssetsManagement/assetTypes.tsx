@@ -146,18 +146,13 @@ export default function AssetTypes() {
     },
   });
 
-  if (isLoadingAssetCategories && !assetCategoriesData) {
-    return (
-      <View style={styles.container}>
-        <BarHeader title="Asset Types" variant="default" />
-        <Loading visible={true} text={"Loading Asset Types"} />
-      </View>
-    );
-  }
-
   return (
     <View style={styles.container}>
       <BarHeader title="Asset Types" variant="default" />
+      <Loading
+        visible={isLoadingAssetCategories}
+        text={"Loading Asset Types"}
+      />
       <View style={styles.content}>
         <View style={styles.headerSection}>
           <View style={styles.searchContainer}>

@@ -171,18 +171,10 @@ export default function Assets() {
     },
   });
 
-  if (isLoadingAssets && !assetsData) {
-    return (
-      <View style={styles.container}>
-        <BarHeader title="Assets" variant="default" />
-        <Loading visible={true} text={"Loading Assets"} />
-      </View>
-    );
-  }
-
   return (
     <View style={styles.container}>
       <BarHeader title="Assets" variant="default" />
+      <Loading visible={isLoadingAssets} text={"Loading Assets"} />
       <View style={styles.content}>
         <View style={styles.headerSection}>
           <View style={styles.searchContainer}>

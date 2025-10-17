@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import {
-  ActivityIndicator,
   RefreshControl,
   StyleSheet,
   Text,
@@ -18,6 +17,7 @@ import { Ionicons } from "@expo/vector-icons";
 import ClearanceCard from "@/components/modules/ams/clearanceCard";
 import {
   BarHeader,
+  Loading,
   ResponsiveFlatList,
   SearchComponent,
 } from "@/components/ui";
@@ -140,23 +140,13 @@ export default function Clearance() {
     },
   });
 
-  if (isLoadingAssignments && !assignmentsData) {
-    return (
-      <View style={styles.container}>
-        <BarHeader title="Asset Clearance" variant="default" />
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color={palette.primary.main} />
-          <Text style={styles.loadingText}>
-            Loading employee assignments...
-          </Text>
-        </View>
-      </View>
-    );
-  }
-
   return (
     <View style={styles.container}>
       <BarHeader title="Asset Clearance" variant="default" />
+      <Loading
+        visible={isLoadingAssignments}
+        text={"Loading Employee Assignments"}
+      />
       <View style={styles.content}>
         <View style={styles.headerSection}>
           <View style={styles.searchContainer}>
