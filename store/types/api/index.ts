@@ -261,4 +261,7 @@ export const API_ENDPOINTS = {
   GET_LEAVE_TYPES: "/Lookup/GetLeaveTypes",
   GET_LEAVE_STATUS_COUNT: "/Dashboard/GetLeaveStatusCount",
   GET_LEAVE_STATUS_COUNT_ADMIN: "/Dashboard/GetLeaveStatusCountAdmin",
+
+  // AMS (Asset Management System)
+  GET_AMS_DASHBOARD: "/Asset/stats",
 };
