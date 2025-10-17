@@ -69,3 +69,42 @@ export interface VendorResponse {
   errors: any;
   result: PaginatedResult<Vendor>;
 }
+
+// Clearance Types
+export interface AssignedAsset {
+  id: number;
+  assetId: number;
+  assetName: string;
+  assetSerialNumber: string;
+  remarks?: string;
+  assetCategoryName: string;
+  isCurrent: boolean;
+  assignedDate: string;
+}
+
+export interface EmployeeAssignment {
+  employeeId: number;
+  employeeFirstName: string;
+  employeeLastName: string;
+  employeeNumber: string;
+  assignedAssets: AssignedAsset[];
+  totalAssetsCount: number;
+  currentAssetsCount: number;
+}
+
+export interface ClearanceParams extends PaginationParams {
+  keyword?: string;
+  employeeId?: number;
+  assetCategoryId?: number;
+  isCurrent?: boolean;
+  pageNumber?: number;
+  pageSize?: number;
+  sortOrder?: boolean;
+}
+
+export interface ClearanceResponse {
+  isSuccess: boolean;
+  responseMessage: string;
+  errors: any;
+  result: PaginatedResult<EmployeeAssignment>;
+}

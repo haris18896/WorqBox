@@ -266,4 +266,5 @@ export const API_ENDPOINTS = {
   GET_AMS_DASHBOARD: "/Asset/stats",
   GET_PURCHASE_ORDERS: "/PurchaseOrder",
   GET_VENDORS: "/Vendor/Get",
+  GET_CLEARANCE_ASSIGNMENTS: "/Clearance/employee-assignments",
 };
