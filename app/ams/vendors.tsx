@@ -1,10 +1,66 @@
-import { BarHeader } from "@/components/ui";
-import { useTheme } from "@/theme";
-import React from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import VendorCard from "@/components/modules/ams/vendorCard";
+import {
+  BarHeader,
+  ResponsiveFlatList,
+  SearchComponent,
+} from "@/components/ui";
+import { useGetVendorsQuery } from "@/store/api/modules/ams/amsPurchaseOrder";
+import { Vendor as VendorType } from "@/store/api/modules/ams/amsTypes";
+import { spacing, useTheme } from "@/theme";
+import { Ionicons } from "@expo/vector-icons";
+import React, { useState } from "react";
+import {
+  ActivityIndicator,
+  RefreshControl,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 export default function Vendors() {
   const { palette } = useTheme();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [pageNumber, setPageNumber] = useState(1);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const {
+    data: vendorsData,
+    isLoading: isLoadingVendors,
+    refetch: refetchVendors,
+  } = useGetVendorsQuery({
+    pageNumber,
+    pageSize: 1000,
+    keyword: searchQuery,
+  });
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    try {
+      await refetchVendors();
+    } finally {
+      setRefreshing(false);
+    }
+  };
+
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+    setPageNumber(1);
+  };
+
+  const handleVendorPress = (vendor: VendorType) => {
+    console.log("Vendor pressed:", vendor);
+    // TODO: Navigate to vendor details
+  };
+
+  const handleAddVendor = () => {
+    console.log("Add Vendor pressed");
+    // TODO: Navigate to add vendor form
+  };
+
+  const renderVendorCard = ({ item }: { item: VendorType }) => (
+    <VendorCard vendor={item} onPress={handleVendorPress} />
+  );
 
   const styles = StyleSheet.create({
     container: {
@@ -13,44 +69,119 @@ export default function Vendors() {
     },
     content: {
       flex: 1,
-      padding: 20,
     },
-    card: {
-      backgroundColor: palette.background.secondary,
-      padding: 20,
-      borderRadius: 12,
-      marginBottom: 15,
+    headerSection: {
+      marginBottom: 20,
+      flexDirection: "row",
+      gap: spacing["md"],
+      paddingHorizontal: spacing["md"],
+    },
+    searchContainer: {
+      flex: 1,
+    },
+    addButton: {
+      backgroundColor: palette.primary.main,
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
+      paddingVertical: 12,
+      paddingHorizontal: 20,
+      borderRadius: 8,
       elevation: 2,
       shadowColor: "#000",
       shadowOffset: { width: 0, height: 2 },
       shadowOpacity: 0.1,
       shadowRadius: 4,
     },
-    cardTitle: {
-      fontSize: 18,
+    addButtonText: {
+      color: palette.text.inverse,
+      fontSize: 16,
       fontWeight: "600",
-      color: palette.text.primary,
-      marginBottom: 10,
+      marginLeft: 8,
     },
-    cardDescription: {
-      fontSize: 14,
+    loadingContainer: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      paddingVertical: 40,
+    },
+    loadingText: {
       color: palette.text.secondary,
-      lineHeight: 20,
+      marginTop: 10,
+    },
+    emptyContainer: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      paddingVertical: 40,
+    },
+    emptyText: {
+      color: palette.text.secondary,
+      fontSize: 16,
+      textAlign: "center",
+      marginTop: 10,
     },
   });
 
+  if (isLoadingVendors && !vendorsData) {
+    return (
+      <View style={styles.container}>
+        <BarHeader title="Vendors" variant="default" />
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={palette.primary.main} />
+          <Text style={styles.loadingText}>Loading vendors...</Text>
+        </View>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
-      <BarHeader title="Survey" variant="default" />
-      <ScrollView style={styles.content}>
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Vendors</Text>
-          <Text style={styles.cardDescription}>
-            Participate in company surveys and provide valuable feedback to help
-            improve workplace culture and processes.
-          </Text>
+      <BarHeader title="Vendors" variant="default" />
+      <View style={styles.content}>
+        <View style={styles.headerSection}>
+          <View style={styles.searchContainer}>
+            <SearchComponent
+              placeholder="Search vendors..."
+              value={searchQuery}
+              onChangeText={handleSearch}
+            />
+          </View>
+          <TouchableOpacity style={styles.addButton} onPress={handleAddVendor}>
+            <Ionicons name="add" size={20} color={palette.text.inverse} />
+            <Text style={styles.addButtonText}>Add</Text>
+          </TouchableOpacity>
         </View>
-      </ScrollView>
+
+        <ResponsiveFlatList
+          data={vendorsData?.items || []}
+          renderItem={renderVendorCard}
+          keyExtractor={(item) => item.id.toString()}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={handleRefresh}
+              colors={[palette.primary.main]}
+              tintColor={palette.primary.main}
+            />
+          }
+          ListEmptyComponent={
+            <View style={styles.emptyContainer}>
+              <Ionicons
+                name="business-outline"
+                size={64}
+                color={palette.text.secondary}
+              />
+              <Text style={styles.emptyText}>
+                {searchQuery
+                  ? "No vendors found matching your search"
+                  : "No vendors available"}
+              </Text>
+            </View>
+          }
+          showsVerticalScrollIndicator={false}
+        />
+      </View>
     </View>
   );
 }
