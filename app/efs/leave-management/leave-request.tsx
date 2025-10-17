@@ -1,20 +1,3 @@
-import LeaveRequestCard from "@/components/modules/efs/leaveRequestCard";
-import {
-  BarHeader,
-  Empty,
-  Loading,
-  ResponsiveFlatList,
-  SearchComponent,
-} from "@/components/ui";
-import { RootState } from "@/store";
-import {
-  useGetLeaveStatusCountQuery,
-  useGetLeaveTypesQuery,
-  useGetMyLeaveRequestsQuery,
-} from "@/store/api/modules/efs/efsLeaves";
-import { LeaveStatusCountParams } from "@/store/api/modules/efs/efsTypes";
-import { spacing, useTheme } from "@/theme";
-import { Ionicons } from "@expo/vector-icons";
 import React, { useCallback, useEffect, useState } from "react";
 import {
   RefreshControl,
@@ -23,6 +6,31 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+
+// ** Utils
+import { spacing, useTheme } from "@/theme";
+
+// ** Third Party Packages
+import { Ionicons } from "@expo/vector-icons";
+
+// ** UI
+import LeaveRequestCard from "@/components/modules/efs/leaveRequestCard";
+import {
+  BarHeader,
+  Empty,
+  Loading,
+  ResponsiveFlatList,
+  SearchComponent,
+} from "@/components/ui";
+
+// ** Store
+import { RootState } from "@/store";
+import {
+  useGetLeaveStatusCountQuery,
+  useGetLeaveTypesQuery,
+  useGetMyLeaveRequestsQuery,
+} from "@/store/api/modules/efs/efsLeaves";
+import { LeaveStatusCountParams } from "@/store/api/modules/efs/efsTypes";
 import { useSelector } from "react-redux";
 
 export default function LeaveRequest() {
@@ -233,20 +241,10 @@ export default function LeaveRequest() {
     },
   });
 
-  if (isLoadingRequests && currentPage === 1) {
-    return (
-      <View style={styles.container}>
-        <BarHeader title="Leave Requests" variant="large" />
-        <View style={styles.loadingContainer}>
-          <Loading visible={true} text={"Fetching leave requests"} />
-        </View>
-      </View>
-    );
-  }
-
   return (
     <View style={styles.container}>
       <BarHeader title="Leave Requests" variant="large" />
+      <Loading visible={isLoadingRequests} text={"Fetching leave requests"} />
       <ResponsiveFlatList
         data={leaveRequestsData?.items || []}
         renderItem={renderLeaveRequestCard}

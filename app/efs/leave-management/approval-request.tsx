@@ -1,21 +1,28 @@
-import ApprovedRequestCard from "@/components/modules/efs/approvedRequestCard";
-import { BarHeader, ResponsiveFlatList } from "@/components/ui";
-import {
-  useGetLeaveRequestsByAdminQuery,
-  useGetLeaveStatusCountAdminQuery,
-} from "@/store/api/modules/efs/efsLeaves";
-import { useTheme } from "@/theme";
-import { borderRadius, shadow, spacing } from "@/theme/stylingConstants";
-import { Ionicons } from "@expo/vector-icons";
 import React, { useEffect, useState } from "react";
 import {
-  ActivityIndicator,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
+
+// ** Utils
+import { useTheme } from "@/theme";
+import { borderRadius, shadow, spacing } from "@/theme/stylingConstants";
+
+// ** Third Party Packages
+import { Ionicons } from "@expo/vector-icons";
+
+// ** UI Components
+import ApprovedRequestCard from "@/components/modules/efs/approvedRequestCard";
+import { BarHeader, Loading, ResponsiveFlatList } from "@/components/ui";
+
+// ** Store
+import {
+  useGetLeaveRequestsByAdminQuery,
+  useGetLeaveStatusCountAdminQuery,
+} from "@/store/api/modules/efs/efsLeaves";
 
 export default function ApprovalRequest() {
   const { palette } = useTheme();
@@ -275,22 +282,13 @@ export default function ApprovalRequest() {
     },
   });
 
-  if (statusLoading || requestsLoading) {
-    return (
-      <View style={styles.container}>
-        <BarHeader title="Leave Approval Requests" variant="large" />
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color={palette.primary.main} />
-          <Text style={styles.loadingText}>Loading requests...</Text>
-        </View>
-      </View>
-    );
-  }
-
   return (
     <View style={styles.container}>
       <BarHeader title="Leave Approval Requests" variant="large" />
-
+      <Loading
+        visible={statusLoading || requestsLoading}
+        text="Loading requests..."
+      />
       <View style={styles.headerCard}>
         <View style={styles.searchContainer}>
           <Ionicons name="search-outline" style={styles.searchIcon} />

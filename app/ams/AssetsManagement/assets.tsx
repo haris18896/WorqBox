@@ -1,17 +1,3 @@
-import AssetCard from "@/components/modules/ams/assetCard";
-import {
-  BarHeader,
-  Loading,
-  ResponsiveFlatList,
-  SearchComponent,
-} from "@/components/ui";
-import {
-  useGetAssetCategoriesQuery,
-  useGetAssetsQuery,
-} from "@/store/api/modules/ams/amsMangament";
-import { Asset } from "@/store/api/modules/ams/amsTypes";
-import { spacing, useTheme } from "@/theme";
-import { Ionicons } from "@expo/vector-icons";
 import React, { useState } from "react";
 import {
   RefreshControl,
@@ -20,6 +6,28 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+
+// ** Utils
+import { spacing, useTheme } from "@/theme";
+
+// ** Third Party Package
+import { Ionicons } from "@expo/vector-icons";
+
+// ** UI
+import AssetCard from "@/components/modules/ams/assetCard";
+import {
+  BarHeader,
+  Loading,
+  ResponsiveFlatList,
+  SearchComponent,
+} from "@/components/ui";
+
+// ** Store
+import {
+  useGetAssetCategoriesQuery,
+  useGetAssetsQuery,
+} from "@/store/api/modules/ams/amsMangament";
+import { Asset } from "@/store/api/modules/ams/amsTypes";
 import { useGetEmployeesQuery } from "../../../store/api/modules/pms/pmsReportingApi";
 
 export default function Assets() {

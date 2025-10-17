@@ -1,15 +1,17 @@
-import { BarHeader } from "@/components/ui";
-import { useGetAmsDashboardQuery } from "@/store/api/modules/ams/amsDashboard";
-import { useTheme } from "@/theme";
-import { Ionicons } from "@expo/vector-icons";
 import React from "react";
-import {
-  ActivityIndicator,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
+
+// ** Utils
+import { useTheme } from "@/theme";
+
+// ** Third Party Packages
+import { Ionicons } from "@expo/vector-icons";
+
+// ** UI Components
+import { BarHeader, Loading } from "@/components/ui";
+
+// ** Store
+import { useGetAmsDashboardQuery } from "@/store/api/modules/ams/amsDashboard";
 
 export default function AMSDashboard() {
   const { palette } = useTheme();
@@ -319,30 +321,12 @@ export default function AMSDashboard() {
       fontWeight: "600",
       color: palette.text.secondary,
     },
-    loadingContainer: {
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
-    },
   });
-
-  if (isLoading) {
-    return (
-      <View style={styles.container}>
-        <BarHeader title="Asset Management" variant="default" />
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color={palette.primary.main} />
-          <Text style={{ color: palette.text.secondary, marginTop: 10 }}>
-            Loading dashboard data...
-          </Text>
-        </View>
-      </View>
-    );
-  }
 
   return (
     <View style={styles.container}>
       <BarHeader title="Asset Management" variant="default" />
+      <Loading visible={isLoading} text="Loading dashboard data..." />
       <ScrollView style={styles.content}>
         {renderStatusCards()}
         {renderKPISummary()}

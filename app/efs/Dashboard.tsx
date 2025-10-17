@@ -1,10 +1,16 @@
-import { Calendar, CalendarEvent, CalendarView } from "@/components/ui";
-import BarHeader from "@/components/ui/BarHeader/BarHeader";
-import { useGetAdminDashboardQuery } from "@/store/api/modules/efs/efsDashboard";
-import { useTheme } from "@/theme";
-import { spacing } from "@/theme/stylingConstants";
 import React, { useState } from "react";
 import { RefreshControl, ScrollView, StyleSheet, View } from "react-native";
+
+// ** Utils
+import { useTheme } from "@/theme";
+import { spacing } from "@/theme/stylingConstants";
+
+// ** UI
+import { Calendar, CalendarEvent, CalendarView } from "@/components/ui";
+import BarHeader from "@/components/ui/BarHeader/BarHeader";
+
+// ** Store
+import { useGetAdminDashboardQuery } from "@/store/api/modules/efs/efsDashboard";
 
 export default function EFSDashboard() {
   const { palette } = useTheme();

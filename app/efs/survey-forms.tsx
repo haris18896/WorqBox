@@ -1,7 +1,11 @@
-import { BarHeader, ComingUp } from "@/components/ui";
-import { useTheme } from "@/theme";
 import React from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
+
+// ** Utils
+import { useTheme } from "@/theme";
+
+// ** UI
+import { BarHeader, ComingUp } from "@/components/ui";
 
 export default function SurveyForms() {
   const { palette } = useTheme();

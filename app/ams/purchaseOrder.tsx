@@ -1,25 +1,33 @@
-import PurchaseOrderCard from "@/components/modules/ams/purchaseOrderCard";
-import {
-  BarHeader,
-  ResponsiveFlatList,
-  SearchComponent,
-} from "@/components/ui";
-import {
-  useGetPurchaseOrdersQuery,
-  useGetVendorsQuery,
-} from "@/store/api/modules/ams/amsPurchaseOrder";
-import { PurchaseOrder as PurchaseOrderType } from "@/store/api/modules/ams/amsTypes";
-import { spacing, useTheme } from "@/theme";
-import { Ionicons } from "@expo/vector-icons";
 import React, { useState } from "react";
 import {
-  ActivityIndicator,
   RefreshControl,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
+
+// ** Utils
+import { spacing, useTheme } from "@/theme";
+
+// ** Third Party packages
+import { Ionicons } from "@expo/vector-icons";
+
+// ** UI
+import PurchaseOrderCard from "@/components/modules/ams/purchaseOrderCard";
+import {
+  BarHeader,
+  Loading,
+  ResponsiveFlatList,
+  SearchComponent,
+} from "@/components/ui";
+
+// ** Store
+import {
+  useGetPurchaseOrdersQuery,
+  useGetVendorsQuery,
+} from "@/store/api/modules/ams/amsPurchaseOrder";
+import { PurchaseOrder as PurchaseOrderType } from "@/store/api/modules/ams/amsTypes";
 
 export default function PurchaseOrder() {
   const { palette } = useTheme();
@@ -152,21 +160,13 @@ export default function PurchaseOrder() {
     },
   });
 
-  if (isLoadingPurchaseOrders && !purchaseOrdersData) {
-    return (
-      <View style={styles.container}>
-        <BarHeader title="Purchase Orders" variant="default" />
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color={palette.primary.main} />
-          <Text style={styles.loadingText}>Loading purchase orders...</Text>
-        </View>
-      </View>
-    );
-  }
-
   return (
     <View style={styles.container}>
       <BarHeader title="Purchase Orders" variant="default" />
+      <Loading
+        visible={isLoadingPurchaseOrders}
+        text="Loading purchase orders..."
+      />
       <View style={styles.content}>
         <View style={styles.headerSection}>
           <View style={styles.searchContainer}>

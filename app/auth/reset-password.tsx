@@ -1,10 +1,3 @@
-import { scaleSize, useTheme } from "@/theme";
-import { fontFamily } from "@/theme/fonts";
-import { spacing } from "@/theme/stylingConstants";
-import { ResetPasswordFormData } from "@/types";
-import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
-import { useFormik } from "formik";
 import React, { useRef, useState } from "react";
 import {
   Alert,
@@ -19,8 +12,20 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
+
+// ** Utils
+import { scaleSize, useTheme } from "@/theme";
+import { fontFamily } from "@/theme/fonts";
+import { spacing } from "@/theme/stylingConstants";
+import { ResetPasswordFormData } from "@/types";
+
+// ** Third Party Packages
+import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
+import { useFormik } from "formik";
 import * as Yup from "yup";
 
+// ** UI
 import Button from "@/components/ui/Button/Button";
 import TextInput from "@/components/ui/TextInput/TextInput";
 

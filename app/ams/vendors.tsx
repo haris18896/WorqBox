@@ -1,22 +1,30 @@
-import VendorCard from "@/components/modules/ams/vendorCard";
-import {
-  BarHeader,
-  ResponsiveFlatList,
-  SearchComponent,
-} from "@/components/ui";
-import { useGetVendorsQuery } from "@/store/api/modules/ams/amsPurchaseOrder";
-import { Vendor as VendorType } from "@/store/api/modules/ams/amsTypes";
-import { spacing, useTheme } from "@/theme";
-import { Ionicons } from "@expo/vector-icons";
 import React, { useState } from "react";
 import {
-  ActivityIndicator,
   RefreshControl,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
+
+// ** Utils
+import { spacing, useTheme } from "@/theme";
+
+// ** Third Party Packages
+import { Ionicons } from "@expo/vector-icons";
+
+// ** UI
+import VendorCard from "@/components/modules/ams/vendorCard";
+import {
+  BarHeader,
+  Loading,
+  ResponsiveFlatList,
+  SearchComponent,
+} from "@/components/ui";
+
+// ** Store
+import { useGetVendorsQuery } from "@/store/api/modules/ams/amsPurchaseOrder";
+import { Vendor as VendorType } from "@/store/api/modules/ams/amsTypes";
 
 export default function Vendors() {
   const { palette } = useTheme();
@@ -123,21 +131,10 @@ export default function Vendors() {
     },
   });
 
-  if (isLoadingVendors && !vendorsData) {
-    return (
-      <View style={styles.container}>
-        <BarHeader title="Vendors" variant="default" />
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color={palette.primary.main} />
-          <Text style={styles.loadingText}>Loading vendors...</Text>
-        </View>
-      </View>
-    );
-  }
-
   return (
     <View style={styles.container}>
       <BarHeader title="Vendors" variant="default" />
+      <Loading visible={isLoadingVendors} text="Loading vendors..." />
       <View style={styles.content}>
         <View style={styles.headerSection}>
           <View style={styles.searchContainer}>

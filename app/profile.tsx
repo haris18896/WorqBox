@@ -1,10 +1,3 @@
-import { Button } from "@/components/ui";
-import BarHeader from "@/components/ui/BarHeader/BarHeader";
-import { useAppSelector } from "@/store";
-import { selectUser } from "@/store/slices/authSlice";
-import { useTheme } from "@/theme";
-import { spacing } from "@/theme/stylingConstants";
-import { Feather, Ionicons } from "@expo/vector-icons";
 import React from "react";
 import {
   Image,
@@ -14,7 +7,22 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+
+// ** Utils
+import { useTheme } from "@/theme";
+import { spacing } from "@/theme/stylingConstants";
+
+// ** Third Party Packages
+import { Feather, Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
+
+// ** UI
+import { Button } from "@/components/ui";
+import BarHeader from "@/components/ui/BarHeader/BarHeader";
+
+// ** Store
+import { useAppSelector } from "@/store";
+import { selectUser } from "@/store/slices/authSlice";
 
 export default function Profile() {
   const { palette, toggleTheme, isDark } = useTheme();

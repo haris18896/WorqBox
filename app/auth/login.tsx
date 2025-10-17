@@ -1,8 +1,3 @@
-import { scaleSize, useTheme } from "@/theme";
-import { LoginFormData } from "@/types";
-import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
-import { useFormik } from "formik";
 import React, { useEffect, useRef, useState } from "react";
 import {
   Image,
@@ -16,17 +11,28 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
+
+// ** Utils
+import { createAuthStyles } from "@/styles";
+import { scaleSize, useTheme } from "@/theme";
+import { LoginFormData } from "@/types";
+
+// ** Third Party Packages
+import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
+import { useFormik } from "formik";
 import Toast from "react-native-toast-message";
 import * as Yup from "yup";
 
 // Import UI components
 import Button from "@/components/ui/Button/Button";
 import TextInput from "@/components/ui/TextInput/TextInput";
+
+// ** Store
 import { storageService } from "@/services/storage";
 import { useAppDispatch } from "@/store";
 import { useLoginMutation } from "@/store/api/authApi";
 import { clearError, setUser } from "@/store/slices/authSlice";
-import { createAuthStyles } from "@/styles";
 
 // Validation schema
 const loginSchema = Yup.object().shape({
@@ -110,7 +116,7 @@ export default function Login() {
           await storageService.setItem("login_creds", JSON.stringify(values));
         }
 
-        router.replace("/pms");
+        router.replace("/pms/Dashboard");
       } catch (error: any) {
         let errorMessage = "Login failed. Please try again.";
 

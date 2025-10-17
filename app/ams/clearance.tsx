@@ -1,14 +1,3 @@
-import ClearanceCard from "@/components/modules/ams/clearanceCard";
-import {
-  BarHeader,
-  ResponsiveFlatList,
-  SearchComponent,
-} from "@/components/ui";
-import { useGetEmployeeAssignmentsQuery } from "@/store/api/modules/ams/amsClearance";
-import { EmployeeAssignment as EmployeeAssignmentType } from "@/store/api/modules/ams/amsTypes";
-import { useGetEmployeesQuery } from "@/store/api/modules/pms/pmsReportingApi";
-import { spacing, useTheme } from "@/theme";
-import { Ionicons } from "@expo/vector-icons";
 import React, { useState } from "react";
 import {
   ActivityIndicator,
@@ -18,6 +7,25 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+
+// ** Utils
+import { spacing, useTheme } from "@/theme";
+
+// ** Third Party Package
+import { Ionicons } from "@expo/vector-icons";
+
+// ** UI
+import ClearanceCard from "@/components/modules/ams/clearanceCard";
+import {
+  BarHeader,
+  ResponsiveFlatList,
+  SearchComponent,
+} from "@/components/ui";
+
+// ** Store
+import { useGetEmployeeAssignmentsQuery } from "@/store/api/modules/ams/amsClearance";
+import { EmployeeAssignment as EmployeeAssignmentType } from "@/store/api/modules/ams/amsTypes";
+import { useGetEmployeesQuery } from "@/store/api/modules/pms/pmsReportingApi";
 
 export default function Clearance() {
   const { palette } = useTheme();
