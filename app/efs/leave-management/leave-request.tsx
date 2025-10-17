@@ -1,4 +1,4 @@
-import LeaveRequestCard from "@/components/efs/leaveRequestCard";
+import LeaveRequestCard from "@/components/modules/efs/leaveRequestCard";
 import {
   BarHeader,
   Empty,

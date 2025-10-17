@@ -8,7 +8,7 @@ import { createTypographyStyle } from "@/theme/fonts";
 import { borderRadius, shadow, spacing } from "@/theme/stylingConstants";
 
 // ** Types
-import { ApprovedRequestCardProps } from "./index.d";
+import { ApprovedRequestCardProps } from ".";
 
 const ApprovedRequestCard: React.FC<ApprovedRequestCardProps> = ({
   leaveRequest,

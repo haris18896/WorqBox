@@ -1,4 +1,4 @@
-import ApprovedRequestCard from "@/components/efs/approvedRequestCard";
+import ApprovedRequestCard from "@/components/modules/efs/approvedRequestCard";
 import { BarHeader, ResponsiveFlatList } from "@/components/ui";
 import {
   useGetLeaveRequestsByAdminQuery,
