@@ -1,3 +1,4 @@
+import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 
@@ -5,20 +6,20 @@ import { StyleSheet, Text, View } from "react-native";
 import { ColorPalette, useTheme } from "@/theme";
 
 // ** Components
-import { Avatar, Badge, ResponsiveFlatList } from "@/components/ui";
+import { Badge, ResponsiveFlatList } from "@/components/ui";
 import { TimeLogCard } from "../TimeLogCard";
 
 // ** Types
 import { TimeLog } from "@/store/api/modules/pms/pmsTypes";
-import { EmployeeGroupedReportsProps } from "./index.d";
+import { ProjectGroupedReportsProps } from ".";
 
-export const EmployeeGroupedReports: React.FC<EmployeeGroupedReportsProps> = ({
+export const ProjectGroupedReports: React.FC<ProjectGroupedReportsProps> = ({
   groupedTimeLogs,
   employeeProfilePictureMap,
 }) => {
   const { palette } = useTheme();
 
-  const calculateEmployeeTotalHours = (logs: TimeLog[]): number => {
+  const calculateProjectTotalHours = (logs: TimeLog[]): number => {
     return logs.reduce((total, log) => total + log.timeSpent, 0);
   };
 
@@ -32,29 +33,33 @@ export const EmployeeGroupedReports: React.FC<EmployeeGroupedReportsProps> = ({
     return minutes > 0 ? `${wholeHours}h ${minutes}m` : `${wholeHours}h`;
   };
 
-  const renderEmployeeGroup = (employeeName: string, logs: TimeLog[]) => {
-    const totalHours = calculateEmployeeTotalHours(logs);
+  const renderProjectGroup = (projectName: string, logs: TimeLog[]) => {
+    const totalHours = calculateProjectTotalHours(logs);
 
     return (
-      <View key={employeeName} style={styles(palette).employeeGroup}>
-        {/* Employee Header */}
-        <View style={styles(palette).employeeHeader}>
-          <View style={styles(palette).employeeHeaderLeft}>
-            <View style={styles(palette).employeeAvatar}>
-              <Avatar imageUrl={undefined} name={employeeName} size={48} />
+      <View key={projectName} style={styles(palette).projectGroup}>
+        {/* Project Header */}
+        <View style={styles(palette).projectHeader}>
+          <View style={styles(palette).projectHeaderLeft}>
+            <View style={styles(palette).projectIcon}>
+              <Ionicons
+                name="folder-outline"
+                size={24}
+                color={palette.primary.main}
+              />
             </View>
-            <View style={styles(palette).employeeInfo}>
-              <Text style={styles(palette).employeeName} numberOfLines={1}>
-                {employeeName}
+            <View style={styles(palette).projectInfo}>
+              <Text style={styles(palette).projectName} numberOfLines={1}>
+                {projectName}
               </Text>
-              <Text style={styles(palette).employeeCount}>
+              <Text style={styles(palette).projectCount}>
                 {logs.length} {logs.length === 1 ? "log" : "logs"}
               </Text>
             </View>
           </View>
-          <View style={styles(palette).employeeTotal}>
+          <View style={styles(palette).projectTotal}>
             <Text style={styles(palette).totalLabel}>Total</Text>
-            <Badge variant="primary" size="medium">
+            <Badge variant="secondary" size="small">
               {formatTotalHours(totalHours)}
             </Badge>
           </View>
@@ -79,7 +84,6 @@ export const EmployeeGroupedReports: React.FC<EmployeeGroupedReportsProps> = ({
             columnSpacing={16}
             showsVerticalScrollIndicator={false}
             scrollEnabled={false}
-            nestedScrollEnabled={true}
           />
         </View>
       </View>
@@ -88,8 +92,8 @@ export const EmployeeGroupedReports: React.FC<EmployeeGroupedReportsProps> = ({
 
   return (
     <View style={styles(palette).container}>
-      {Object.entries(groupedTimeLogs).map(([employeeName, logs]) =>
-        renderEmployeeGroup(employeeName, logs)
+      {Object.entries(groupedTimeLogs).map(([projectName, logs]) =>
+        renderProjectGroup(projectName, logs)
       )}
     </View>
   );
@@ -98,9 +102,9 @@ export const EmployeeGroupedReports: React.FC<EmployeeGroupedReportsProps> = ({
 const styles = (palette: ColorPalette) =>
   StyleSheet.create({
     container: {
-      gap: 24,
+      gap: 12,
     },
-    employeeGroup: {
+    projectGroup: {
       backgroundColor: palette.background.primary,
       borderRadius: 16,
       padding: 20,
@@ -112,7 +116,7 @@ const styles = (palette: ColorPalette) =>
       borderWidth: 1,
       borderColor: palette.border?.primary || "rgba(0,0,0,0.05)",
     },
-    employeeHeader: {
+    projectHeader: {
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "center",
@@ -121,29 +125,29 @@ const styles = (palette: ColorPalette) =>
       borderBottomWidth: 1,
       borderBottomColor: palette.border?.primary || "rgba(0,0,0,0.05)",
     },
-    employeeHeaderLeft: {
+    projectHeaderLeft: {
       flexDirection: "row",
       alignItems: "center",
       flex: 1,
     },
-    employeeAvatar: {
-      marginRight: 16,
+    projectIcon: {
+      marginRight: 12,
     },
-    employeeInfo: {
+    projectInfo: {
       flex: 1,
     },
-    employeeName: {
+    projectName: {
       fontSize: 20,
       fontWeight: "700",
       color: palette.text.primary,
       marginBottom: 4,
     },
-    employeeCount: {
+    projectCount: {
       fontSize: 14,
       color: palette.text.secondary,
       fontWeight: "500",
     },
-    employeeTotal: {
+    projectTotal: {
       alignItems: "flex-end",
     },
     totalLabel: {
@@ -153,11 +157,11 @@ const styles = (palette: ColorPalette) =>
       fontWeight: "500",
     },
     logsContainer: {
-      marginTop: 8,
+      marginTop: 1,
     },
     logsGrid: {
       paddingHorizontal: 0,
     },
   });
 
-export default EmployeeGroupedReports;
+export default ProjectGroupedReports;

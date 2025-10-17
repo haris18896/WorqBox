@@ -3,7 +3,7 @@ import { stripHtmlTags } from "@/utils/textUtils";
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { ClientsCardProps } from "./index.d";
+import { ClientsCardProps } from ".";
 
 export const ClientsCard: React.FC<ClientsCardProps> = ({
   project,

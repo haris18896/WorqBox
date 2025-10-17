@@ -10,7 +10,7 @@ import { stripHtmlTags } from "@/utils/textUtils";
 import { Avatar } from "@/components/ui";
 
 // ** Types
-import { ProjectCardProps } from "./index.d";
+import { ProjectCardProps } from ".";
 
 export const ProjectCard: React.FC<ProjectCardProps> = ({
   project,

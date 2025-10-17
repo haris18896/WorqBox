@@ -11,7 +11,7 @@ import { stripHtmlTags } from "@/utils/textUtils";
 import { Avatar, Badge } from "@/components/ui";
 
 // ** Types
-import { TimeLogCardProps } from "./index.d";
+import { TimeLogCardProps } from ".";
 
 export const TimeLogCard: React.FC<TimeLogCardProps> = ({
   timeLog,

@@ -2,7 +2,7 @@ import {
   EmployeeGroupedReports,
   ProjectGroupedReports,
   TimeLogCard,
-} from "@/components/pms";
+} from "@/components/modules/pms";
 import {
   BarHeader,
   DatePicker,

@@ -8,7 +8,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { ColorPalette, spacing, useTheme } from "@/theme";
 
 // ** Custom Components
-import { ProjectCard } from "@/components/pms/ProjectCard";
+import { ProjectCard } from "@/components/modules/pms/ProjectCard";
 import {
   BarHeader,
   Button,
