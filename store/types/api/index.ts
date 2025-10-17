@@ -264,4 +264,6 @@ export const API_ENDPOINTS = {
 
   // AMS (Asset Management System)
   GET_AMS_DASHBOARD: "/Asset/stats",
+  GET_PURCHASE_ORDERS: "/PurchaseOrder",
+  GET_VENDORS: "/Vendor/Get",
 };
