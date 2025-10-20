@@ -66,8 +66,8 @@ const BarHeader: React.FC<BarHeaderProps> = ({
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "space-between",
-      // backgroundColor: palette.surface.primary,
       backgroundColor: palette.background.tertiary,
+
       marginHorizontal: spacing.sm,
       borderRadius: spacing.lg,
       paddingHorizontal: spacing.lg,

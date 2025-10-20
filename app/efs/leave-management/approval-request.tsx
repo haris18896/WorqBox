@@ -168,6 +168,7 @@ export default function ApprovalRequest() {
       backgroundColor: palette.surface.primary,
       paddingHorizontal: spacing.md,
       borderRadius: borderRadius.lg,
+      marginTop: spacing.md,
       ...shadow.sm,
     },
     cardTitle: {
