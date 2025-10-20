@@ -58,7 +58,6 @@ export const ResponsiveFlatList = <T,>({
             marginRight: isLastInRow ? 0 : columnSpacing,
             marginBottom: isLastRow ? 0 : itemSpacing,
             flex: numColumns === 1 ? undefined : 1,
-            minHeight: numColumns === 1 ? undefined : 200,
           },
         ]}
       >
@@ -91,9 +90,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  contentContainer: {
-    paddingHorizontal: 16,
-  },
+  contentContainer: {},
   itemContainer: {
     // Container for each item with spacing
   },

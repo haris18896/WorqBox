@@ -1,3 +1,4 @@
+import { ResponsiveFlatList } from "@/components/ui";
 import { useTheme } from "@/theme";
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
@@ -19,6 +20,19 @@ export default function DepartmentEmployeeCountCard({
   const handleDepartmentPress = (departmentId: number) => {
     onDepartmentPress?.(departmentId);
   };
+
+  const renderDepartmentItem = ({ item }: { item: any }) => (
+    <TouchableOpacity
+      style={styles.departmentItem}
+      onPress={() => handleDepartmentPress(item.id)}
+    >
+      <View style={styles.departmentInfo}>
+        <Text style={styles.departmentName}>{item.name}</Text>
+        <Text style={styles.departmentId}>ID: {item.id}</Text>
+      </View>
+      <Text style={styles.employeeCount}>{item.employeeCount}</Text>
+    </TouchableOpacity>
+  );
 
   const styles = StyleSheet.create({
     card: {
@@ -54,7 +68,7 @@ export default function DepartmentEmployeeCountCard({
       alignItems: "center",
     },
     departmentList: {
-      gap: 8,
+      flex: 1,
     },
     departmentItem: {
       flexDirection: "row",
@@ -150,21 +164,15 @@ export default function DepartmentEmployeeCountCard({
         </View>
       </View>
 
-      <View style={styles.departmentList}>
-        {data.departmentEmployeeCounts.map((department) => (
-          <TouchableOpacity
-            key={department.id}
-            style={styles.departmentItem}
-            onPress={() => handleDepartmentPress(department.id)}
-          >
-            <View style={styles.departmentInfo}>
-              <Text style={styles.departmentName}>{department.name}</Text>
-              <Text style={styles.departmentId}>ID: {department.id}</Text>
-            </View>
-            <Text style={styles.employeeCount}>{department.employeeCount}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
+      <ResponsiveFlatList
+        data={data.departmentEmployeeCounts}
+        renderItem={renderDepartmentItem}
+        keyExtractor={(item) => item.id.toString()}
+        style={styles.departmentList}
+        scrollEnabled={false}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ gap: 1 }}
+      />
     </TouchableOpacity>
   );
 }

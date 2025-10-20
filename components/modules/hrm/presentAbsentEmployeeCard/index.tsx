@@ -21,6 +21,25 @@ export default function PresentAbsentEmployeeCard({
     onDatePress?.(date);
   };
 
+  const renderAttendanceItem = ({ item }: { item: any }) => (
+    <TouchableOpacity
+      style={styles.attendanceItem}
+      onPress={() => handleDatePress(item.fromDate)}
+    >
+      <View style={styles.dateInfo}>
+        <Text style={styles.dateText}>{formatDate(item.fromDate)}</Text>
+      </View>
+      <View style={styles.attendanceStats}>
+        <Badge variant="success" style={styles.presentBadge}>
+          {item.presentCount} Present
+        </Badge>
+        <Badge variant="error" style={styles.absentBadge}>
+          {item.absentCount} Absent
+        </Badge>
+      </View>
+    </TouchableOpacity>
+  );
+
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString("en-US", {

@@ -80,7 +80,11 @@ export default function HRMDashboard() {
         }
       >
         <Text style={styles.sectionTitle}>Employee Statistics</Text>
-        <Loading size="small" visible={isLoading} />
+        <Loading
+          size="small"
+          visible={isLoading}
+          text={"Loading employee statistics"}
+        />
         <EmployeeCountGenderCard
           data={genderStats}
           isLoading={genderLoading}

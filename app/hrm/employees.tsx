@@ -325,7 +325,7 @@ export default function Employees() {
           </TouchableOpacity>
         )}
       </View>
-      <Loading size="small" visible={isLoading} />
+      <Loading size="small" visible={isLoading} text={"Loading employees"} />
     </View>
   );
 
