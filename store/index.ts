@@ -15,6 +15,8 @@ import { amsManagementApi } from "./api/modules/ams/amsMangament";
 import { amsPurchaseOrderApi } from "./api/modules/ams/amsPurchaseOrder";
 import { efsDashboardApi } from "./api/modules/efs/efsDashboard";
 import { efsLeavesApi } from "./api/modules/efs/efsLeaves";
+import { hrmDashboardApi } from "./api/modules/hrm/hrmDashboard";
+import { hrmEmployeesApi } from "./api/modules/hrm/hrmEmployees";
 import { pmsProjectsApi } from "./api/modules/pms/pmsProjects";
 import { pmsReportingApi } from "./api/modules/pms/pmsReportingApi";
 import authSlice from "./slices/authSlice";
@@ -35,6 +37,10 @@ export const store = configureStore({
     // EFS
     [efsDashboardApi.reducerPath]: efsDashboardApi.reducer,
     [efsLeavesApi.reducerPath]: efsLeavesApi.reducer,
+
+    // HRM
+    [hrmDashboardApi.reducerPath]: hrmDashboardApi.reducer,
+    [hrmEmployeesApi.reducerPath]: hrmEmployeesApi.reducer,
 
     // AMS
     [amsDashboardApi.reducerPath]: amsDashboardApi.reducer,
@@ -64,6 +70,8 @@ export const store = configureStore({
       pmsReportingApi.middleware,
       efsDashboardApi.middleware,
       efsLeavesApi.middleware,
+      hrmDashboardApi.middleware,
+      hrmEmployeesApi.middleware,
       amsDashboardApi.middleware,
       amsPurchaseOrderApi.middleware,
       amsClearanceApi.middleware,

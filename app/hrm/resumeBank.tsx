@@ -1,7 +1,7 @@
-import { BarHeader } from "@/components/ui";
+import { BarHeader, ComingUp } from "@/components/ui";
 import { useTheme } from "@/theme";
 import React from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
 
 export default function ResumeBank() {
   const { palette } = useTheme();
@@ -15,41 +15,33 @@ export default function ResumeBank() {
       flex: 1,
       padding: 20,
     },
-    card: {
-      backgroundColor: palette.background.secondary,
-      padding: 20,
-      borderRadius: 12,
-      marginBottom: 15,
-      elevation: 2,
-      shadowColor: "#000",
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.1,
-      shadowRadius: 4,
-    },
-    cardTitle: {
-      fontSize: 18,
-      fontWeight: "600",
-      color: palette.text.primary,
-      marginBottom: 10,
-    },
-    cardDescription: {
-      fontSize: 14,
-      color: palette.text.secondary,
-      lineHeight: 20,
+    containerStyling: {
+      justifyContent: "center",
+      flex: 1,
     },
   });
 
   return (
     <View style={styles.container}>
       <BarHeader title="Survey" variant="default" />
-      <ScrollView style={styles.content}>
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Resume Bank</Text>
-          <Text style={styles.cardDescription}>
-            Participate in company surveys and provide valuable feedback to help
-            improve workplace culture and processes.
-          </Text>
-        </View>
+      <ScrollView
+        style={styles.content}
+        contentContainerStyle={styles.containerStyling}
+      >
+        <ComingUp
+          title="Resume Bank"
+          subtitle="Manage your recruitment process with ease."
+          icon="rocket-outline"
+          estimatedDate="2025-12-31"
+          features={[
+            "Resumes list",
+            "Approved Resumes",
+            "Rejected Resumes",
+            "Pending",
+          ]}
+          progress={10}
+          variant="detailed"
+        />
       </ScrollView>
     </View>
   );
