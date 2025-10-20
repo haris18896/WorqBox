@@ -158,3 +158,49 @@ export type GetTodayPresentAbsentEmployeesResponse = BaseApiResponse<
 export type GetEmployeesResponse = BaseApiResponse<
   PaginatedResult<HrmEmployee>
 >;
+
+export interface PagePermission {
+  id: number;
+  canView: boolean;
+  canCreate: boolean;
+  canUpdate: boolean;
+  canDelete: boolean;
+  extraPermissionJSON: string | null;
+  systemModulePageId: number;
+  modulePages?: any | null;
+  moduleId?: number | null;
+  moduleName?: string | null;
+  moduleShorURL?: string | null;
+  moduleIcon?: string | null;
+}
+
+export interface RoleListingItem {
+  id: number;
+  name: string;
+  description: string;
+  pagePermissions: PagePermission[];
+}
+
+export interface GetRoleListingParams {
+  id?: number; // optional filter
+  sortBy?: string;
+  sortOrder?: boolean;
+  pageNumber?: number;
+  pageSize?: number;
+}
+
+// Types for System Module Pages
+export interface SystemModulePageItem {
+  id: number;
+  name: string;
+  shortURL: string;
+  icon: string;
+}
+
+export interface SystemModuleGroup {
+  moduleId: number;
+  moduleName: string;
+  moduleShortURL: string;
+  moduleIcon: string;
+  modulePages: SystemModulePageItem[];
+}
