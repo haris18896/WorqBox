@@ -2,7 +2,7 @@ import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 // ** Third Party Components
-import { Ionicons } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 
 // ** Theme
 import { useTheme } from "@/theme";
@@ -20,12 +20,12 @@ const BottomBar: React.FC<BottomBarProps> = ({
   const styles = StyleSheet.create({
     container: {
       flexDirection: "row",
-      backgroundColor: palette.surface.primary,
-      borderTopWidth: 1,
-      borderTopColor: palette.border.primary,
-      paddingBottom: spacing.md,
+      backgroundColor: palette.background.tertiary,
+      paddingBottom: spacing.sm,
       paddingTop: spacing.sm,
       paddingHorizontal: spacing.sm,
+      marginHorizontal: spacing.sm,
+      borderRadius: spacing.lg,
       ...style,
     },
     tab: {
@@ -63,12 +63,12 @@ const BottomBar: React.FC<BottomBarProps> = ({
       fontWeight: "600",
     },
     label: {
-      fontSize: 12,
+      fontSize: 10,
       fontWeight: "500",
       textAlign: "center",
     },
     activeLabel: {
-      color: palette.primary.main,
+      color: palette.secondary.main,
     },
     inactiveLabel: {
       color: palette.text.secondary,
@@ -90,10 +90,12 @@ const BottomBar: React.FC<BottomBarProps> = ({
             disabled={isDisabled}
           >
             <View style={styles.iconContainer}>
-              <Ionicons
+              <Feather
                 name={(isActive ? tab.activeIcon || tab.icon : tab.icon) as any}
                 size={iconSize.lg}
-                color={isActive ? palette.primary.main : palette.text.secondary}
+                color={
+                  isActive ? palette.secondary.main : palette.text.secondary
+                }
                 style={styles.icon}
               />
               {tab.badge && tab.badge > 0 && (

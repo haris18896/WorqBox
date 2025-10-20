@@ -164,7 +164,7 @@ export const navigationConfig: NavigationItem[] = [
   },
   {
     title: "Asset Management",
-    href: "/ams",
+    href: "/ams/Dashboard",
     icon: "box",
     permission: ["Superadmin", "manager"],
     default: "Dashboard",
@@ -175,7 +175,7 @@ export const navigationConfig: NavigationItem[] = [
     children: [
       {
         title: "Dashboard",
-        href: "/ams",
+        href: "/ams/Dashboard",
         icon: "grid",
         permission: ["Superadmin", "manager"],
         active_list: ["Asset Management", "Dashboard"],
@@ -253,7 +253,7 @@ export const navigationConfig: NavigationItem[] = [
   },
   {
     title: "Human Resource",
-    href: "/hrm",
+    href: "/hrm/Dashboard",
     icon: "users",
     permission: ["Superadmin", "manager"],
     default: "Dashboard",
@@ -264,7 +264,7 @@ export const navigationConfig: NavigationItem[] = [
     children: [
       {
         title: "Dashboard",
-        href: "/hrm",
+        href: "/hrm/Dashboard",
         icon: "grid",
         permission: ["Superadmin", "manager"],
         active_list: ["Human Resource", "Dashboard"],

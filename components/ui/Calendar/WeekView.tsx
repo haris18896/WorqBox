@@ -82,6 +82,7 @@ export const WeekView: React.FC<WeekViewProps> = ({
     },
     weekHeader: {
       paddingHorizontal: spacing.md,
+      paddingTop: spacing.sm,
       alignItems: "center",
     },
     weekTitle: {
