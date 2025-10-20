@@ -11,7 +11,7 @@ import {
 } from "@/store/api/modules/hrm/hrmDashboard";
 import { useTheme } from "@/theme";
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 
 export default function HRMDashboard() {
   const { palette } = useTheme();
@@ -58,7 +58,7 @@ export default function HRMDashboard() {
   return (
     <View style={styles.container}>
       <BarHeader title="HRM Dashboard" variant="default" />
-      <View style={styles.content}>
+      <ScrollView style={styles.content}>
         <Text style={styles.sectionTitle}>Employee Statistics</Text>
         <Loading
           size="small"
@@ -102,7 +102,7 @@ export default function HRMDashboard() {
             console.log("Date pressed:", date);
           }}
         />
-      </View>
+      </ScrollView>
     </View>
   );
 }

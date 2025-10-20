@@ -77,7 +77,7 @@ export const ResponsiveFlatList = <T,>({
   return (
     <FlatList
       {...props}
-      data={data}
+      data={Array.isArray(data) ? data : []}
       renderItem={renderItemWithSpacing}
       numColumns={numColumns}
       contentContainerStyle={responsiveContentContainerStyle}
@@ -88,15 +88,11 @@ export const ResponsiveFlatList = <T,>({
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
+  container: {},
   contentContainer: {
     marginHorizontal: spacing.md,
   },
-  itemContainer: {
-    // Container for each item with spacing
-  },
+  itemContainer: {},
 });
 
 export default ResponsiveFlatList;

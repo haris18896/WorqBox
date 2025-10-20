@@ -1,5 +1,5 @@
 import { ResponsiveFlatList } from "@/components/ui";
-import { useTheme } from "@/theme";
+import { spacing, useTheme } from "@/theme";
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -37,8 +37,8 @@ export default function DepartmentEmployeeCountCard({
   const styles = StyleSheet.create({
     card: {
       backgroundColor: palette.background.secondary,
+      paddingBottom: spacing.md,
       borderRadius: 12,
-      padding: 16,
       marginBottom: 12,
       elevation: 2,
       shadowColor: "#000",
@@ -49,6 +49,8 @@ export default function DepartmentEmployeeCountCard({
       borderColor: palette.border.primary,
     },
     header: {
+      paddingHorizontal: spacing.md,
+      paddingTop: spacing.md,
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "center",
@@ -131,7 +133,11 @@ export default function DepartmentEmployeeCountCard({
     );
   }
 
-  if (!data || !data.departmentEmployeeCounts?.length) {
+  if (
+    !data ||
+    !Array.isArray(data.departmentEmployeeCounts) ||
+    data?.departmentEmployeeCounts.length === 0
+  ) {
     return (
       <View style={styles.card}>
         <View style={styles.header}>
@@ -165,13 +171,13 @@ export default function DepartmentEmployeeCountCard({
       </View>
 
       <ResponsiveFlatList
-        data={data.departmentEmployeeCounts}
+        data={data?.departmentEmployeeCounts || []}
         renderItem={renderDepartmentItem}
         keyExtractor={(item) => item.id.toString()}
-        style={styles.departmentList}
-        scrollEnabled={false}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ gap: 1 }}
+        itemSpacing={8}
+        scrollEnabled={false}
+        contentContainerStyle={{ paddingHorizontal: 0 }}
       />
     </TouchableOpacity>
   );

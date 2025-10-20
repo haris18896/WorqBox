@@ -1,5 +1,5 @@
 import { Badge, ResponsiveFlatList } from "@/components/ui";
-import { useTheme } from "@/theme";
+import { spacing, useTheme } from "@/theme";
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -61,7 +61,7 @@ export default function PresentAbsentEmployeeCard({
     card: {
       backgroundColor: palette.background.secondary,
       borderRadius: 12,
-      padding: 16,
+      paddingBottom: spacing.md,
       marginBottom: 12,
       elevation: 2,
       shadowColor: "#000",
@@ -72,6 +72,8 @@ export default function PresentAbsentEmployeeCard({
       borderColor: palette.border.primary,
     },
     header: {
+      paddingTop: spacing.md,
+      paddingHorizontal: spacing.md,
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "center",
@@ -92,6 +94,7 @@ export default function PresentAbsentEmployeeCard({
     },
     summaryContainer: {
       flexDirection: "row",
+      marginHorizontal: spacing.md,
       justifyContent: "space-around",
       backgroundColor: palette.background.primary,
       borderRadius: 8,
