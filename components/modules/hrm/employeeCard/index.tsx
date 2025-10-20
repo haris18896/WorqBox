@@ -1,7 +1,7 @@
 import { useTheme } from "@/theme";
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { EmployeeCardProps } from "./index.d";
 
 export default function EmployeeCard({
@@ -99,6 +99,13 @@ export default function EmployeeCard({
     deleteButton: {
       backgroundColor: `${palette.error.light}30`,
     },
+    employeeImage: {
+      width: 32,
+      height: 32,
+      borderRadius: 16,
+      marginRight: 12,
+      backgroundColor: palette.primary.light,
+    },
   });
 
   return (
@@ -106,8 +113,12 @@ export default function EmployeeCard({
       <View style={styles.employeeHeader}>
         <View style={styles.employeeAvatar}>
           {employee.profilePictureUrl ? (
-            <Ionicons name="person" size={24} color={palette.primary.main} />
+            <Image
+              source={{ uri: employee.profilePictureUrl }}
+              style={styles.employeeImage}
+            />
           ) : (
+            // <Ionicons name="person" size={24} color={palette.primary.main} />
             <Ionicons
               name="person-outline"
               size={24}
