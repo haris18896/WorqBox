@@ -253,6 +253,7 @@ export default function ApprovalRequest() {
     },
     listContainer: {
       flex: 1,
+      paddingTop: spacing.md,
     },
     searchContainer: {
       flexDirection: "row",
@@ -320,7 +321,6 @@ export default function ApprovalRequest() {
             renderItem={renderLeaveRequest}
             keyExtractor={(item) => item.id.toString()}
             showsVerticalScrollIndicator={false}
-            contentContainerStyle={{ padding: spacing.md }}
           />
         ) : (
           <View style={styles.emptyContainer}>

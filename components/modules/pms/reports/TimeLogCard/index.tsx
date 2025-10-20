@@ -3,7 +3,7 @@ import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 // ** Utils
-import { ColorPalette, useTheme } from "@/theme";
+import { ColorPalette, spacing, useTheme } from "@/theme";
 import { isTablet, isWeb } from "@/theme/responsive";
 import { stripHtmlTags } from "@/utils/textUtils";
 
@@ -11,7 +11,7 @@ import { stripHtmlTags } from "@/utils/textUtils";
 import { Avatar, Badge } from "@/components/ui";
 
 // ** Types
-import { TimeLogCardProps } from ".";
+import { TimeLogCardProps } from "./index.d";
 
 export const TimeLogCard: React.FC<TimeLogCardProps> = ({
   timeLog,
@@ -150,8 +150,8 @@ const styles = (palette: ColorPalette) =>
   StyleSheet.create({
     card: {
       backgroundColor: palette.background.secondary,
-      borderRadius: 16,
-      padding: 16,
+      borderRadius: spacing.md,
+      padding: spacing.md,
       elevation: 3,
       shadowColor: "#000",
       shadowOffset: { width: 0, height: 2 },

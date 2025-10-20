@@ -1,3 +1,4 @@
+import { spacing } from "@/theme";
 import { isTablet, isWeb } from "@/theme/responsive";
 import React from "react";
 import {
@@ -90,7 +91,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  contentContainer: {},
+  contentContainer: {
+    marginHorizontal: spacing.md,
+  },
   itemContainer: {
     // Container for each item with spacing
   },

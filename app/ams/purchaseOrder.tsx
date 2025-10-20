@@ -88,6 +88,7 @@ export default function PurchaseOrder() {
     },
     content: {
       flex: 1,
+      paddingTop: spacing.md,
     },
     headerSection: {
       marginBottom: 20,

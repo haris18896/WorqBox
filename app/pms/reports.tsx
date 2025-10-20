@@ -279,8 +279,8 @@ export default function Reports() {
     },
     resultsContainer: {
       backgroundColor: palette.background.secondary,
-      padding: 20,
       borderRadius: 12,
+      paddingHorizontal: spacing.sm,
       marginBottom: 20,
       elevation: 2,
       shadowColor: "#000",
@@ -293,6 +293,8 @@ export default function Reports() {
       fontWeight: "600",
       color: palette.text.primary,
       marginBottom: 16,
+      paddingHorizontal: spacing.md,
+      paddingTop: spacing.md,
     },
     timeLogDetails: {
       fontSize: 14,
@@ -320,9 +322,7 @@ export default function Reports() {
       justifyContent: "space-between",
       gap: spacing["md"],
     },
-    resultsGrid: {
-      paddingHorizontal: 0,
-    },
+    resultsGrid: {},
   });
 
   const renderTimeLogItem = ({

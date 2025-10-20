@@ -155,7 +155,7 @@ const styles = (palette: ColorPalette) =>
       flex: 1,
     },
     header: {
-      padding: 16,
+      padding: spacing.sm,
       paddingBottom: 8,
       flexDirection: "row",
       justifyContent: "space-between",
@@ -169,7 +169,6 @@ const styles = (palette: ColorPalette) =>
       marginBottom: 8,
     },
     listContainer: {
-      padding: 16,
       paddingTop: 8,
     },
     emptyContainer: {

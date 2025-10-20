@@ -11,13 +11,7 @@ import {
 } from "@/store/api/modules/hrm/hrmDashboard";
 import { useTheme } from "@/theme";
 import React from "react";
-import {
-  RefreshControl,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 
 export default function HRMDashboard() {
   const { palette } = useTheme();
@@ -27,28 +21,19 @@ export default function HRMDashboard() {
     data: genderStats,
     isLoading: genderLoading,
     error: genderError,
-    refetch: refetchGender,
   } = useGetEmployeeCountWithGenderQuery();
 
   const {
     data: departmentStats,
     isLoading: departmentLoading,
     error: departmentError,
-    refetch: refetchDepartment,
   } = useGetEmployeeCountByDepartmentQuery();
 
   const {
     data: attendanceData,
     isLoading: attendanceLoading,
     error: attendanceError,
-    refetch: refetchAttendance,
   } = useGetTodayPresentAbsentEmployeesQuery();
-
-  const handleRefresh = () => {
-    refetchGender();
-    refetchDepartment();
-    refetchAttendance();
-  };
 
   const isLoading = genderLoading || departmentLoading || attendanceLoading;
 
@@ -73,12 +58,7 @@ export default function HRMDashboard() {
   return (
     <View style={styles.container}>
       <BarHeader title="HRM Dashboard" variant="default" />
-      <ScrollView
-        style={styles.content}
-        refreshControl={
-          <RefreshControl refreshing={isLoading} onRefresh={handleRefresh} />
-        }
-      >
+      <View style={styles.content}>
         <Text style={styles.sectionTitle}>Employee Statistics</Text>
         <Loading
           size="small"
@@ -122,7 +102,7 @@ export default function HRMDashboard() {
             console.log("Date pressed:", date);
           }}
         />
-      </ScrollView>
+      </View>
     </View>
   );
 }

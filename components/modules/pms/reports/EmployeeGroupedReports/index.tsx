@@ -2,7 +2,7 @@ import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 // ** Utils
-import { ColorPalette, useTheme } from "@/theme";
+import { ColorPalette, spacing, useTheme } from "@/theme";
 
 // ** Components
 import { Avatar, Badge, ResponsiveFlatList } from "@/components/ui";
@@ -10,7 +10,7 @@ import { TimeLogCard } from "../TimeLogCard";
 
 // ** Types
 import { TimeLog } from "@/store/api/modules/pms/pmsTypes";
-import { EmployeeGroupedReportsProps } from ".";
+import { EmployeeGroupedReportsProps } from "./index.d";
 
 export const EmployeeGroupedReports: React.FC<EmployeeGroupedReportsProps> = ({
   groupedTimeLogs,
@@ -103,7 +103,7 @@ const styles = (palette: ColorPalette) =>
     employeeGroup: {
       backgroundColor: palette.background.primary,
       borderRadius: 16,
-      padding: 20,
+      paddingBottom: spacing.md,
       elevation: 2,
       shadowColor: "#000",
       shadowOffset: { width: 0, height: 2 },
@@ -113,6 +113,7 @@ const styles = (palette: ColorPalette) =>
       borderColor: palette.border?.primary || "rgba(0,0,0,0.05)",
     },
     employeeHeader: {
+      padding: spacing.md,
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "center",

@@ -1,4 +1,4 @@
-import { Badge } from "@/components/ui";
+import { Badge, ResponsiveFlatList } from "@/components/ui";
 import { useTheme } from "@/theme";
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
@@ -112,7 +112,7 @@ export default function PresentAbsentEmployeeCard({
       color: palette.text.secondary,
     },
     attendanceList: {
-      gap: 8,
+      flex: 1,
     },
     attendanceItem: {
       flexDirection: "row",
@@ -223,27 +223,15 @@ export default function PresentAbsentEmployeeCard({
         </View>
       </View>
 
-      <View style={styles.attendanceList}>
-        {data.slice(0, 5).map((item, index) => (
-          <TouchableOpacity
-            key={index}
-            style={styles.attendanceItem}
-            onPress={() => handleDatePress(item.fromDate)}
-          >
-            <View style={styles.dateInfo}>
-              <Text style={styles.dateText}>{formatDate(item.fromDate)}</Text>
-            </View>
-            <View style={styles.attendanceStats}>
-              <Badge variant="success" style={styles.presentBadge}>
-                {item.presentCount} Present
-              </Badge>
-              <Badge variant="error" style={styles.absentBadge}>
-                {item.absentCount} Absent
-              </Badge>
-            </View>
-          </TouchableOpacity>
-        ))}
-      </View>
+      <ResponsiveFlatList
+        data={data.slice(0, 5)}
+        renderItem={renderAttendanceItem}
+        keyExtractor={(item, index) => index.toString()}
+        style={styles.attendanceList}
+        scrollEnabled={false}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ gap: 8 }}
+      />
     </TouchableOpacity>
   );
 }

@@ -67,7 +67,6 @@ const BarHeader: React.FC<BarHeaderProps> = ({
       alignItems: "center",
       justifyContent: "space-between",
       backgroundColor: palette.background.tertiary,
-
       marginHorizontal: spacing.sm,
       borderRadius: spacing.lg,
       paddingHorizontal: spacing.lg,

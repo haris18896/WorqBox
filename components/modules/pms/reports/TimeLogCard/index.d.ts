@@ -1,4 +1,4 @@
-import { TimeLog } from "@/store/api/modules/pms/pmsTypes";
+import { TimeLog } from "../../../../../store/api/modules/pms/pmsTypes";
 
 export interface TimeLogCardProps {
   timeLog: TimeLog;

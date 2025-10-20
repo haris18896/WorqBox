@@ -3,7 +3,7 @@ import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 // ** Utils
-import { ColorPalette, useTheme } from "@/theme";
+import { ColorPalette, spacing, useTheme } from "@/theme";
 
 // ** Components
 import { Badge, ResponsiveFlatList } from "@/components/ui";
@@ -11,7 +11,7 @@ import { TimeLogCard } from "../TimeLogCard";
 
 // ** Types
 import { TimeLog } from "@/store/api/modules/pms/pmsTypes";
-import { ProjectGroupedReportsProps } from ".";
+import { ProjectGroupedReportsProps } from "./index.d";
 
 export const ProjectGroupedReports: React.FC<ProjectGroupedReportsProps> = ({
   groupedTimeLogs,
@@ -105,9 +105,9 @@ const styles = (palette: ColorPalette) =>
       gap: 12,
     },
     projectGroup: {
+      paddingBottom: spacing.md,
       backgroundColor: palette.background.primary,
       borderRadius: 16,
-      padding: 20,
       elevation: 2,
       shadowColor: "#000",
       shadowOffset: { width: 0, height: 2 },
@@ -117,6 +117,7 @@ const styles = (palette: ColorPalette) =>
       borderColor: palette.border?.primary || "rgba(0,0,0,0.05)",
     },
     projectHeader: {
+      padding: spacing.md,
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "center",

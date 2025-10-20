@@ -155,7 +155,7 @@ export default function LeaveRequest() {
     },
     content: {
       flex: 1,
-      padding: 20,
+      paddingTop: spacing.md,
     },
     headerRow: {
       flexDirection: "row",
