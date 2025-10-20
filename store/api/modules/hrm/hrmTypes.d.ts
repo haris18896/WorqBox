@@ -159,6 +159,23 @@ export type GetEmployeesResponse = BaseApiResponse<
   PaginatedResult<HrmEmployee>
 >;
 
+// Holidays
+export interface HolidayItem {
+  id: number;
+  name: string;
+  fromDate: string; // ISO string
+  toDate: string; // ISO string
+  shortDescription: string;
+  daysCount: number;
+}
+
+export interface HolidayQueryParams extends PaginationParams {
+  sortBy?: string;
+  sortOrder?: boolean;
+}
+
+export type GetHolidaysResponse = BaseApiResponse<PaginatedResult<HolidayItem>>;
+
 export interface PagePermission {
   id: number;
   canView: boolean;

@@ -275,5 +275,6 @@ export const API_ENDPOINTS = {
   GET_EMPLOYEE_COUNT_BY_DEPARTMENT: "/Dashboard/GetEmployeeCountByDepartment",
   GET_TODAY_PRESENT_ABSENT_EMPLOYEES:
     "/Dashboard/GetTodayPresentAbsentEmployees",
+  GET_HOLIDAYS: "/Holiday/GetHolidays",
   GET_EMPLOYEES: "/Employee/GetEmployees",
 };
