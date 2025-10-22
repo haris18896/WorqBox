@@ -19,7 +19,10 @@ import {
 } from "@/components/ui";
 
 // ** Store
-import { useGetClientProjectsQuery } from "@/store/api/modules/pms/pmsProjects";
+import {
+  useDeleteProjectClientMutation,
+  useGetClientProjectsQuery,
+} from "@/store/api/modules/pms/pmsProjects";
 
 // ** Types
 import { DeleteModal } from "@/components/ui/Modal";
@@ -28,7 +31,7 @@ import { ClientProject } from "@/store/api/modules/pms/pmsTypes";
 export default function ClientManagement() {
   const { palette } = useTheme();
   const [refreshing, setRefreshing] = useState(false);
-  const [isPending, setIsPending] = useState<string | null>(null);
+
   const [selectedClient, setSelectedClient] = useState<ClientProject | null>(
     null
   );
@@ -44,12 +47,27 @@ export default function ClientManagement() {
     pageSize: 50,
   });
 
+  const [deleteProjectClient, { isLoading: isDeleting }] =
+    useDeleteProjectClientMutation();
+
   const clientProjects = clientProjectsResponse?.items || [];
 
   const handleRefresh = async () => {
     setRefreshing(true);
     await refetch();
     setRefreshing(false);
+  };
+
+  const handleDeleteClient = async () => {
+    if (!selectedClient) return;
+
+    try {
+      await deleteProjectClient(selectedClient.id).unwrap();
+      setModal(null);
+      setSelectedClient(null);
+    } catch (error) {
+      console.error("Delete failed:", error);
+    }
   };
 
   const renderHeader = () => (
@@ -77,8 +95,9 @@ export default function ClientManagement() {
     <ClientsCard
       key={index}
       project={item}
-      isUpdating={isPending === "updating" && selectedClient?.id === item.id}
-      isDeleting={isPending === "deleting" && selectedClient?.id === item.id}
+      // isUpdating={selectedClient?.id === item.id}
+      isUpdating={false}
+      isDeleting={isDeleting && selectedClient?.id === item.id}
       onDelete={(client) => {
         setModal("deleteClient");
         setSelectedClient(client);
@@ -158,10 +177,14 @@ export default function ClientManagement() {
       />
 
       <DeleteModal
+        isLoading={isDeleting}
         height={isMobile() ? "35%" : "27%"}
         visible={modal === "deleteClient"}
-        onClose={() => setModal(null)}
-        onDelete={() => {}}
+        onClose={() => {
+          setModal(null);
+          setSelectedClient(null);
+        }}
+        onDelete={handleDeleteClient}
         title="Delete Client"
         description={`Are you sure you want to delete ${selectedClient?.name}?`}
         subtitle="This action cannot be undone."

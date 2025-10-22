@@ -155,6 +155,32 @@ export const pmsProjectsApi = createApi({
       },
       invalidatesTags: [{ type: TAG_TYPES.ClientProjects, id: "LIST" }],
     }),
+
+    // DELETE CLIENT PROJECT
+    deleteProjectClient: builder.mutation<boolean, number>({
+      query: (clientId: number) => ({
+        url: `${API_ENDPOINTS.DELETE_PROJECT_CLIENT}?id=${clientId}`,
+        method: "POST",
+      }),
+      transformResponse: (response: BaseApiResponse<boolean>) => {
+        return transformResponse(response);
+      },
+      onQueryStarted: async (arg: number, { queryFulfilled }: any) => {
+        try {
+          await queryFulfilled;
+          handleApiSuccess("Client deleted successfully");
+        } catch (error: any) {
+          const serverErrorMessage = error?.error?.data?.message;
+          handleApiError(
+            error,
+            serverErrorMessage
+              ? `${serverErrorMessage}`
+              : "Failed to delete client project"
+          );
+        }
+      },
+      invalidatesTags: [{ type: TAG_TYPES.ClientProjects, id: "LIST" }],
+    }),
   }),
 });
 
@@ -164,4 +190,5 @@ export const {
   useGetClientProjectsQuery,
   useLazyGetClientProjectsQuery,
   useCreateClientProjectMutation,
+  useDeleteProjectClientMutation,
 } = pmsProjectsApi;

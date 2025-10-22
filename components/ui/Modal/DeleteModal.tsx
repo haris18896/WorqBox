@@ -23,6 +23,7 @@ const DeleteModal: React.FC<DeleteModalProps> = ({
   subtitle,
   description,
   height = "50%",
+  isLoading,
 }) => {
   const { palette } = useTheme();
 
@@ -116,6 +117,11 @@ const DeleteModal: React.FC<DeleteModalProps> = ({
             variant="error"
             onPress={onDelete}
             style={styles.button}
+            loading={isLoading}
+            disabled={isLoading}
+            leftIcon={
+              <Ionicons name="trash" size={20} color={palette.text.inverse} />
+            }
           />
         </View>
       </View>

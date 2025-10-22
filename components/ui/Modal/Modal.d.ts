@@ -31,4 +31,5 @@ export interface DeleteModalProps {
   subtitle: string;
   description: string;
   height?: string;
+  isLoading: boolean;
 }
