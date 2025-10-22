@@ -23,12 +23,16 @@ import {
 import { useCreateClientProjectMutation } from "@/store/api/modules/pms/pmsProjects";
 
 // ** Types
-import { CreateClientProjectRequest } from "@/store/api/modules/pms/pmsTypes";
+import {
+  ClientProject,
+  CreateClientProjectRequest,
+} from "@/store/api/modules/pms/pmsTypes";
 
 interface AddClientModalProps {
   visible: boolean;
   onClose: () => void;
   onSuccess?: () => void;
+  selectedClient?: ClientProject | null;
 }
 
 const allTimezones = moment.tz.names();
@@ -91,10 +95,31 @@ export const AddClientModal: React.FC<AddClientModalProps> = ({
   visible,
   onClose,
   onSuccess,
+  selectedClient,
 }) => {
   const { palette } = useTheme();
   const [createClientProject, { isLoading }] = useCreateClientProjectMutation();
   const [serverErrors, setServerErrors] = useState<Record<string, string>>({});
+
+  // Determine if we're in edit mode
+  const isEditMode = selectedClient !== null && selectedClient !== undefined;
+
+  // Create initial values based on mode
+  const getInitialValues = (): CreateClientProjectRequest => {
+    if (isEditMode && selectedClient) {
+      return {
+        id: selectedClient.id,
+        name: selectedClient.name,
+        companyName: selectedClient.companyName,
+        description: selectedClient.description,
+        email: selectedClient.email,
+        phone: selectedClient.phone,
+        address: selectedClient.address,
+        timeZone: selectedClient.timeZone,
+      };
+    }
+    return initialValues;
+  };
 
   // Refs for form inputs
   const companyNameRef = useRef<any>(null);
@@ -105,7 +130,7 @@ export const AddClientModal: React.FC<AddClientModalProps> = ({
 
   // Use useFormik hook
   const formik = useFormik({
-    initialValues,
+    initialValues: getInitialValues(),
     validationSchema,
     enableReinitialize: true,
     onSubmit: async (values) => {
@@ -165,8 +190,12 @@ export const AddClientModal: React.FC<AddClientModalProps> = ({
     <Modal
       visible={visible}
       onClose={handleClose}
-      title="Add New Client"
-      subtitle="Create a new client project"
+      title={isEditMode ? "Edit Client" : "Add New Client"}
+      subtitle={
+        isEditMode
+          ? "Update client project information"
+          : "Create a new client project"
+      }
       height={isMobile() ? "70%" : "60%"}
       variant="bottom"
       animationType="slide"
@@ -387,14 +416,18 @@ export const AddClientModal: React.FC<AddClientModalProps> = ({
               style={styles(palette).cancelButton}
             />
             <Button
-              title="Create Client"
+              title={isEditMode ? "Update Client" : "Create Client"}
               variant="secondary"
               size={"small"}
               onPress={formik.handleSubmit}
               loading={isLoading}
               disabled={isLoading}
               leftIcon={
-                <Ionicons name="add" size={20} color={palette.text.inverse} />
+                <Ionicons
+                  name={isEditMode ? "checkmark" : "add"}
+                  size={20}
+                  color={palette.text.inverse}
+                />
               }
               style={styles(palette).createButton}
             />

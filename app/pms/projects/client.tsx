@@ -102,6 +102,10 @@ export default function ClientManagement() {
         setModal("deleteClient");
         setSelectedClient(client);
       }}
+      onUpdate={(client) => {
+        setModal("addClient");
+        setSelectedClient(client);
+      }}
     />
   );
 
@@ -169,11 +173,14 @@ export default function ClientManagement() {
         columnSpacing={12}
       />
 
-      {/* Add Client Modal */}
       <AddClientModal
         visible={modal === "addClient"}
-        onClose={() => setModal(null)}
+        onClose={() => {
+          setModal(null);
+          setSelectedClient(null);
+        }}
         onSuccess={() => refetch()}
+        selectedClient={selectedClient}
       />
 
       <DeleteModal

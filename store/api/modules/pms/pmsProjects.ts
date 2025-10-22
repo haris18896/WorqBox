@@ -119,7 +119,6 @@ export const pmsProjectsApi = createApi({
       CreateClientProjectRequest
     >({
       query: (clientData: CreateClientProjectRequest) => {
-        // Clean up the data - remove null id
         const requestBody = {
           ...clientData,
           id: clientData.id || undefined,
@@ -142,14 +141,20 @@ export const pmsProjectsApi = createApi({
       ) => {
         try {
           await queryFulfilled;
-          handleApiSuccess("Client created successfully");
+          const isUpdate = arg.id !== null && arg.id !== undefined;
+          handleApiSuccess(
+            isUpdate
+              ? "Client updated successfully"
+              : "Client created successfully"
+          );
         } catch (error: any) {
           const serverErrorMessage = error?.error?.data?.message;
+          const isUpdate = arg.id !== null && arg.id !== undefined;
           handleApiError(
             error,
             serverErrorMessage
               ? `${serverErrorMessage}`
-              : "Failed to create client project"
+              : `Failed to ${isUpdate ? "update" : "create"} client project`
           );
         }
       },
