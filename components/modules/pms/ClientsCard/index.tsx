@@ -2,13 +2,21 @@ import { ColorPalette, useTheme } from "@/theme";
 import { stripHtmlTags } from "@/utils/textUtils";
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  ActivityIndicator,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { ClientsCardProps } from "./index.d";
 
 export const ClientsCard: React.FC<ClientsCardProps> = ({
   project,
   onDelete,
   onUpdate,
+  isUpdating,
+  isDeleting,
 }) => {
   const { palette } = useTheme();
 
@@ -26,26 +34,36 @@ export const ClientsCard: React.FC<ClientsCardProps> = ({
         </View>
         <View style={styles(palette).actionsContainer}>
           <TouchableOpacity
+            disabled={isUpdating}
             style={styles(palette).actionButton}
             onPress={() => onUpdate?.(project)}
             activeOpacity={0.7}
           >
-            <Ionicons
-              name="create-outline"
-              size={20}
-              color={palette.success.main}
-            />
+            {isUpdating ? (
+              <ActivityIndicator size="small" color={palette.success.main} />
+            ) : (
+              <Ionicons
+                name="create-outline"
+                size={20}
+                color={palette.success.main}
+              />
+            )}
           </TouchableOpacity>
           <TouchableOpacity
+            disabled={isDeleting}
             style={styles(palette).actionButton}
             onPress={() => onDelete?.(project)}
             activeOpacity={0.7}
           >
-            <Ionicons
-              name="trash-outline"
-              size={20}
-              color={palette.error?.main || "#ef4444"}
-            />
+            {isDeleting ? (
+              <ActivityIndicator size="small" color={palette.error.main} />
+            ) : (
+              <Ionicons
+                name="trash-outline"
+                size={20}
+                color={palette.error?.main || "#ef4444"}
+              />
+            )}
           </TouchableOpacity>
         </View>
       </View>

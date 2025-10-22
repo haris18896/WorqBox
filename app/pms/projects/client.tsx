@@ -28,6 +28,7 @@ import { ClientProject } from "@/store/api/modules/pms/pmsTypes";
 export default function ClientManagement() {
   const { palette } = useTheme();
   const [refreshing, setRefreshing] = useState(false);
+  const [isPending, setIsPending] = useState<string | null>(null);
   const [selectedClient, setSelectedClient] = useState<ClientProject | null>(
     null
   );
@@ -76,6 +77,8 @@ export default function ClientManagement() {
     <ClientsCard
       key={index}
       project={item}
+      isUpdating={isPending === "updating" && selectedClient?.id === item.id}
+      isDeleting={isPending === "deleting" && selectedClient?.id === item.id}
       onDelete={(client) => {
         setModal("deleteClient");
         setSelectedClient(client);
