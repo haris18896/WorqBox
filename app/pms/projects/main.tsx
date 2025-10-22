@@ -18,7 +18,10 @@ import {
 } from "@/components/ui";
 
 // ** Store
-import { useGetMainProjectsQuery } from "@/store/api/modules/pms/pmsProjects";
+import {
+  useGetClientProjectsQuery,
+  useGetMainProjectsQuery,
+} from "@/store/api/modules/pms/pmsProjects";
 
 // ** Types
 import { Project } from "@/store/api/modules/pms/pmsTypes";
@@ -33,6 +36,15 @@ export default function ProjectsMain() {
     error,
     refetch,
   } = useGetMainProjectsQuery();
+
+  const {
+    data: clientProjectsResponse,
+    isLoading: clientLoading,
+    error: clientsError,
+  } = useGetClientProjectsQuery({
+    pageNumber: 1,
+    pageSize: 100,
+  });
 
   const projects = projectsResponse?.items || [];
 

@@ -44,7 +44,7 @@ export default function ClientManagement() {
     refetch,
   } = useGetClientProjectsQuery({
     pageNumber: 1,
-    pageSize: 50,
+    pageSize: 100,
   });
 
   const [deleteProjectClient, { isLoading: isDeleting }] =
