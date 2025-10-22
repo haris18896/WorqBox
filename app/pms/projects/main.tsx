@@ -5,9 +5,10 @@ import { RefreshControl, StyleSheet, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 // Utils
-import { ColorPalette, spacing, useTheme } from "@/theme";
+import { ColorPalette, isMobile, spacing, useTheme } from "@/theme";
 
 // ** Custom Components
+import { AddProjectModal } from "@/components/modules/pms/Modals/AddProject";
 import { ProjectCard } from "@/components/modules/pms/ProjectCard";
 import {
   BarHeader,
@@ -18,17 +19,17 @@ import {
 } from "@/components/ui";
 
 // ** Store
-import {
-  useGetClientProjectsQuery,
-  useGetMainProjectsQuery,
-} from "@/store/api/modules/pms/pmsProjects";
+import { useGetMainProjectsQuery } from "@/store/api/modules/pms/pmsProjects";
 
 // ** Types
+import { DeleteModal } from "@/components/ui/Modal";
 import { Project } from "@/store/api/modules/pms/pmsTypes";
 
 export default function ProjectsMain() {
   const { palette } = useTheme();
   const [refreshing, setRefreshing] = useState(false);
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [modal, setModal] = useState<string | null>(null);
 
   const {
     data: projectsResponse,
@@ -36,15 +37,6 @@ export default function ProjectsMain() {
     error,
     refetch,
   } = useGetMainProjectsQuery();
-
-  const {
-    data: clientProjectsResponse,
-    isLoading: clientLoading,
-    error: clientsError,
-  } = useGetClientProjectsQuery({
-    pageNumber: 1,
-    pageSize: 100,
-  });
 
   const projects = projectsResponse?.items || [];
 
@@ -55,12 +47,27 @@ export default function ProjectsMain() {
   };
 
   const handleAddProject = () => {
-    // TODO: Open modal for adding project
-    console.log("Add Project clicked");
+    setModal("addProject");
+    setSelectedProject(null);
   };
 
   const handleProjectPress = (project: Project) => {
     console.log("Project pressed:", project.name);
+    // TODO: Navigate to project details
+  };
+
+  const handleEditProject = (project: Project) => {
+    setModal("addProject");
+    setSelectedProject(project);
+  };
+
+  const handleDeleteProject = (project: Project) => {
+    setModal("deleteProject");
+    setSelectedProject(project);
+  };
+
+  const handleViewProject = (project: Project) => {
+    console.log("View project:", project.name);
     // TODO: Navigate to project details
   };
 
@@ -80,7 +87,14 @@ export default function ProjectsMain() {
   );
 
   const renderItem = ({ item, index }: { item: Project; index: number }) => (
-    <ProjectCard key={index} project={item} onPress={handleProjectPress} />
+    <ProjectCard
+      key={index}
+      project={item}
+      onPress={handleProjectPress}
+      onEdit={handleEditProject}
+      onDelete={handleDeleteProject}
+      onView={handleViewProject}
+    />
   );
 
   const renderEmpty = () => (
@@ -143,6 +157,37 @@ export default function ProjectsMain() {
         showsVerticalScrollIndicator={false}
         itemSpacing={2}
         columnSpacing={12}
+      />
+
+      {/* Add Project Modal */}
+      <AddProjectModal
+        visible={modal === "addProject"}
+        onClose={() => {
+          setModal(null);
+          setSelectedProject(null);
+        }}
+        onSuccess={() => refetch()}
+        selectedProject={selectedProject}
+      />
+
+      {/* Delete Project Modal */}
+      <DeleteModal
+        isLoading={false}
+        height={isMobile() ? "35%" : "27%"}
+        visible={modal === "deleteProject"}
+        onClose={() => {
+          setModal(null);
+          setSelectedProject(null);
+        }}
+        onDelete={() => {
+          // TODO: Implement delete API
+          console.log("Delete project:", selectedProject?.name);
+          setModal(null);
+          setSelectedProject(null);
+        }}
+        title="Delete Project"
+        description={`Are you sure you want to delete ${selectedProject?.name}?`}
+        subtitle="This action cannot be undone."
       />
     </View>
   );

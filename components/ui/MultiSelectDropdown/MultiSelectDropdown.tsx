@@ -19,6 +19,8 @@ import {
   MultiSelectOption,
 } from "./MultiSelectDropdown.d";
 
+const MAX_SELECTED_ITEMS = 2;
+
 const MultiSelectDropdown: React.FC<MultiSelectDropdownProps> = ({
   title,
   options = [],
@@ -298,7 +300,7 @@ const MultiSelectDropdown: React.FC<MultiSelectDropdownProps> = ({
       return <Text style={styles.placeholder}>{placeholder}</Text>;
     }
 
-    if (items.length <= 2) {
+    if (items.length <= MAX_SELECTED_ITEMS) {
       return (
         <View style={styles.selectedItemsContainer}>
           {items.map((item) => (
@@ -312,12 +314,18 @@ const MultiSelectDropdown: React.FC<MultiSelectDropdownProps> = ({
 
     return (
       <View style={styles.selectedItemsContainer}>
-        <View style={styles.selectedItem}>
-          <Text style={styles.selectedItemText}>{items[0].label}</Text>
-        </View>
-        <View style={styles.selectedItem}>
-          <Text style={styles.selectedItemText}>+{items.length - 1} more</Text>
-        </View>
+        {items.slice(0, MAX_SELECTED_ITEMS).map((item) => (
+          <View key={item.id} style={styles.selectedItem}>
+            <Text style={styles.selectedItemText}>{item.label}</Text>
+          </View>
+        ))}
+        {items.length > MAX_SELECTED_ITEMS && (
+          <View style={styles.selectedItem}>
+            <Text style={styles.selectedItemText}>
+              +{items.length - MAX_SELECTED_ITEMS} more
+            </Text>
+          </View>
+        )}
       </View>
     );
   };

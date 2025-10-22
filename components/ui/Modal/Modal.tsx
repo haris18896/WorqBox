@@ -1,11 +1,13 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Animated,
   Dimensions,
+  Keyboard,
   Modal,
   StyleSheet,
   Text,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   View,
 } from "react-native";
 
@@ -42,6 +44,33 @@ const CustomModal: React.FC<ModalProps> = ({
   const scaleAnim = useRef(new Animated.Value(0)).current;
   const opacityAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(SCREEN_HEIGHT)).current;
+
+  // Keyboard state management
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
+  const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
+
+  // Keyboard event listeners
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      "keyboardDidShow",
+      (e) => {
+        setKeyboardHeight(e.endCoordinates.height);
+        setIsKeyboardVisible(true);
+      }
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      "keyboardDidHide",
+      () => {
+        setKeyboardHeight(0);
+        setIsKeyboardVisible(false);
+      }
+    );
+
+    return () => {
+      keyboardDidShowListener?.remove();
+      keyboardDidHideListener?.remove();
+    };
+  }, []);
 
   useEffect(() => {
     if (visible) {
@@ -215,6 +244,9 @@ const CustomModal: React.FC<ModalProps> = ({
       paddingVertical: spacing.md,
       ...(contentStyle as any),
     },
+    touchableContainer: {
+      flex: 1,
+    },
   });
 
   const handleOverlayPress = () => {
@@ -269,7 +301,11 @@ const CustomModal: React.FC<ModalProps> = ({
             </View>
           )}
 
-          <View style={styles.content}>{children}</View>
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View style={styles.touchableContainer}>
+              <View style={styles.content}>{children}</View>
+            </View>
+          </TouchableWithoutFeedback>
         </Animated.View>
       </View>
     </Modal>

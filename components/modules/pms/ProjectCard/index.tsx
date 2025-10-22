@@ -1,5 +1,14 @@
 import React from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  ActivityIndicator,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+
+// ** Third Party Components
+import { Ionicons } from "@expo/vector-icons";
 
 // ** Utils
 import { ColorPalette, useTheme } from "@/theme";
@@ -10,12 +19,17 @@ import { stripHtmlTags } from "@/utils/textUtils";
 import { Avatar } from "@/components/ui";
 
 // ** Types
-import { ProjectCardProps } from ".";
+import { ProjectCardProps } from "./index.d";
 
 export const ProjectCard: React.FC<ProjectCardProps> = ({
   project,
   onPress,
   onLongPress,
+  onEdit,
+  onDelete,
+  onView,
+  isUpdating,
+  isDeleting,
 }) => {
   const { palette } = useTheme();
 
@@ -56,6 +70,48 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
           <Text style={styles(palette).projectLead} numberOfLines={1}>
             Lead: {project.leadName}
           </Text>
+        </View>
+        <View style={styles(palette).actionsContainer}>
+          <TouchableOpacity
+            disabled={isUpdating}
+            style={styles(palette).actionButton}
+            onPress={() => onView?.(project)}
+            activeOpacity={0.7}
+          >
+            <Ionicons name="eye-outline" size={20} color={palette.info.main} />
+          </TouchableOpacity>
+          <TouchableOpacity
+            disabled={isUpdating}
+            style={styles(palette).actionButton}
+            onPress={() => onEdit?.(project)}
+            activeOpacity={0.7}
+          >
+            {isUpdating ? (
+              <ActivityIndicator size="small" color={palette.success.main} />
+            ) : (
+              <Ionicons
+                name="create-outline"
+                size={20}
+                color={palette.success.main}
+              />
+            )}
+          </TouchableOpacity>
+          <TouchableOpacity
+            disabled={isDeleting}
+            style={styles(palette).actionButton}
+            onPress={() => onDelete?.(project)}
+            activeOpacity={0.7}
+          >
+            {isDeleting ? (
+              <ActivityIndicator size="small" color={palette.error.main} />
+            ) : (
+              <Ionicons
+                name="trash-outline"
+                size={20}
+                color={palette.error.main}
+              />
+            )}
+          </TouchableOpacity>
         </View>
       </View>
 
@@ -211,6 +267,16 @@ const styles = (palette: ColorPalette) =>
       borderWidth: 2,
       borderColor: palette.background.secondary,
       borderRadius: 20,
+    },
+    actionsContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 8,
+    },
+    actionButton: {
+      padding: 8,
+      borderRadius: 8,
+      backgroundColor: palette.surface.tertiary,
     },
   });
 

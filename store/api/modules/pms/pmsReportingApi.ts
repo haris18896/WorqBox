@@ -5,7 +5,11 @@ import {
   TAG_TYPES,
   transformResponse,
 } from "../../../../utils/api";
-import { BaseApiResponse, PaginatedResult } from "../../../types/api";
+import {
+  API_ENDPOINTS,
+  BaseApiResponse,
+  PaginatedResult,
+} from "../../../types/api";
 import {
   EmployeeObject,
   ReportingStats,
@@ -25,7 +29,7 @@ export const pmsReportingApi = createApi({
     // GET EMPLOYEES
     getEmployees: builder.query<PaginatedResult<EmployeeObject>, void>({
       query: () => ({
-        url: "/Lookup/GetEmployees",
+        url: API_ENDPOINTS.GET_EMPLOYEES_LOOKUP,
         method: "GET",
       }),
       transformResponse: (

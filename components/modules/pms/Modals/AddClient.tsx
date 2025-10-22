@@ -248,7 +248,10 @@ export const AddClientModal: React.FC<AddClientModalProps> = ({
               onChangeText={(text) => {
                 formik.handleChange("companyName")(text);
                 if (serverErrors.companyName) {
-                  setServerErrors((prev) => ({ ...prev, companyName: "" }));
+                  setServerErrors((prev) => ({
+                    ...prev,
+                    companyName: "",
+                  }));
                 }
               }}
               onBlur={formik.handleBlur("companyName")}
@@ -279,7 +282,10 @@ export const AddClientModal: React.FC<AddClientModalProps> = ({
               onChangeText={(text) => {
                 formik.handleChange("description")(text);
                 if (serverErrors.description) {
-                  setServerErrors((prev) => ({ ...prev, description: "" }));
+                  setServerErrors((prev) => ({
+                    ...prev,
+                    description: "",
+                  }));
                 }
               }}
               onBlur={formik.handleBlur("description")}
