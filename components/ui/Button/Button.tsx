@@ -9,7 +9,7 @@ import {
 } from "react-native";
 
 // ** Theme
-import { useTheme } from "@/theme";
+import { ColorPalette, useTheme } from "@/theme";
 import { scaleSize } from "@/theme/responsive";
 import { buttonSize, spacing } from "@/theme/stylingConstants";
 import { ButtonProps } from "./Button.d";
@@ -17,6 +17,7 @@ import { ButtonProps } from "./Button.d";
 const Button: React.FC<ButtonProps> = ({
   title,
   onPress,
+  outlineColor,
   variant = "primary",
   size = "medium",
   disabled = false,
@@ -46,6 +47,8 @@ const Button: React.FC<ButtonProps> = ({
           backgroundColor: "transparent",
           borderColor: isDisabled
             ? palette.neutral.light
+            : outlineColor
+            ? (palette[outlineColor as keyof ColorPalette] as any).main
             : palette.primary.main,
           borderWidth: 2,
         };
@@ -79,7 +82,11 @@ const Button: React.FC<ButtonProps> = ({
 
     switch (variant) {
       case "outline":
-        return isDisabled ? palette.neutral.light : palette.primary.main;
+        return isDisabled
+          ? palette.neutral.light
+          : outlineColor
+          ? (palette[outlineColor as keyof ColorPalette] as any).main
+          : palette.primary.main;
       case "ghost":
         return isDisabled ? palette.neutral.light : palette.primary.main;
       default:
@@ -91,7 +98,7 @@ const Button: React.FC<ButtonProps> = ({
     switch (size) {
       case "small":
         return {
-          paddingVertical: scaleSize(10),
+          paddingVertical: scaleSize(9),
           paddingHorizontal: spacing.md,
           minHeight: buttonSize.sm.height,
         };

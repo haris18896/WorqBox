@@ -6,6 +6,7 @@ import React, { useEffect, useState } from "react";
 import {
   Modal,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -162,6 +163,8 @@ const SingleSelectDropdown: React.FC<SingleSelectDropdownProps> = ({
       backgroundColor: "rgba(0, 0, 0, 0.5)",
       justifyContent: "center",
       alignItems: "center",
+      paddingHorizontal: 20,
+      paddingVertical: 50,
     },
     dropdown: {
       backgroundColor: palette.background.primary,
@@ -170,7 +173,8 @@ const SingleSelectDropdown: React.FC<SingleSelectDropdownProps> = ({
       borderColor: palette.border.primary,
       minWidth: 200,
       maxWidth: "90%",
-      maxHeight: 300,
+      maxHeight: maxHeight,
+      flex: 1,
       shadowColor: "#000",
       shadowOffset: { width: 0, height: 2 },
       shadowOpacity: 0.25,
@@ -188,7 +192,7 @@ const SingleSelectDropdown: React.FC<SingleSelectDropdownProps> = ({
       margin: 8,
     },
     optionsList: {
-      maxHeight: maxHeight,
+      flex: 1,
     },
     optionItem: {
       flexDirection: "row",
@@ -281,7 +285,12 @@ const SingleSelectDropdown: React.FC<SingleSelectDropdownProps> = ({
                     />
                   )}
 
-                  <View style={styles.optionsList}>
+                  <ScrollView
+                    style={styles.optionsList}
+                    showsVerticalScrollIndicator={true}
+                    nestedScrollEnabled={true}
+                    keyboardShouldPersistTaps="handled"
+                  >
                     {filteredOptions.map((item) => {
                       const isSelected = selectedValue === item.id;
                       return (
@@ -308,7 +317,7 @@ const SingleSelectDropdown: React.FC<SingleSelectDropdownProps> = ({
                         </TouchableOpacity>
                       );
                     })}
-                  </View>
+                  </ScrollView>
                 </View>
               </TouchableWithoutFeedback>
             </View>

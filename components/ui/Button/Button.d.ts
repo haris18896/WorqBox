@@ -1,5 +1,11 @@
 import { TextStyle, ViewStyle } from "react-native";
 
+export type outlineColor =
+  | "primary"
+  | "secondary"
+  | "outline"
+  | "ghost"
+  | "error";
 export interface ButtonProps {
   title: string;
   onPress: () => void;
@@ -12,6 +18,7 @@ export interface ButtonProps {
   rightIcon?: React.ReactNode;
   style?: ViewStyle;
   textStyle?: TextStyle;
+  outlineColor?: outlineColor;
 }
 
 export type ButtonVariant =

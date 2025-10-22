@@ -9,6 +9,7 @@ import { ColorPalette, spacing, useTheme } from "@/theme";
 
 // ** Custom Components
 import { ClientsCard } from "@/components/modules/pms/ClientsCard";
+import { AddClientModal } from "@/components/modules/pms/Modals/AddClient";
 import {
   BarHeader,
   Button,
@@ -26,6 +27,7 @@ import { ClientProject } from "@/store/api/modules/pms/pmsTypes";
 export default function ClientManagement() {
   const { palette } = useTheme();
   const [refreshing, setRefreshing] = useState(false);
+  const [isAddClientModalVisible, setIsAddClientModalVisible] = useState(false);
 
   const {
     data: clientProjectsResponse,
@@ -45,11 +47,6 @@ export default function ClientManagement() {
     setRefreshing(false);
   };
 
-  const handleAddClient = () => {
-    // TODO: Open modal for adding client
-    console.log("Add Client clicked");
-  };
-
   const handleClientPress = (client: ClientProject) => {
     console.log("Client pressed:", client.companyName);
     // TODO: Navigate to client details
@@ -60,7 +57,7 @@ export default function ClientManagement() {
       <Text style={styles(palette).headerTitle}>Client Projects</Text>
       <Button
         title="Add Client"
-        onPress={handleAddClient}
+        onPress={() => setIsAddClientModalVisible(true)}
         variant="secondary"
         size="small"
         leftIcon={
@@ -140,6 +137,13 @@ export default function ClientManagement() {
         showsVerticalScrollIndicator={false}
         itemSpacing={2}
         columnSpacing={12}
+      />
+
+      {/* Add Client Modal */}
+      <AddClientModal
+        visible={isAddClientModalVisible}
+        onClose={() => setIsAddClientModalVisible(false)}
+        onSuccess={() => refetch()}
       />
     </View>
   );

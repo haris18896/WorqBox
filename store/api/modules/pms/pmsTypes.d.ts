@@ -107,3 +107,30 @@ export interface TimeLogParams extends PaginationParams {
   isBillable?: boolean;
   isBilled?: boolean;
 }
+
+// Client Project Creation Types
+export interface CreateClientProjectRequest {
+  id: number | null;
+  name: string;
+  companyName: string;
+  description: string;
+  email: string;
+  phone: string;
+  address: string;
+  timeZone: string;
+}
+
+export interface CreateClientProjectResponse {
+  id: number;
+  name: string;
+  companyName: string;
+  description: string;
+  email: string;
+  phone: string;
+  address: string;
+  timeZone: string;
+  createdDate: string;
+  createdBy: number | null;
+  modifiedDate: string | null;
+  modifiedBy: number | null;
+}

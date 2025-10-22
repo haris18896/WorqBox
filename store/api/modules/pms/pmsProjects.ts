@@ -11,7 +11,12 @@ import {
   transformResponse,
 } from "@/utils/api";
 import { createApi } from "@reduxjs/toolkit/query/react";
-import { ClientProject, Project } from "./pmsTypes";
+import {
+  ClientProject,
+  CreateClientProjectRequest,
+  CreateClientProjectResponse,
+  Project,
+} from "./pmsTypes";
 
 export const pmsProjectsApi = createApi({
   reducerPath: "pmsProjects",
@@ -106,6 +111,34 @@ export const pmsProjectsApi = createApi({
         return [{ type: TAG_TYPES.ClientProjects, id: "LIST" }];
       },
     }),
+
+    // CREATE/UPDATE CLIENT PROJECT
+    createClientProject: builder.mutation<
+      CreateClientProjectResponse,
+      CreateClientProjectRequest
+    >({
+      query: (clientData: CreateClientProjectRequest) => ({
+        url: API_ENDPOINTS.CREATE_UPDATE_CLIENT_PROJECT,
+        method: "POST",
+        body: clientData,
+      }),
+      transformResponse: (
+        response: BaseApiResponse<CreateClientProjectResponse>
+      ) => {
+        return transformResponse(response);
+      },
+      onQueryStarted: async (
+        arg: CreateClientProjectRequest,
+        { queryFulfilled }: any
+      ) => {
+        try {
+          await queryFulfilled;
+        } catch (error) {
+          handleApiError(error, "Failed to create client project");
+        }
+      },
+      invalidatesTags: [{ type: TAG_TYPES.ClientProjects, id: "LIST" }],
+    }),
   }),
 });
 
@@ -114,4 +147,5 @@ export const {
   useLazyGetMainProjectsQuery,
   useGetClientProjectsQuery,
   useLazyGetClientProjectsQuery,
+  useCreateClientProjectMutation,
 } = pmsProjectsApi;

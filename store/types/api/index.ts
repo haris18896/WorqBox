@@ -247,6 +247,7 @@ export const API_ENDPOINTS = {
   GET_MAIN_PROJECTS: "/Project/GetProjects",
   GET_CLIENT_PROJECTS: "/ProjectClient/GetProjectClients",
   GET_PROJECT_CLIENTS: "/ProjectClient/GetProjectClients",
+  CREATE_UPDATE_CLIENT_PROJECT: "/ProjectClient/CreateUpdateProjectClient",
   GET_PROJECTS_LOOKUP: "/Lookup/GetProjects",
   GET_EMPLOYEES_LOOKUP: "/Lookup/GetEmployees",
   REPORTING_STATS: "/Reporting/ReportingStats",
