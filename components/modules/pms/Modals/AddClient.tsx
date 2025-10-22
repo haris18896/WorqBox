@@ -202,9 +202,10 @@ export const AddClientModal: React.FC<AddClientModalProps> = ({
       closeOnBackdrop={!isLoading}
     >
       <ScrollView
+        keyboardShouldPersistTaps="handled"
+        contentContainerStyle={styles(palette).contentContainer}
         style={styles(palette).scrollView}
         showsVerticalScrollIndicator={false}
-        keyboardShouldPersistTaps="handled"
       >
         <View style={styles(palette).formContainer}>
           <View style={styles(palette).containerRow}>
@@ -448,6 +449,9 @@ const styles = (palette: any) =>
   StyleSheet.create({
     scrollView: {
       flex: 1,
+    },
+    contentContainer: {
+      paddingBottom: spacing["lg"],
     },
     formContainer: {
       paddingBottom: spacing.md,

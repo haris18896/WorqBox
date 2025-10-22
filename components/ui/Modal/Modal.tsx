@@ -3,7 +3,9 @@ import {
   Animated,
   Dimensions,
   Keyboard,
+  KeyboardAvoidingView,
   Modal,
+  Platform,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -247,6 +249,10 @@ const CustomModal: React.FC<ModalProps> = ({
     touchableContainer: {
       flex: 1,
     },
+    keyboardAvoidingView: {
+      flex: 1,
+      paddingBottom: spacing["4xl"],
+    },
   });
 
   const handleOverlayPress = () => {
@@ -301,11 +307,17 @@ const CustomModal: React.FC<ModalProps> = ({
             </View>
           )}
 
-          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <View style={styles.touchableContainer}>
-              <View style={styles.content}>{children}</View>
-            </View>
-          </TouchableWithoutFeedback>
+          <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            style={styles.keyboardAvoidingView}
+            keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
+          >
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+              <View style={styles.touchableContainer}>
+                <View style={styles.content}>{children}</View>
+              </View>
+            </TouchableWithoutFeedback>
+          </KeyboardAvoidingView>
         </Animated.View>
       </View>
     </Modal>

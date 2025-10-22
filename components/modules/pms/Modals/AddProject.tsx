@@ -194,6 +194,7 @@ export const AddProjectModal: React.FC<AddProjectModalProps> = ({
     >
       <ScrollView
         style={styles(palette).scrollView}
+        contentContainerStyle={styles(palette).contentContainer}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
@@ -474,6 +475,9 @@ const styles = (palette: any) =>
   StyleSheet.create({
     scrollView: {
       flex: 1,
+    },
+    contentContainer: {
+      paddingBottom: spacing["lg"],
     },
     formContainer: {
       paddingBottom: spacing.md,
