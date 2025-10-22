@@ -123,3 +123,52 @@ export interface CreateClientProjectRequest {
 export interface CreateClientProjectResponse {
   id: number;
 }
+
+// Project Creation Types
+export interface CreateUpdateProjectRequest {
+  id?: number | null;
+  name: string;
+  description: string;
+  startDate: string;
+  endDate: string;
+  leadId: number;
+  ownerId: number;
+  businessAnalystId?: number | null;
+  projectClientId: number;
+  projectMemberIds: number[];
+  file?: any; // For file upload (binary)
+}
+
+export interface CreateUpdateProjectResponse {
+  id: number;
+}
+
+// Project Details Types
+export interface ProjectDetailsResponse {
+  id: number;
+  name: string;
+  description: string;
+  startDate: string;
+  endDate: string;
+  leadName: string | null;
+  billableTime: number;
+  nonBillableTime: number;
+  iconUrl: string | null;
+  billingRate: number | null;
+  projectClient: ClientProject;
+  projectOwner: Employee;
+  projectLead: Employee;
+  businessAnalyst: Employee | null;
+  projectTeamMembers: Employee[];
+  projectEmployeeResponseDtoList: ProjectEmployeeResponse[];
+}
+
+export interface ProjectEmployeeResponse {
+  id: number;
+  employeeId: number;
+  projectId: number;
+  projectRoleId: number;
+  projectRoleName: string | null;
+  employeeFirstName: string;
+  employeeLastName: string;
+}

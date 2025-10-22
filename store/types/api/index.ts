@@ -245,10 +245,13 @@ export const API_ENDPOINTS = {
 
   // PMS (Project Management System)
   GET_MAIN_PROJECTS: "/Project/GetProjects",
+  GET_PROJECT_DETAILS: "/Project/GetProjectDetails",
   GET_CLIENT_PROJECTS: "/ProjectClient/GetProjectClients",
   GET_PROJECT_CLIENTS: "/ProjectClient/GetProjectClients",
   CREATE_UPDATE_CLIENT_PROJECT: "/ProjectClient/CreateUpdateProjectClient",
   DELETE_PROJECT_CLIENT: "/ProjectClient/DeleteProjectClient",
+  CREATE_UPDATE_PROJECT: "/Project/CreateUpdateProject",
+  DELETE_PROJECT: "/Project/DeleteProject",
   GET_PROJECTS_LOOKUP: "/Lookup/GetProjects",
   GET_EMPLOYEES_LOOKUP: "/Lookup/GetEmployees",
   REPORTING_STATS: "/Reporting/ReportingStats",

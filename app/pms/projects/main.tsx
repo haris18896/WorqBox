@@ -19,7 +19,10 @@ import {
 } from "@/components/ui";
 
 // ** Store
-import { useGetMainProjectsQuery } from "@/store/api/modules/pms/pmsProjects";
+import {
+  useDeleteProjectMutation,
+  useGetMainProjectsQuery,
+} from "@/store/api/modules/pms/pmsProjects";
 
 // ** Types
 import { DeleteModal } from "@/components/ui/Modal";
@@ -37,6 +40,8 @@ export default function ProjectsMain() {
     error,
     refetch,
   } = useGetMainProjectsQuery();
+
+  const [deleteProject, { isLoading: isDeleting }] = useDeleteProjectMutation();
 
   const projects = projectsResponse?.items || [];
 
@@ -69,6 +74,18 @@ export default function ProjectsMain() {
   const handleViewProject = (project: Project) => {
     console.log("View project:", project.name);
     // TODO: Navigate to project details
+  };
+
+  const handleDeleteProjectConfirm = async () => {
+    if (!selectedProject) return;
+
+    try {
+      await deleteProject(selectedProject.id).unwrap();
+      setModal(null);
+      setSelectedProject(null);
+    } catch (error) {
+      console.error("Failed to delete project:", error);
+    }
   };
 
   const renderHeader = () => (
@@ -172,19 +189,14 @@ export default function ProjectsMain() {
 
       {/* Delete Project Modal */}
       <DeleteModal
-        isLoading={false}
+        isLoading={isDeleting}
         height={isMobile() ? "35%" : "27%"}
         visible={modal === "deleteProject"}
         onClose={() => {
           setModal(null);
           setSelectedProject(null);
         }}
-        onDelete={() => {
-          // TODO: Implement delete API
-          console.log("Delete project:", selectedProject?.name);
-          setModal(null);
-          setSelectedProject(null);
-        }}
+        onDelete={handleDeleteProjectConfirm}
         title="Delete Project"
         description={`Are you sure you want to delete ${selectedProject?.name}?`}
         subtitle="This action cannot be undone."
