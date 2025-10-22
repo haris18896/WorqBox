@@ -122,15 +122,4 @@ export interface CreateClientProjectRequest {
 
 export interface CreateClientProjectResponse {
   id: number;
-  name: string;
-  companyName: string;
-  description: string;
-  email: string;
-  phone: string;
-  address: string;
-  timeZone: string;
-  createdDate: string;
-  createdBy: number | null;
-  modifiedDate: string | null;
-  modifiedBy: number | null;
 }

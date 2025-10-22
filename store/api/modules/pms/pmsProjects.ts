@@ -7,6 +7,7 @@ import {
 import {
   baseQueryWithReauth,
   handleApiError,
+  handleApiSuccess,
   TAG_TYPES,
   transformResponse,
 } from "@/utils/api";
@@ -117,11 +118,19 @@ export const pmsProjectsApi = createApi({
       CreateClientProjectResponse,
       CreateClientProjectRequest
     >({
-      query: (clientData: CreateClientProjectRequest) => ({
-        url: API_ENDPOINTS.CREATE_UPDATE_CLIENT_PROJECT,
-        method: "POST",
-        body: clientData,
-      }),
+      query: (clientData: CreateClientProjectRequest) => {
+        // Clean up the data - remove null id
+        const requestBody = {
+          ...clientData,
+          id: clientData.id || undefined,
+        };
+
+        return {
+          url: API_ENDPOINTS.CREATE_UPDATE_CLIENT_PROJECT,
+          method: "POST",
+          body: requestBody,
+        };
+      },
       transformResponse: (
         response: BaseApiResponse<CreateClientProjectResponse>
       ) => {
@@ -133,8 +142,15 @@ export const pmsProjectsApi = createApi({
       ) => {
         try {
           await queryFulfilled;
-        } catch (error) {
-          handleApiError(error, "Failed to create client project");
+          handleApiSuccess("Client created successfully");
+        } catch (error: any) {
+          const serverErrorMessage = error?.error?.data?.message;
+          handleApiError(
+            error,
+            serverErrorMessage
+              ? `${serverErrorMessage}`
+              : "Failed to create client project"
+          );
         }
       },
       invalidatesTags: [{ type: TAG_TYPES.ClientProjects, id: "LIST" }],

@@ -28,11 +28,16 @@ const SingleSelectDropdown: React.FC<SingleSelectDropdownProps> = ({
   styleData,
   searchable = true,
   maxHeight = 200,
+  formikError,
+  formikTouched,
 }) => {
   const { palette } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredOptions, setFilteredOptions] = useState(options);
+
+  const showError = formikTouched && formikError;
+  const hasError = Boolean(showError);
 
   useEffect(() => {
     if (searchQuery.trim() === "") {
@@ -101,7 +106,11 @@ const SingleSelectDropdown: React.FC<SingleSelectDropdownProps> = ({
         return {
           ...baseStyles,
           backgroundColor: palette.background.primary,
-          borderColor: isOpen ? palette.primary.main : palette.border.primary,
+          borderColor: hasError
+            ? palette.error.main
+            : isOpen
+            ? palette.primary.main
+            : palette.border.primary,
         };
       case "underlined":
         return {
@@ -110,14 +119,20 @@ const SingleSelectDropdown: React.FC<SingleSelectDropdownProps> = ({
           borderBottomWidth: 2,
           borderRadius: 0,
           backgroundColor: "transparent",
-          borderBottomColor: isOpen
+          borderBottomColor: hasError
+            ? palette.error.main
+            : isOpen
             ? palette.primary.main
             : palette.border.primary,
         };
       default: // outlined
         return {
           ...baseStyles,
-          borderColor: isOpen ? palette.primary.main : "#E5E7EB",
+          borderColor: hasError
+            ? palette.error.main
+            : isOpen
+            ? palette.primary.main
+            : "#E5E7EB",
         };
     }
   };
@@ -232,6 +247,13 @@ const SingleSelectDropdown: React.FC<SingleSelectDropdownProps> = ({
       borderRadius: 3,
       backgroundColor: palette.text.inverse,
     },
+    errorText: {
+      fontSize: 12,
+      color: palette.error.main,
+      marginTop: spacing.xs,
+      paddingHorizontal: spacing.xs,
+      ...styleData?.errorStyles,
+    },
   });
 
   return (
@@ -324,6 +346,8 @@ const SingleSelectDropdown: React.FC<SingleSelectDropdownProps> = ({
           </TouchableWithoutFeedback>
         </Modal>
       </View>
+
+      {showError && <Text style={styles.errorText}>{formikError}</Text>}
     </Pressable>
   );
 };

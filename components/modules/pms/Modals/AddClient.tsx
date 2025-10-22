@@ -1,10 +1,11 @@
-import { useFormik } from "formik";
-import React, { useRef } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
-import * as Yup from "yup";
+import React, { useRef, useState } from "react";
+import { ScrollView, StyleSheet, View } from "react-native";
 
 // ** Third Party Components
 import { Ionicons } from "@expo/vector-icons";
+import { useFormik } from "formik";
+import moment from "moment-timezone";
+import * as Yup from "yup";
 
 // ** Theme
 import { isMobile, useTheme } from "@/theme";
@@ -23,8 +24,6 @@ import { useCreateClientProjectMutation } from "@/store/api/modules/pms/pmsProje
 
 // ** Types
 import { CreateClientProjectRequest } from "@/store/api/modules/pms/pmsTypes";
-import { isObjEmpty } from "@/utils/textUtils";
-import moment from "moment-timezone";
 
 interface AddClientModalProps {
   visible: boolean;
@@ -95,6 +94,7 @@ export const AddClientModal: React.FC<AddClientModalProps> = ({
 }) => {
   const { palette } = useTheme();
   const [createClientProject, { isLoading }] = useCreateClientProjectMutation();
+  const [serverErrors, setServerErrors] = useState<Record<string, string>>({});
 
   // Refs for form inputs
   const companyNameRef = useRef<any>(null);
@@ -109,13 +109,45 @@ export const AddClientModal: React.FC<AddClientModalProps> = ({
     validationSchema,
     enableReinitialize: true,
     onSubmit: async (values) => {
-      if (!isObjEmpty(values)) {
-        try {
-          await createClientProject(values);
-          onSuccess?.();
-          onClose();
-        } catch (error) {
-          console.error("Failed to create client project:", error);
+      try {
+        // Clear previous server errors
+        setServerErrors({});
+        await createClientProject(values).unwrap();
+        onSuccess?.();
+        onClose();
+      } catch (error: any) {
+        if (error?.data?.errors && Array.isArray(error.data.errors)) {
+          const fieldErrors: Record<string, string> = {};
+
+          error.data.errors.forEach((errorMessage: string) => {
+            // Parse field-specific errors
+            if (errorMessage.includes("'Phone'")) {
+              fieldErrors.phone = errorMessage;
+            } else if (
+              errorMessage.includes("'Name'") ||
+              errorMessage.includes("'Client Name'")
+            ) {
+              fieldErrors.name = errorMessage;
+            } else if (
+              errorMessage.includes("'Company Name'") ||
+              errorMessage.includes("'Company'")
+            ) {
+              fieldErrors.companyName = errorMessage;
+            } else if (errorMessage.includes("'Description'")) {
+              fieldErrors.description = errorMessage;
+            } else if (errorMessage.includes("'Email'")) {
+              fieldErrors.email = errorMessage;
+            } else if (errorMessage.includes("'Address'")) {
+              fieldErrors.address = errorMessage;
+            } else if (
+              errorMessage.includes("'Time Zone'") ||
+              errorMessage.includes("'Timezone'")
+            ) {
+              fieldErrors.timeZone = errorMessage;
+            }
+          });
+
+          setServerErrors(fieldErrors);
         }
       }
     },
@@ -125,6 +157,7 @@ export const AddClientModal: React.FC<AddClientModalProps> = ({
     if (!isLoading) {
       onClose();
       formik.resetForm();
+      setServerErrors({});
     }
   };
 
@@ -155,9 +188,15 @@ export const AddClientModal: React.FC<AddClientModalProps> = ({
               title="Client Name *"
               placeholder="Enter client name"
               value={formik.values.name}
-              onChangeText={formik.handleChange("name")}
+              onChangeText={(text) => {
+                formik.handleChange("name")(text);
+                // Clear server error when user starts typing
+                if (serverErrors.name) {
+                  setServerErrors((prev) => ({ ...prev, name: "" }));
+                }
+              }}
               onBlur={formik.handleBlur("name")}
-              formikError={formik.errors.name}
+              formikError={formik.errors.name || serverErrors.name}
               formikTouched={formik.touched.name}
               nextInputRef={companyNameRef}
               leftIcon="user"
@@ -177,9 +216,16 @@ export const AddClientModal: React.FC<AddClientModalProps> = ({
               title="Company Name *"
               placeholder="Enter company name"
               value={formik.values.companyName}
-              onChangeText={formik.handleChange("companyName")}
+              onChangeText={(text) => {
+                formik.handleChange("companyName")(text);
+                if (serverErrors.companyName) {
+                  setServerErrors((prev) => ({ ...prev, companyName: "" }));
+                }
+              }}
               onBlur={formik.handleBlur("companyName")}
-              formikError={formik.errors.companyName}
+              formikError={
+                formik.errors.companyName || serverErrors.companyName
+              }
               formikTouched={formik.touched.companyName}
               nextInputRef={descriptionRef}
               leftIcon="business"
@@ -201,9 +247,16 @@ export const AddClientModal: React.FC<AddClientModalProps> = ({
               title="Description *"
               placeholder="Enter project description"
               value={formik.values.description}
-              onChangeText={formik.handleChange("description")}
+              onChangeText={(text) => {
+                formik.handleChange("description")(text);
+                if (serverErrors.description) {
+                  setServerErrors((prev) => ({ ...prev, description: "" }));
+                }
+              }}
               onBlur={formik.handleBlur("description")}
-              formikError={formik.errors.description}
+              formikError={
+                formik.errors.description || serverErrors.description
+              }
               formikTouched={formik.touched.description}
               nextInputRef={emailRef}
               leftIcon="document-text"
@@ -226,9 +279,14 @@ export const AddClientModal: React.FC<AddClientModalProps> = ({
               title="Email Address *"
               placeholder="Enter email address"
               value={formik.values.email}
-              onChangeText={formik.handleChange("email")}
+              onChangeText={(text) => {
+                formik.handleChange("email")(text);
+                if (serverErrors.email) {
+                  setServerErrors((prev) => ({ ...prev, email: "" }));
+                }
+              }}
               onBlur={formik.handleBlur("email")}
-              formikError={formik.errors.email}
+              formikError={formik.errors.email || serverErrors.email}
               formikTouched={formik.touched.email}
               nextInputRef={phoneRef}
               leftIcon="email"
@@ -252,9 +310,14 @@ export const AddClientModal: React.FC<AddClientModalProps> = ({
               title="Phone Number *"
               placeholder="Enter phone number"
               value={formik.values.phone}
-              onChangeText={formik.handleChange("phone")}
+              onChangeText={(text) => {
+                formik.handleChange("phone")(text);
+                if (serverErrors.phone) {
+                  setServerErrors((prev) => ({ ...prev, phone: "" }));
+                }
+              }}
               onBlur={formik.handleBlur("phone")}
-              formikError={formik.errors.phone}
+              formikError={formik.errors.phone || serverErrors.phone}
               formikTouched={formik.touched.phone}
               nextInputRef={addressRef}
               leftIcon="phone"
@@ -274,9 +337,14 @@ export const AddClientModal: React.FC<AddClientModalProps> = ({
               title="Address *"
               placeholder="Enter full address"
               value={formik.values.address}
-              onChangeText={formik.handleChange("address")}
+              onChangeText={(text) => {
+                formik.handleChange("address")(text);
+                if (serverErrors.address) {
+                  setServerErrors((prev) => ({ ...prev, address: "" }));
+                }
+              }}
               onBlur={formik.handleBlur("address")}
-              formikError={formik.errors.address}
+              formikError={formik.errors.address || serverErrors.address}
               formikTouched={formik.touched.address}
               leftIcon="location"
               multiline
@@ -292,18 +360,20 @@ export const AddClientModal: React.FC<AddClientModalProps> = ({
             title="Time Zone *"
             options={timeZoneOptions}
             selectedValue={formik.values.timeZone}
-            onSelectionChange={(value) =>
-              formik.setFieldValue("timeZone", value)
-            }
+            onSelectionChange={(value) => {
+              formik.setFieldValue("timeZone", value);
+              formik.setFieldTouched("timeZone", true);
+              // Clear server error when user makes selection
+              if (serverErrors.timeZone) {
+                setServerErrors((prev) => ({ ...prev, timeZone: "" }));
+              }
+            }}
             placeholder="Select time zone"
             searchable={true}
             maxHeight={400}
+            formikError={formik.errors.timeZone || serverErrors.timeZone}
+            formikTouched={formik.touched.timeZone}
           />
-          {formik.touched.timeZone && formik.errors.timeZone && (
-            <Text style={styles(palette).errorText}>
-              {formik.errors.timeZone}
-            </Text>
-          )}
 
           {/* Action Buttons */}
           <View style={styles(palette).buttonContainer}>

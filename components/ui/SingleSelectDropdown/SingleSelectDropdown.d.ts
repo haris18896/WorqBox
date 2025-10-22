@@ -21,7 +21,10 @@ export interface SingleSelectDropdownProps {
     dropdownStyles?: ViewStyle;
     optionStyles?: ViewStyle;
     optionTextStyles?: TextStyle;
+    errorStyles?: TextStyle;
   };
   searchable?: boolean;
   maxHeight?: number;
+  formikError?: string;
+  formikTouched?: boolean;
 }

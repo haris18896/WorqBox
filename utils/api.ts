@@ -58,7 +58,10 @@ export const baseQueryWithReauth: BaseQueryFn<
         error: {
           status: 400,
           data: {
-            message: apiResponse.message || "API request failed",
+            message:
+              apiResponse.responseMessage ||
+              apiResponse.message ||
+              "API request failed",
             errors: apiResponse.errors,
             isSuccess: false,
           },
