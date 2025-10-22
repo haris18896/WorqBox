@@ -1,17 +1,22 @@
-import { LeaveRequest } from "@/store/api/modules/efs/efsTypes";
 import { useTheme } from "@/theme";
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-
-interface LeaveRequestCardProps {
-  leaveRequest: LeaveRequest;
-  onPress?: () => void;
-}
+import {
+  ActivityIndicator,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { LeaveRequestCardProps } from "./index.d";
 
 export default function LeaveRequestCard({
   leaveRequest,
   onPress,
+  onEdit,
+  onDelete,
+  isUpdating,
+  isDeleting,
 }: LeaveRequestCardProps) {
   const { palette } = useTheme();
 
@@ -34,20 +39,31 @@ export default function LeaveRequestCard({
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString();
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+  };
+  const getLeaveTypeName = () => {
+    return leaveRequest.leaveType?.name || "Unknown";
   };
 
   const styles = StyleSheet.create({
     card: {
       backgroundColor: palette.background.secondary,
-      borderRadius: 12,
+      borderRadius: 16,
       padding: 16,
       marginBottom: 12,
       elevation: 2,
       shadowColor: "#000",
       shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.1,
-      shadowRadius: 4,
+      shadowOpacity: 0.08,
+      shadowRadius: 8,
+      borderWidth: 1,
+      borderColor: palette.border?.secondary || "rgba(0,0,0,0.05)",
+      minHeight: 120,
     },
     header: {
       flexDirection: "row",
@@ -55,44 +71,63 @@ export default function LeaveRequestCard({
       alignItems: "center",
       marginBottom: 12,
     },
+    headerContent: {
+      flex: 1,
+    },
     leaveType: {
       fontSize: 16,
-      fontWeight: "600",
+      fontWeight: "700",
       color: palette.text.primary,
+      marginBottom: 4,
     },
     statusContainer: {
       flexDirection: "row",
       alignItems: "center",
+      backgroundColor: getStatusColor() + "20",
+      paddingHorizontal: 8,
+      paddingVertical: 4,
+      borderRadius: 12,
     },
     statusText: {
       fontSize: 12,
-      fontWeight: "500",
+      fontWeight: "600",
       color: getStatusColor(),
       marginLeft: 4,
     },
     content: {
-      marginBottom: 12,
-    },
-    row: {
       flexDirection: "row",
       justifyContent: "space-between",
-      marginBottom: 8,
+      alignItems: "center",
+      marginBottom: 12,
     },
-    label: {
-      fontSize: 14,
+    infoContainer: {
+      flex: 1,
+    },
+    infoRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      marginBottom: 4,
+    },
+    infoLabel: {
+      fontSize: 12,
+      color: palette.text.tertiary,
+      marginRight: 8,
+      minWidth: 60,
+    },
+    infoValue: {
+      fontSize: 12,
       color: palette.text.secondary,
-      fontWeight: "500",
+      fontWeight: "600",
     },
-    value: {
-      fontSize: 14,
-      color: palette.text.primary,
-      fontWeight: "400",
+    actionsContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 8,
     },
-    description: {
-      fontSize: 14,
-      color: palette.text.secondary,
-      lineHeight: 20,
-      marginTop: 8,
+    actionButton: {
+      padding: 8,
+      borderRadius: 8,
+      backgroundColor: palette.surface.tertiary,
     },
     notes: {
       fontSize: 12,
@@ -105,37 +140,71 @@ export default function LeaveRequestCard({
   return (
     <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.7}>
       <View style={styles.header}>
-        <Text style={styles.leaveType}>{leaveRequest.leaveTypeName}</Text>
+        <View style={styles.headerContent}>
+          <Text style={styles.leaveType}>{getLeaveTypeName()}</Text>
+        </View>
         <View style={styles.statusContainer}>
-          <Ionicons name={getStatusIcon()} size={16} color={getStatusColor()} />
+          <Ionicons name={getStatusIcon()} size={14} color={getStatusColor()} />
           <Text style={styles.statusText}>{getStatusText()}</Text>
         </View>
       </View>
 
       <View style={styles.content}>
-        <View style={styles.row}>
-          <Text style={styles.label}>From:</Text>
-          <Text style={styles.value}>{formatDate(leaveRequest.fromDate)}</Text>
+        <View style={styles.infoContainer}>
+          <View style={styles.infoRow}>
+            <Text style={styles.infoLabel}>Start:</Text>
+            <Text style={styles.infoValue}>
+              {formatDate(leaveRequest.fromDate)}
+            </Text>
+          </View>
+          <View style={styles.infoRow}>
+            <Text style={styles.infoLabel}>End:</Text>
+            <Text style={styles.infoValue}>
+              {formatDate(leaveRequest.toDate)}
+            </Text>
+          </View>
+          <View style={styles.infoRow}>
+            <Text style={styles.infoLabel}>Days:</Text>
+            <Text style={styles.infoValue}>{leaveRequest.daysCount}</Text>
+          </View>
         </View>
-        <View style={styles.row}>
-          <Text style={styles.label}>To:</Text>
-          <Text style={styles.value}>{formatDate(leaveRequest.toDate)}</Text>
-        </View>
-        <View style={styles.row}>
-          <Text style={styles.label}>Days:</Text>
-          <Text style={styles.value}>{leaveRequest.daysCount}</Text>
-        </View>
-        <View style={styles.row}>
-          <Text style={styles.label}>Employee:</Text>
-          <Text style={styles.value}>
-            {leaveRequest.employeeFirstName} {leaveRequest.employeeLastName}
-          </Text>
-        </View>
+        {!leaveRequest.isApproved && !leaveRequest.isRejected && (
+          <View style={styles.actionsContainer}>
+            <TouchableOpacity
+              disabled={isUpdating}
+              style={styles.actionButton}
+              onPress={() => onEdit?.(leaveRequest)}
+              activeOpacity={0.7}
+            >
+              {isUpdating ? (
+                <ActivityIndicator size="small" color={palette.success.main} />
+              ) : (
+                <Ionicons
+                  name="create-outline"
+                  size={18}
+                  color={palette.success.main}
+                />
+              )}
+            </TouchableOpacity>
+            <TouchableOpacity
+              disabled={isDeleting}
+              style={styles.actionButton}
+              onPress={() => onDelete?.(leaveRequest)}
+              activeOpacity={0.7}
+            >
+              {isDeleting ? (
+                <ActivityIndicator size="small" color={palette.error.main} />
+              ) : (
+                <Ionicons
+                  name="trash-outline"
+                  size={18}
+                  color={palette.error.main}
+                />
+              )}
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
-
-      {leaveRequest.longDescription && (
-        <Text style={styles.description}>{leaveRequest.longDescription}</Text>
-      )}
 
       {leaveRequest.approvalNotes && (
         <Text style={styles.notes}>

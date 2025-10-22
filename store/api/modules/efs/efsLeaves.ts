@@ -6,12 +6,16 @@ import {
 import {
   baseQueryWithReauth,
   handleApiError,
+  handleApiSuccess,
   TAG_TYPES,
   transformResponse,
 } from "@/utils/api";
 import { createApi } from "@reduxjs/toolkit/query/react";
 import {
+  CreateUpdateLeaveRequestRequest,
+  CreateUpdateLeaveRequestResponse,
   LeaveRequest,
+  LeaveRequestDetailsResponse,
   LeaveRequestParams,
   LeaveStatusCount,
   LeaveStatusCountParams,
@@ -184,11 +188,6 @@ export const efsLeavesApi = createApi({
           searchParams.append("employeeId", params.employeeId.toString());
         }
 
-        console.log(
-          "check endpoint : ",
-          `${API_ENDPOINTS.GET_LEAVE_STATUS_COUNT}?${searchParams.toString()}`
-        );
-
         return {
           url: `${
             API_ENDPOINTS.GET_LEAVE_STATUS_COUNT
@@ -236,6 +235,113 @@ export const efsLeavesApi = createApi({
           ? [{ type: TAG_TYPES.Dashboard, id: "LEAVE_STATUS_COUNT_ADMIN" }]
           : [{ type: TAG_TYPES.Dashboard, id: "LEAVE_STATUS_COUNT_ADMIN" }],
     }),
+
+    // GET LEAVE REQUEST DETAILS
+    getLeaveRequestDetails: builder.query<LeaveRequestDetailsResponse, number>({
+      query: (leaveRequestId: number) => ({
+        url: `${API_ENDPOINTS.GET_LEAVE_REQUEST_DETAILS}?LeaveRequestId=${leaveRequestId}`,
+        method: "GET",
+      }),
+      transformResponse: (
+        response: BaseApiResponse<LeaveRequestDetailsResponse>
+      ) => {
+        return transformResponse(response);
+      },
+      onQueryStarted: async (arg: number, { queryFulfilled }: any) => {
+        try {
+          await queryFulfilled;
+        } catch (error) {
+          handleApiError(error, "Failed to fetch leave request details");
+        }
+      },
+      providesTags: (
+        result: LeaveRequestDetailsResponse | undefined,
+        error,
+        arg
+      ) => (result ? [{ type: TAG_TYPES.LeaveRequests, id: arg }] : []),
+    }),
+
+    // CREATE/UPDATE LEAVE REQUEST
+    createUpdateLeaveRequest: builder.mutation<
+      CreateUpdateLeaveRequestResponse,
+      CreateUpdateLeaveRequestRequest
+    >({
+      query: (leaveData: CreateUpdateLeaveRequestRequest) => {
+        const requestBody = {
+          ...leaveData,
+          id: leaveData.id || undefined,
+        };
+
+        return {
+          url: API_ENDPOINTS.CREATE_UPDATE_LEAVE_REQUEST,
+          method: "POST",
+          body: requestBody,
+        };
+      },
+      transformResponse: (
+        response: BaseApiResponse<CreateUpdateLeaveRequestResponse>
+      ) => {
+        return transformResponse(response);
+      },
+      onQueryStarted: async (
+        arg: CreateUpdateLeaveRequestRequest,
+        { queryFulfilled }: any
+      ) => {
+        try {
+          await queryFulfilled;
+          const isUpdate = arg.id !== null && arg.id !== undefined;
+          handleApiSuccess(
+            isUpdate
+              ? "Leave request updated successfully"
+              : "Leave request created successfully"
+          );
+        } catch (error: any) {
+          const serverErrorMessage = error?.error?.data?.message;
+          const isUpdate = arg.id !== null && arg.id !== undefined;
+          handleApiError(
+            error,
+            serverErrorMessage
+              ? `${serverErrorMessage}`
+              : `Failed to ${isUpdate ? "update" : "create"} leave request`
+          );
+        }
+      },
+      invalidatesTags: (result, error, arg) => [
+        { type: TAG_TYPES.LeaveRequests, id: "MY_LIST" },
+        ...(arg.id ? [{ type: TAG_TYPES.LeaveRequests, id: arg.id }] : []),
+        { type: TAG_TYPES.Dashboard, id: "LEAVE_STATUS_COUNT" },
+      ],
+    }),
+
+    // DELETE LEAVE REQUEST
+    deleteLeaveRequest: builder.mutation<boolean, number>({
+      query: (leaveRequestId: number) => ({
+        url: `${API_ENDPOINTS.DELETE_LEAVE_REQUEST}?requestId=${leaveRequestId}`,
+        method: "GET",
+      }),
+      transformResponse: (response: BaseApiResponse<boolean>) => {
+        return transformResponse(response);
+      },
+      onQueryStarted: async (arg: number, { queryFulfilled }: any) => {
+        try {
+          await queryFulfilled;
+          handleApiSuccess("Leave request deleted successfully");
+        } catch (error: any) {
+          const serverErrorMessage = error?.error?.data?.message;
+          handleApiError(
+            error,
+            serverErrorMessage
+              ? `${serverErrorMessage}`
+              : "Failed to delete leave request"
+          );
+        }
+      },
+      invalidatesTags: (result, error, arg) => [
+        { type: TAG_TYPES.LeaveRequests, id: "MY_LIST" },
+        { type: TAG_TYPES.LeaveRequests, id: arg },
+        { type: TAG_TYPES.Dashboard, id: "LEAVE_STATUS_COUNT" },
+      ],
+    }),
   }),
 });
 export const {
@@ -249,4 +355,8 @@ export const {
   useLazyGetLeaveStatusCountQuery,
   useGetLeaveStatusCountAdminQuery,
   useLazyGetLeaveStatusCountAdminQuery,
+  useGetLeaveRequestDetailsQuery,
+  useLazyGetLeaveRequestDetailsQuery,
+  useCreateUpdateLeaveRequestMutation,
+  useDeleteLeaveRequestMutation,
 } = efsLeavesApi;

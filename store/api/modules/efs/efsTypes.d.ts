@@ -60,6 +60,7 @@ export interface LeaveRequest {
   daysCount: number;
   leaveTypeId: number;
   leaveTypeName: string;
+  leaveType: LeaveType;
   employeeFirstName: string;
   employeeLastName: string;
   employeeEmail: string;
@@ -83,4 +84,39 @@ export interface LeaveRequestParams extends PaginationParams {
 
 export interface LeaveStatusCountParams {
   employeeId?: number;
+}
+
+// Leave Request Details Types
+export interface LeaveRequestDetailsResponse {
+  fromDate: string;
+  toDate: string;
+  daysCount: number;
+  isApproved: boolean;
+  isRejected: boolean;
+  approvedDateTime: string | null;
+  rejectedDateTime: string | null;
+  shortDescription: string;
+  longDescription: string;
+  approvalNotes: string;
+  rejectionNotes: string;
+  approvedByEmployeeId: number | null;
+  approvedByEmployeeName: string | null;
+  rejectedByEmployeeId: number | null;
+  rejectedByEmployeeName: string | null;
+  leaveTypeId: number;
+  leaveTypeName: string;
+}
+
+// Create/Update Leave Request Types
+export interface CreateUpdateLeaveRequestRequest {
+  id?: number | null;
+  leaveTypeId: number;
+  fromDate: string;
+  toDate: string;
+  isHalfDay: boolean;
+  longDescription: string;
+}
+
+export interface CreateUpdateLeaveRequestResponse {
+  id: number;
 }

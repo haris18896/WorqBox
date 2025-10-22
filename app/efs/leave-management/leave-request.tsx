@@ -22,10 +22,13 @@ import {
   ResponsiveFlatList,
   SearchComponent,
 } from "@/components/ui";
+import DeleteModal from "@/components/ui/Modal/DeleteModal";
 
 // ** Store
+import { AddLeaveRequestModal } from "@/components/modules/efs/Modals/AddLeaveRequest";
 import { RootState } from "@/store";
 import {
+  useDeleteLeaveRequestMutation,
   useGetLeaveStatusCountQuery,
   useGetLeaveTypesQuery,
   useGetMyLeaveRequestsQuery,
@@ -39,6 +42,9 @@ export default function LeaveRequest() {
   const [debouncedSearchKeyword, setDebouncedSearchKeyword] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedLeaveRequest, setSelectedLeaveRequest] = useState<any>(null);
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
+  const [leaveRequestToDelete, setLeaveRequestToDelete] = useState<any>(null);
   const pageSize = 10;
 
   const { user } = useSelector((state: RootState) => state.auth);
@@ -73,11 +79,11 @@ export default function LeaveRequest() {
     employeeId: user?.employeeId,
   } as LeaveStatusCountParams);
 
-  const {
-    data: leaveTypesData,
-    isLoading: isLoadingLeaveTypes,
-    refetch: refetchLeaveTypes,
-  } = useGetLeaveTypesQuery();
+  const { refetch: refetchLeaveTypes } = useGetLeaveTypesQuery();
+
+  // Delete mutation
+  const [deleteLeaveRequest, { isLoading: isDeleting }] =
+    useDeleteLeaveRequestMutation();
 
   const handleSearch = useCallback((text: string) => {
     setSearchKeyword(text);
@@ -100,10 +106,53 @@ export default function LeaveRequest() {
     console.log("View leave request details:", leaveRequest.id);
   };
 
+  const handleEditLeaveRequest = (leaveRequest: any) => {
+    setSelectedLeaveRequest(leaveRequest);
+    setIsModalVisible(true);
+  };
+
+  const handleDeleteLeaveRequest = (leaveRequest: any) => {
+    setLeaveRequestToDelete(leaveRequest);
+    setIsDeleteModalVisible(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (leaveRequestToDelete) {
+      try {
+        await deleteLeaveRequest(leaveRequestToDelete.id).unwrap();
+        setIsDeleteModalVisible(false);
+        setLeaveRequestToDelete(null);
+
+        refetchRequests();
+        refetchStatusCount();
+      } catch (error) {
+        console.error("Error deleting leave request:", error);
+      }
+    }
+  };
+
+  const handleDeleteModalClose = () => {
+    setIsDeleteModalVisible(false);
+    setLeaveRequestToDelete(null);
+  };
+
+  const handleModalClose = () => {
+    setIsModalVisible(false);
+    setSelectedLeaveRequest(null);
+  };
+
+  const handleModalSuccess = () => {
+    // Refetch data when modal closes successfully
+    refetchRequests();
+    refetchStatusCount();
+  };
+
   const renderLeaveRequestCard = ({ item }: { item: any }) => (
     <LeaveRequestCard
       leaveRequest={item}
       onPress={() => handleCardPress(item)}
+      onEdit={handleEditLeaveRequest}
+      onDelete={handleDeleteLeaveRequest}
     />
   );
 
@@ -154,8 +203,8 @@ export default function LeaveRequest() {
       backgroundColor: palette.background.primary,
     },
     content: {
-      flex: 1,
       paddingTop: spacing.md,
+      paddingBottom: spacing.lg,
     },
     headerRow: {
       flexDirection: "row",
@@ -315,6 +364,35 @@ export default function LeaveRequest() {
             </View>
           ) : null
         }
+      />
+
+      {/* Add/Edit Leave Request Modal */}
+      <AddLeaveRequestModal
+        visible={isModalVisible}
+        onClose={handleModalClose}
+        onSuccess={handleModalSuccess}
+        selectedLeaveRequest={selectedLeaveRequest}
+      />
+
+      {/* Delete Confirmation Modal */}
+      <DeleteModal
+        visible={isDeleteModalVisible}
+        onClose={handleDeleteModalClose}
+        onDelete={handleDeleteConfirm}
+        title="Delete Leave Request"
+        subtitle="This action cannot be undone."
+        description={`This will permanently delete the leave request for ${
+          leaveRequestToDelete?.leaveType?.name || "Unknown"
+        } from ${
+          leaveRequestToDelete?.fromDate
+            ? new Date(leaveRequestToDelete.fromDate).toLocaleDateString()
+            : "Unknown"
+        } to ${
+          leaveRequestToDelete?.toDate
+            ? new Date(leaveRequestToDelete.toDate).toLocaleDateString()
+            : "Unknown"
+        }. Are you sure you want to delete this leave request?`}
+        isLoading={isDeleting}
       />
     </View>
   );
