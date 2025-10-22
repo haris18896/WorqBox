@@ -22,3 +22,13 @@ export interface ModalProps {
 
 export type ModalVariant = "default" | "fullscreen" | "centered" | "bottom";
 export type ModalAnimationType = "slide" | "fade" | "none";
+
+export interface DeleteModalProps {
+  visible: boolean;
+  onClose: () => void;
+  onDelete: () => void;
+  title: string;
+  subtitle: string;
+  description: string;
+  height?: string;
+}

@@ -5,7 +5,7 @@ import { RefreshControl, StyleSheet, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 // Utils
-import { ColorPalette, spacing, useTheme } from "@/theme";
+import { ColorPalette, isMobile, spacing, useTheme } from "@/theme";
 
 // ** Custom Components
 import { ClientsCard } from "@/components/modules/pms/ClientsCard";
@@ -22,12 +22,16 @@ import {
 import { useGetClientProjectsQuery } from "@/store/api/modules/pms/pmsProjects";
 
 // ** Types
+import { DeleteModal } from "@/components/ui/Modal";
 import { ClientProject } from "@/store/api/modules/pms/pmsTypes";
 
 export default function ClientManagement() {
   const { palette } = useTheme();
   const [refreshing, setRefreshing] = useState(false);
-  const [isAddClientModalVisible, setIsAddClientModalVisible] = useState(false);
+  const [selectedClient, setSelectedClient] = useState<ClientProject | null>(
+    null
+  );
+  const [modal, setModal] = useState<string | null>(null);
 
   const {
     data: clientProjectsResponse,
@@ -47,17 +51,12 @@ export default function ClientManagement() {
     setRefreshing(false);
   };
 
-  const handleClientPress = (client: ClientProject) => {
-    console.log("Client pressed:", client.companyName);
-    // TODO: Navigate to client details
-  };
-
   const renderHeader = () => (
     <View style={styles(palette).header}>
       <Text style={styles(palette).headerTitle}>Client Projects</Text>
       <Button
         title="Add Client"
-        onPress={() => setIsAddClientModalVisible(true)}
+        onPress={() => setModal("addClient")}
         variant="secondary"
         size="small"
         leftIcon={
@@ -73,7 +72,16 @@ export default function ClientManagement() {
   }: {
     item: ClientProject;
     index: number;
-  }) => <ClientsCard key={index} project={item} onPress={handleClientPress} />;
+  }) => (
+    <ClientsCard
+      key={index}
+      project={item}
+      onDelete={(client) => {
+        setModal("deleteClient");
+        setSelectedClient(client);
+      }}
+    />
+  );
 
   const renderEmpty = () => (
     <View style={styles(palette).emptyContainer}>
@@ -141,9 +149,19 @@ export default function ClientManagement() {
 
       {/* Add Client Modal */}
       <AddClientModal
-        visible={isAddClientModalVisible}
-        onClose={() => setIsAddClientModalVisible(false)}
+        visible={modal === "addClient"}
+        onClose={() => setModal(null)}
         onSuccess={() => refetch()}
+      />
+
+      <DeleteModal
+        height={isMobile() ? "35%" : "27%"}
+        visible={modal === "deleteClient"}
+        onClose={() => setModal(null)}
+        onDelete={() => {}}
+        title="Delete Client"
+        description={`Are you sure you want to delete ${selectedClient?.name}?`}
+        subtitle="This action cannot be undone."
       />
     </View>
   );

@@ -3,32 +3,17 @@ import { stripHtmlTags } from "@/utils/textUtils";
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { ClientsCardProps } from ".";
+import { ClientsCardProps } from "./index.d";
 
 export const ClientsCard: React.FC<ClientsCardProps> = ({
   project,
-  onPress,
-  onLongPress,
+  onDelete,
+  onUpdate,
 }) => {
   const { palette } = useTheme();
 
-  const handleUpdate = () => {
-    // TODO: Implement update functionality
-    console.log("Update client:", project.companyName);
-  };
-
-  const handleDelete = () => {
-    // TODO: Implement delete functionality
-    console.log("Delete client:", project.companyName);
-  };
-
   return (
-    <TouchableOpacity
-      style={styles(palette).card}
-      onPress={() => onPress?.(project)}
-      onLongPress={() => onLongPress?.(project)}
-      activeOpacity={0.7}
-    >
+    <TouchableOpacity style={styles(palette).card} activeOpacity={0.7}>
       {/* Header with Company Name and Actions */}
       <View style={styles(palette).header}>
         <View style={styles(palette).headerContent}>
@@ -42,7 +27,7 @@ export const ClientsCard: React.FC<ClientsCardProps> = ({
         <View style={styles(palette).actionsContainer}>
           <TouchableOpacity
             style={styles(palette).actionButton}
-            onPress={handleUpdate}
+            onPress={() => onUpdate?.(project)}
             activeOpacity={0.7}
           >
             <Ionicons
@@ -53,7 +38,7 @@ export const ClientsCard: React.FC<ClientsCardProps> = ({
           </TouchableOpacity>
           <TouchableOpacity
             style={styles(palette).actionButton}
-            onPress={handleDelete}
+            onPress={() => onDelete?.(project)}
             activeOpacity={0.7}
           >
             <Ionicons
