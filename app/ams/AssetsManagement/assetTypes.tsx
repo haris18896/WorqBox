@@ -15,6 +15,7 @@ import { Ionicons } from "@expo/vector-icons";
 
 // ** UI
 import AssetTypeCard from "@/components/modules/ams/assetTypeCard";
+import AddAssetTypeModal from "@/components/modules/ams/Modals/AddAssetType";
 import {
   BarHeader,
   Loading,
@@ -23,7 +24,11 @@ import {
 } from "@/components/ui";
 
 // ** Store
-import { useGetAssetCategoriesQuery } from "@/store/api/modules/ams/amsMangament";
+import { DeleteModal } from "@/components/ui/Modal";
+import {
+  useDeleteAssetCategoryMutation,
+  useGetAssetCategoriesQuery,
+} from "@/store/api/modules/ams/amsMangament";
 import { AssetTypesCategory as AssetCategoryType } from "@/store/api/modules/ams/amsTypes";
 
 export default function AssetTypes() {
@@ -31,6 +36,12 @@ export default function AssetTypes() {
   const [searchQuery, setSearchQuery] = useState("");
   const [pageNumber, setPageNumber] = useState(1);
   const [refreshing, setRefreshing] = useState(false);
+  const [showAddAssetTypeModal, setShowAddAssetTypeModal] = useState(false);
+  const [selectedAssetType, setSelectedAssetType] =
+    useState<AssetCategoryType | null>(null);
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
+  const [assetTypeToDelete, setAssetTypeToDelete] =
+    useState<AssetCategoryType | null>(null);
 
   const {
     data: assetCategoriesData,
@@ -41,6 +52,9 @@ export default function AssetTypes() {
     pageSize: 10,
     keyword: searchQuery,
   });
+
+  const [deleteAssetCategory, { isLoading: isDeleting }] =
+    useDeleteAssetCategoryMutation();
 
   const handleRefresh = async () => {
     setRefreshing(true);
@@ -56,30 +70,47 @@ export default function AssetTypes() {
     setPageNumber(1);
   };
 
-  const handleAssetCategoryPress = (assetCategory: AssetCategoryType) => {
-    console.log("Asset category pressed:", assetCategory);
-    // TODO: Navigate to asset category details
-  };
-
   const handleEditAssetCategory = (assetCategory: AssetCategoryType) => {
-    console.log("Edit asset category:", assetCategory);
-    // TODO: Open edit modal
+    setSelectedAssetType(assetCategory);
+    setShowAddAssetTypeModal(true);
   };
 
   const handleDeleteAssetCategory = (assetCategory: AssetCategoryType) => {
-    console.log("Delete asset category:", assetCategory);
-    // TODO: Show delete confirmation modal
+    setAssetTypeToDelete(assetCategory);
+    setIsDeleteModalVisible(true);
+  };
+
+  const handleDeleteModalClose = () => {
+    setIsDeleteModalVisible(false);
+    setAssetTypeToDelete(null);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (assetTypeToDelete) {
+      try {
+        await deleteAssetCategory(assetTypeToDelete.id).unwrap();
+        refetchAssetCategories();
+        handleDeleteModalClose();
+      } catch (error) {
+        console.error("Failed to delete asset category:", error);
+      }
+    }
   };
 
   const handleAddAssetCategory = () => {
-    console.log("Add asset category pressed");
-    // TODO: Navigate to add asset category form
+    setSelectedAssetType(null);
+    setShowAddAssetTypeModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowAddAssetTypeModal(false);
+    setSelectedAssetType(null);
   };
 
   const renderAssetTypeCard = ({ item }: { item: AssetCategoryType }) => (
     <AssetTypeCard
       assetCategory={item}
-      onPress={handleAssetCategoryPress}
+      onPress={handleEditAssetCategory}
       onEdit={handleEditAssetCategory}
       onDelete={handleDeleteAssetCategory}
     />
@@ -203,6 +234,26 @@ export default function AssetTypes() {
           showsVerticalScrollIndicator={false}
         />
       </View>
+
+      <AddAssetTypeModal
+        visible={showAddAssetTypeModal}
+        onClose={handleCloseModal}
+        onSuccess={() => refetchAssetCategories()}
+        selectedAssetType={selectedAssetType}
+      />
+
+      <DeleteModal
+        height="40%"
+        visible={isDeleteModalVisible}
+        onClose={handleDeleteModalClose}
+        onDelete={handleDeleteConfirm}
+        title="Delete Asset Type"
+        subtitle="This action cannot be undone."
+        description={`This will permanently delete the asset type "${
+          assetTypeToDelete?.name || "Unknown"
+        }". Are you sure you want to delete this asset type?`}
+        isLoading={isDeleting}
+      />
     </View>
   );
 }

@@ -274,6 +274,8 @@ export const API_ENDPOINTS = {
   GET_AMS_DASHBOARD: "/Asset/stats",
   GET_PURCHASE_ORDERS: "/PurchaseOrder",
   GET_VENDORS: "/Vendor/Get",
+  GET_VENDOR_BY_ID: "/Vendor/GetById",
+  CREATE_UPDATE_VENDOR: "/Vendor/CreateUpdate",
   GET_CLEARANCE_ASSIGNMENTS: "/Clearance/employee-assignments",
   GET_ASSET_CATEGORIES: "/AssetCategory",
   GET_ASSETS: "/Asset/GetAssets",

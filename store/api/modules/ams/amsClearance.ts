@@ -34,8 +34,8 @@ export const amsClearanceApi = createApi({
           ...(params.assetCategoryId && {
             assetCategoryId: params.assetCategoryId,
           }),
-          ...(params.isCurrent !== undefined && {
-            isCurrent: params.isCurrent,
+          ...(params.hasCurrentAssets !== undefined && {
+            hasCurrentAssets: params.hasCurrentAssets,
           }),
         },
       }),

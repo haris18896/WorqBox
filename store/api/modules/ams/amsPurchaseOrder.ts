@@ -14,7 +14,9 @@ import {
   PurchaseOrder,
   PurchaseOrderParams,
   Vendor,
+  VendorCreateUpdateResponse,
   VendorParams,
+  VendorRequest,
 } from "./amsTypes";
 
 export const amsPurchaseOrderApi = createApi({
@@ -103,6 +105,59 @@ export const amsPurchaseOrderApi = createApi({
             ]
           : [{ type: TAG_TYPES.Dashboard, id: "VENDORS" }],
     }),
+
+    // GET VENDOR BY ID
+    getVendorById: builder.query<Vendor, number>({
+      query: (id) => ({
+        url: API_ENDPOINTS.GET_VENDOR_BY_ID,
+        method: "GET",
+        params: { id },
+      }),
+      transformResponse: (response: BaseApiResponse<Vendor>) => {
+        return transformResponse(response);
+      },
+      onQueryStarted: async (arg: number, { queryFulfilled }: any) => {
+        try {
+          await queryFulfilled;
+        } catch (error) {
+          handleApiError(error, "Failed to fetch vendor details");
+        }
+      },
+      providesTags: (result: Vendor | undefined, error, id) =>
+        result
+          ? [{ type: TAG_TYPES.Dashboard, id: `VENDOR_${id}` }]
+          : [{ type: TAG_TYPES.Dashboard, id: `VENDOR_${id}` }],
+    }),
+
+    // CREATE/UPDATE VENDOR
+    createUpdateVendor: builder.mutation<
+      VendorCreateUpdateResponse,
+      VendorRequest
+    >({
+      query: (vendorData) => ({
+        url: API_ENDPOINTS.CREATE_UPDATE_VENDOR,
+        method: "POST",
+        body: vendorData,
+      }),
+      transformResponse: (
+        response: BaseApiResponse<VendorCreateUpdateResponse>
+      ) => {
+        return transformResponse(response);
+      },
+      onQueryStarted: async (arg: VendorRequest, { queryFulfilled }: any) => {
+        try {
+          await queryFulfilled;
+        } catch (error) {
+          handleApiError(error, "Failed to save vendor");
+        }
+      },
+      invalidatesTags: (result, error, arg) => [
+        { type: TAG_TYPES.Dashboard, id: "VENDORS" },
+        ...(arg.id
+          ? [{ type: TAG_TYPES.Dashboard, id: `VENDOR_${arg.id}` }]
+          : []),
+      ],
+    }),
   }),
 });
 
@@ -111,4 +166,7 @@ export const {
   useLazyGetPurchaseOrdersQuery,
   useGetVendorsQuery,
   useLazyGetVendorsQuery,
+  useGetVendorByIdQuery,
+  useLazyGetVendorByIdQuery,
+  useCreateUpdateVendorMutation,
 } = amsPurchaseOrderApi;

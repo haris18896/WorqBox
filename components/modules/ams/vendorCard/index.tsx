@@ -1,4 +1,3 @@
-import { Badge } from "@/components/ui";
 import { Vendor } from "@/store/api/modules/ams/amsTypes";
 import { spacing, useTheme } from "@/theme";
 import { Ionicons } from "@expo/vector-icons";
@@ -8,9 +7,14 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 interface VendorCardProps {
   vendor: Vendor;
   onPress?: (vendor: Vendor) => void;
+  onEdit?: (vendor: Vendor) => void;
 }
 
-export default function VendorCard({ vendor, onPress }: VendorCardProps) {
+export default function VendorCard({
+  vendor,
+  onPress,
+  onEdit,
+}: VendorCardProps) {
   const { palette } = useTheme();
 
   const hasContactInfo =
@@ -32,7 +36,7 @@ export default function VendorCard({ vendor, onPress }: VendorCardProps) {
     header: {
       flexDirection: "row",
       justifyContent: "space-between",
-      alignItems: "flex-start",
+      alignItems: "center",
       marginBottom: 12,
     },
     titleContainer: {
@@ -88,6 +92,18 @@ export default function VendorCard({ vendor, onPress }: VendorCardProps) {
     statusBadge: {
       alignSelf: "flex-start",
     },
+    editButton: {
+      backgroundColor: palette.primary.main,
+      paddingHorizontal: 8,
+      paddingVertical: 6,
+      borderRadius: 6,
+      marginLeft: 8,
+    },
+    editButtonText: {
+      color: palette.text.inverse,
+      fontSize: 12,
+      fontWeight: "500",
+    },
     noContactContainer: {
       backgroundColor: `${palette.warning.light}20`,
       padding: 12,
@@ -114,11 +130,19 @@ export default function VendorCard({ vendor, onPress }: VendorCardProps) {
             {vendor.name}
           </Text>
         </View>
-        <View style={styles.statusBadge}>
-          <Badge variant="success" size="small">
-            Active
-          </Badge>
-        </View>
+        {onEdit && (
+          <TouchableOpacity
+            style={styles.editButton}
+            onPress={() => onEdit(vendor)}
+            activeOpacity={0.7}
+          >
+            <Ionicons
+              name="create-outline"
+              size={14}
+              color={palette.text.inverse}
+            />
+          </TouchableOpacity>
+        )}
       </View>
 
       {hasContactInfo ? (

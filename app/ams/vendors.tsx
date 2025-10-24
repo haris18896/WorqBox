@@ -14,6 +14,7 @@ import { spacing, useTheme } from "@/theme";
 import { Ionicons } from "@expo/vector-icons";
 
 // ** UI
+import AddVendorsModal from "@/components/modules/ams/Modals/AddVendros";
 import VendorCard from "@/components/modules/ams/vendorCard";
 import {
   BarHeader,
@@ -31,6 +32,8 @@ export default function Vendors() {
   const [searchQuery, setSearchQuery] = useState("");
   const [pageNumber, setPageNumber] = useState(1);
   const [refreshing, setRefreshing] = useState(false);
+  const [showAddVendorModal, setShowAddVendorModal] = useState(false);
+  const [selectedVendor, setSelectedVendor] = useState<VendorType | null>(null);
 
   const {
     data: vendorsData,
@@ -57,17 +60,26 @@ export default function Vendors() {
   };
 
   const handleVendorPress = (vendor: VendorType) => {
-    console.log("Vendor pressed:", vendor);
-    // TODO: Navigate to vendor details
+    setSelectedVendor(vendor);
+    setShowAddVendorModal(true);
   };
 
   const handleAddVendor = () => {
-    console.log("Add Vendor pressed");
-    // TODO: Navigate to add vendor form
+    setSelectedVendor(null);
+    setShowAddVendorModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowAddVendorModal(false);
+    setSelectedVendor(null);
   };
 
   const renderVendorCard = ({ item }: { item: VendorType }) => (
-    <VendorCard vendor={item} onPress={handleVendorPress} />
+    <VendorCard
+      vendor={item}
+      onPress={handleVendorPress}
+      onEdit={handleVendorPress}
+    />
   );
 
   const styles = StyleSheet.create({
@@ -180,6 +192,13 @@ export default function Vendors() {
           showsVerticalScrollIndicator={false}
         />
       </View>
+
+      <AddVendorsModal
+        visible={showAddVendorModal}
+        onClose={handleCloseModal}
+        onSuccess={() => refetchVendors()}
+        selectedVendor={selectedVendor}
+      />
     </View>
   );
 }

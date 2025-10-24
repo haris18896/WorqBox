@@ -28,6 +28,25 @@ export interface Vendor {
   vendorAddress?: string;
 }
 
+export interface VendorRequest {
+  id?: number;
+  name: string;
+  contactPerson?: string;
+  contactEmail?: string;
+  contactphone1?: string;
+  contactphone2?: string;
+  vendorAddress?: string;
+}
+
+export interface VendorCreateUpdateResponse {
+  isSuccess: boolean;
+  responseMessage: string;
+  errors: any;
+  result: {
+    id: number;
+  };
+}
+
 export interface PurchaseOrder {
   id: number;
   name: string;
@@ -96,7 +115,7 @@ export interface ClearanceParams extends PaginationParams {
   keyword?: string;
   employeeId?: number;
   assetCategoryId?: number;
-  isCurrent?: boolean;
+  hasCurrentAssets?: boolean;
   pageNumber?: number;
   pageSize?: number;
   sortOrder?: boolean;
@@ -113,6 +132,27 @@ export interface ClearanceResponse {
 export interface AssetTypesCategory {
   id: number;
   name: string;
+}
+
+export interface AssetCategoryRequest {
+  id?: number;
+  name: string;
+}
+
+export interface AssetCategoryCreateUpdateResponse {
+  isSuccess: boolean;
+  responseMessage: string;
+  errors: any;
+  result: {
+    id: number;
+  };
+}
+
+export interface AssetCategoryDeleteResponse {
+  isSuccess: boolean;
+  responseMessage: string;
+  errors: any;
+  result: boolean;
 }
 
 export interface AssetCategoryParams extends PaginationParams {

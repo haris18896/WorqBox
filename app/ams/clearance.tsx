@@ -15,6 +15,7 @@ import { Ionicons } from "@expo/vector-icons";
 
 // ** UI
 import ClearanceCard from "@/components/modules/ams/clearanceCard";
+import ClearanceFilter from "@/components/modules/ams/Modals/ClearanceFilter";
 import {
   BarHeader,
   Loading,
@@ -32,6 +33,11 @@ export default function Clearance() {
   const [searchQuery, setSearchQuery] = useState("");
   const [pageNumber, setPageNumber] = useState(1);
   const [refreshing, setRefreshing] = useState(false);
+  const [showFilterModal, setShowFilterModal] = useState(false);
+  const [filters, setFilters] = useState<{
+    employeeId?: number;
+    hasCurrentAssets?: boolean;
+  }>({});
 
   const {
     data: assignmentsData,
@@ -41,10 +47,10 @@ export default function Clearance() {
     pageNumber,
     pageSize: 10,
     keyword: searchQuery,
+    ...filters,
   });
 
-  const { data: employees, isLoading: employeesLoading } =
-    useGetEmployeesQuery();
+  const { data: employees } = useGetEmployeesQuery();
 
   const handleRefresh = async () => {
     setRefreshing(true);
@@ -67,9 +73,18 @@ export default function Clearance() {
     // TODO: Navigate to employee assignment details
   };
 
-  const handleFiltersPress = () => {
-    console.log("Filters pressed");
-    // TODO: Open filters modal
+  const handleApplyFilters = (newFilters: {
+    employeeId?: number;
+    hasCurrentAssets?: boolean;
+  }) => {
+    setFilters(newFilters);
+    setPageNumber(1); // Reset to first page when filters change
+  };
+
+  const handleResetFilters = () => {
+    setFilters({});
+    setSearchQuery("");
+    setPageNumber(1);
   };
 
   const renderClearanceCard = ({ item }: { item: EmployeeAssignmentType }) => (
@@ -91,11 +106,24 @@ export default function Clearance() {
     headerSection: {
       marginBottom: 20,
       flexDirection: "row",
-      gap: spacing["md"],
+      gap: spacing["sm"],
       paddingHorizontal: spacing["md"],
     },
     searchContainer: {
       flex: 1,
+    },
+    resetButton: {
+      backgroundColor: palette.error.main,
+      alignItems: "center",
+      justifyContent: "center",
+      paddingVertical: 12,
+      paddingHorizontal: 12,
+      borderRadius: 8,
+      elevation: 2,
+      shadowColor: "#000",
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 4,
     },
     filtersButton: {
       backgroundColor: palette.background.secondary,
@@ -157,9 +185,10 @@ export default function Clearance() {
               onChangeText={handleSearch}
             />
           </View>
+
           <TouchableOpacity
             style={styles.filtersButton}
-            onPress={handleFiltersPress}
+            onPress={() => setShowFilterModal(true)}
           >
             <Ionicons
               name="filter-outline"
@@ -167,6 +196,13 @@ export default function Clearance() {
               color={palette.text.primary}
             />
             <Text style={styles.filtersButtonText}>Filters</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.resetButton}
+            onPress={handleResetFilters}
+          >
+            <Ionicons name="refresh-outline" size={20} color={"white"} />
           </TouchableOpacity>
         </View>
 
@@ -199,6 +235,14 @@ export default function Clearance() {
           showsVerticalScrollIndicator={false}
         />
       </View>
+
+      <ClearanceFilter
+        visible={showFilterModal}
+        onClose={() => setShowFilterModal(false)}
+        onApplyFilters={handleApplyFilters}
+        employees={employees?.items || []}
+        currentFilters={filters}
+      />
     </View>
   );
 }
