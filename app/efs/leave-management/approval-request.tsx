@@ -16,6 +16,8 @@ import { Ionicons } from "@expo/vector-icons";
 
 // ** UI Components
 import ApprovedRequestCard from "@/components/modules/efs/approvedRequestCard";
+import AcceptRejectLeaveRequest from "@/components/modules/efs/Modals/AcceptRejectLeaveRequest";
+import LeaveDetails from "@/components/modules/efs/Modals/LeaveDetials";
 import { BarHeader, Loading, ResponsiveFlatList } from "@/components/ui";
 
 // ** Store
@@ -24,6 +26,9 @@ import {
   useGetLeaveStatusCountAdminQuery,
 } from "@/store/api/modules/efs/efsLeaves";
 
+// ** Types
+import { LeaveRequest } from "@/store/api/modules/efs/efsTypes";
+
 export default function ApprovalRequest() {
   const { palette } = useTheme();
   const [selectedStatus, setSelectedStatus] = useState<
@@ -31,6 +36,13 @@ export default function ApprovalRequest() {
   >("all");
   const [searchKeyword, setSearchKeyword] = useState("");
   const [searchText, setSearchText] = useState("");
+  const [modalVisible, setModalVisible] = useState(false);
+  const [detailsModalVisible, setDetailsModalVisible] = useState(false);
+  const [selectedLeaveRequest, setSelectedLeaveRequest] =
+    useState<LeaveRequest | null>(null);
+  const [modalAction, setModalAction] = useState<"approve" | "reject">(
+    "approve"
+  );
 
   const { data: statusCounts, isLoading: statusLoading } =
     useGetLeaveStatusCountAdminQuery();
@@ -66,18 +78,39 @@ export default function ApprovalRequest() {
     }) || [];
 
   const handleApprove = (id: number) => {
-    console.log("Approve request:", id);
-    // TODO: Implement approve functionality
+    const request = filteredRequests.find((req) => req.id === id);
+    if (request) {
+      setSelectedLeaveRequest(request);
+      setModalAction("approve");
+      setModalVisible(true);
+    }
   };
 
   const handleReject = (id: number) => {
-    console.log("Reject request:", id);
-    // TODO: Implement reject functionality
+    const request = filteredRequests.find((req) => req.id === id);
+    if (request) {
+      setSelectedLeaveRequest(request);
+      setModalAction("reject");
+      setModalVisible(true);
+    }
   };
 
   const handleViewDetails = (id: number) => {
-    console.log("View details for request:", id);
-    // TODO: Implement view details functionality
+    const request = filteredRequests.find((req) => req.id === id);
+    if (request) {
+      setSelectedLeaveRequest(request);
+      setDetailsModalVisible(true);
+    }
+  };
+
+  const handleCloseModal = () => {
+    setModalVisible(false);
+    setSelectedLeaveRequest(null);
+  };
+
+  const handleCloseDetailsModal = () => {
+    setDetailsModalVisible(false);
+    setSelectedLeaveRequest(null);
   };
 
   const renderStatusToggler = () => {
@@ -335,6 +368,22 @@ export default function ApprovalRequest() {
           </View>
         )}
       </View>
+
+      <AcceptRejectLeaveRequest
+        visible={modalVisible}
+        onClose={handleCloseModal}
+        leaveRequest={selectedLeaveRequest}
+        action={modalAction}
+      />
+
+      <LeaveDetails
+        visible={detailsModalVisible}
+        onClose={handleCloseDetailsModal}
+        leaveRequest={selectedLeaveRequest}
+        onApprove={handleApprove}
+        onReject={handleReject}
+        showActions={selectedStatus === "all" || selectedStatus === "pending"}
+      />
     </View>
   );
 }

@@ -342,6 +342,74 @@ export const efsLeavesApi = createApi({
         { type: TAG_TYPES.Dashboard, id: "LEAVE_STATUS_COUNT" },
       ],
     }),
+
+    // APPROVE LEAVE REQUEST
+    approveLeaveRequest: builder.mutation<
+      boolean,
+      { requestId: number; approvalNotes: string }
+    >({
+      query: (data) => ({
+        url: API_ENDPOINTS.APPROVE_LEAVE_REQUEST,
+        method: "POST",
+        body: data,
+      }),
+      transformResponse: (response: BaseApiResponse<boolean>) => {
+        return transformResponse(response);
+      },
+      onQueryStarted: async (arg, { queryFulfilled }: any) => {
+        try {
+          await queryFulfilled;
+          handleApiSuccess("Leave request approved successfully");
+        } catch (error: any) {
+          const serverErrorMessage = error?.error?.data?.message;
+          handleApiError(
+            error,
+            serverErrorMessage
+              ? `${serverErrorMessage}`
+              : "Failed to approve leave request"
+          );
+        }
+      },
+      invalidatesTags: (result, error, arg) => [
+        { type: TAG_TYPES.LeaveRequests, id: "ADMIN_LIST" },
+        { type: TAG_TYPES.LeaveRequests, id: arg.requestId },
+        { type: TAG_TYPES.Dashboard, id: "LEAVE_STATUS_COUNT_ADMIN" },
+      ],
+    }),
+
+    // REJECT LEAVE REQUEST
+    rejectLeaveRequest: builder.mutation<
+      boolean,
+      { requestId: number; rejectionNotes: string }
+    >({
+      query: (data) => ({
+        url: API_ENDPOINTS.REJECT_LEAVE_REQUEST,
+        method: "POST",
+        body: data,
+      }),
+      transformResponse: (response: BaseApiResponse<boolean>) => {
+        return transformResponse(response);
+      },
+      onQueryStarted: async (arg, { queryFulfilled }: any) => {
+        try {
+          await queryFulfilled;
+          handleApiSuccess("Leave request rejected successfully");
+        } catch (error: any) {
+          const serverErrorMessage = error?.error?.data?.message;
+          handleApiError(
+            error,
+            serverErrorMessage
+              ? `${serverErrorMessage}`
+              : "Failed to reject leave request"
+          );
+        }
+      },
+      invalidatesTags: (result, error, arg) => [
+        { type: TAG_TYPES.LeaveRequests, id: "ADMIN_LIST" },
+        { type: TAG_TYPES.LeaveRequests, id: arg.requestId },
+        { type: TAG_TYPES.Dashboard, id: "LEAVE_STATUS_COUNT_ADMIN" },
+      ],
+    }),
   }),
 });
 export const {
@@ -359,4 +427,6 @@ export const {
   useLazyGetLeaveRequestDetailsQuery,
   useCreateUpdateLeaveRequestMutation,
   useDeleteLeaveRequestMutation,
+  useApproveLeaveRequestMutation,
+  useRejectLeaveRequestMutation,
 } = efsLeavesApi;
