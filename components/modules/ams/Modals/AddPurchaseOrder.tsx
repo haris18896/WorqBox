@@ -176,7 +176,7 @@ const AddPurchaseOrderModal: React.FC<AddPurchaseOrderModalProps> = ({
           ? "Update purchase order information"
           : "Create a new purchase order"
       }
-      height={isMobile() ? "60%" : "50%"}
+      height={isMobile() ? "80%" : "50%"}
       variant="bottom"
       animationType="slide"
       closeOnBackdrop={true}

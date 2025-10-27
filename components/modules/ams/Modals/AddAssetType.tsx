@@ -61,20 +61,16 @@ const AddAssetTypeModal: React.FC<AddAssetTypeModalProps> = ({
   const [createUpdateAssetCategory, { isLoading }] =
     useCreateUpdateAssetCategoryMutation();
 
-  // Get asset category details when editing
   const { data: assetCategoryDetails, isLoading: assetCategoryDetailsLoading } =
     useGetAssetCategoryByIdQuery(selectedAssetType?.id!, {
       skip: !selectedAssetType?.id,
     });
 
-  // Determine if we're in edit mode
   const isEditMode =
     selectedAssetType !== null && selectedAssetType !== undefined;
 
-  // Check if data is loading
   const isDataLoading = assetCategoryDetailsLoading;
 
-  // Create initial values based on mode
   const getInitialValues = () => {
     if (isEditMode && assetCategoryDetails) {
       return {
@@ -86,10 +82,8 @@ const AddAssetTypeModal: React.FC<AddAssetTypeModalProps> = ({
     return initialValues;
   };
 
-  // Refs for form inputs
   const nameRef = useRef<any>(null);
 
-  // Use useFormik hook
   const formik = useFormik({
     initialValues: getInitialValues(),
     validationSchema,
