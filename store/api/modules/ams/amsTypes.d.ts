@@ -1,3 +1,5 @@
+import { PaginationParams } from "@/store/types/api";
+
 export interface AssetCategory {
   assetCategoryId: number;
   assetCategoryName: string;
@@ -55,6 +57,24 @@ export interface PurchaseOrder {
   attachmentURL: string;
   vendorId: number;
   vendor: Vendor;
+}
+
+export interface PurchaseOrderRequest {
+  id?: number;
+  name: string;
+  orderDate: string;
+  totalAmount: number;
+  attachmentURL: string;
+  vendorId: number;
+}
+
+export interface PurchaseOrderCreateUpdateResponse {
+  isSuccess: boolean;
+  responseMessage: string;
+  errors: any;
+  result: {
+    id: number;
+  };
 }
 
 export interface PurchaseOrderParams extends PaginationParams {

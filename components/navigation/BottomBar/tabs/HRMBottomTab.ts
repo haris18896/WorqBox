@@ -29,11 +29,11 @@ export const HRMBottomTabs: BottomBarTab[] = [
     activeIcon: "file-text",
     disabled: false,
   },
-  {
-    id: "configurations/roles",
-    label: "Settings",
-    icon: "settings",
-    activeIcon: "settings",
-    disabled: false,
-  },
+  // {
+  //   id: "configurations/roles",
+  //   label: "Settings",
+  //   icon: "settings",
+  //   activeIcon: "settings",
+  //   disabled: false,
+  // },
 ];

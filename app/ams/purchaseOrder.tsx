@@ -14,6 +14,7 @@ import { spacing, useTheme } from "@/theme";
 import { Ionicons } from "@expo/vector-icons";
 
 // ** UI
+import AddPurchaseOrderModal from "@/components/modules/ams/Modals/AddPurchaseOrder";
 import PurchaseOrderCard from "@/components/modules/ams/purchaseOrderCard";
 import {
   BarHeader,
@@ -23,10 +24,7 @@ import {
 } from "@/components/ui";
 
 // ** Store
-import {
-  useGetPurchaseOrdersQuery,
-  useGetVendorsQuery,
-} from "@/store/api/modules/ams/amsPurchaseOrder";
+import { useGetPurchaseOrdersQuery } from "@/store/api/modules/ams/amsPurchaseOrder";
 import { PurchaseOrder as PurchaseOrderType } from "@/store/api/modules/ams/amsTypes";
 
 export default function PurchaseOrder() {
@@ -34,6 +32,9 @@ export default function PurchaseOrder() {
   const [searchQuery, setSearchQuery] = useState("");
   const [pageNumber, setPageNumber] = useState(1);
   const [refreshing, setRefreshing] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedPurchaseOrder, setSelectedPurchaseOrder] =
+    useState<PurchaseOrderType | null>(null);
 
   const {
     data: purchaseOrdersData,
@@ -43,11 +44,6 @@ export default function PurchaseOrder() {
     pageNumber,
     pageSize: 10,
     keyword: searchQuery,
-  });
-
-  const { data: vendorsData } = useGetVendorsQuery({
-    pageNumber: 1,
-    pageSize: 1000,
   });
 
   const handleRefresh = async () => {
@@ -65,13 +61,22 @@ export default function PurchaseOrder() {
   };
 
   const handlePurchaseOrderPress = (purchaseOrder: PurchaseOrderType) => {
-    console.log("Purchase Order pressed:", purchaseOrder);
-    // TODO: Navigate to purchase order details
+    setSelectedPurchaseOrder(purchaseOrder);
+    setModalVisible(true);
   };
 
   const handleAddPurchaseOrder = () => {
-    console.log("Add Purchase Order pressed");
-    // TODO: Navigate to add purchase order form
+    setSelectedPurchaseOrder(null);
+    setModalVisible(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalVisible(false);
+    setSelectedPurchaseOrder(null);
+  };
+
+  const handleModalSuccess = () => {
+    refetchPurchaseOrders();
   };
 
   const renderPurchaseOrderCard = ({ item }: { item: PurchaseOrderType }) => (
@@ -88,7 +93,7 @@ export default function PurchaseOrder() {
     },
     content: {
       flex: 1,
-      paddingTop: spacing.md,
+      paddingVertical: spacing.md,
     },
     headerSection: {
       marginBottom: 20,
@@ -215,6 +220,13 @@ export default function PurchaseOrder() {
           showsVerticalScrollIndicator={false}
         />
       </View>
+
+      <AddPurchaseOrderModal
+        visible={modalVisible}
+        onClose={handleCloseModal}
+        onSuccess={handleModalSuccess}
+        selectedPurchaseOrder={selectedPurchaseOrder}
+      />
     </View>
   );
 }

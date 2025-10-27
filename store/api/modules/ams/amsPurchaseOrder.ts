@@ -12,7 +12,9 @@ import {
 import { createApi } from "@reduxjs/toolkit/query/react";
 import {
   PurchaseOrder,
+  PurchaseOrderCreateUpdateResponse,
   PurchaseOrderParams,
+  PurchaseOrderRequest,
   Vendor,
   VendorCreateUpdateResponse,
   VendorParams,
@@ -158,6 +160,66 @@ export const amsPurchaseOrderApi = createApi({
           : []),
       ],
     }),
+
+    // GET PURCHASE ORDER BY ID
+    getPurchaseOrderById: builder.query<PurchaseOrder, number>({
+      query: (id) => ({
+        url: `${API_ENDPOINTS.GET_PURCHASE_ORDERS}/${id}`,
+        method: "GET",
+      }),
+      transformResponse: (response: BaseApiResponse<PurchaseOrder>) => {
+        return transformResponse(response);
+      },
+      onQueryStarted: async (arg: number, { queryFulfilled }: any) => {
+        try {
+          await queryFulfilled;
+        } catch (error) {
+          handleApiError(error, "Failed to fetch purchase order details");
+        }
+      },
+      providesTags: (result: PurchaseOrder | undefined, error, id) =>
+        result
+          ? [{ type: TAG_TYPES.Dashboard, id: `PURCHASE_ORDER_${id}` }]
+          : [{ type: TAG_TYPES.Dashboard, id: `PURCHASE_ORDER_${id}` }],
+    }),
+
+    // CREATE/UPDATE PURCHASE ORDER
+    createUpdatePurchaseOrder: builder.mutation<
+      PurchaseOrderCreateUpdateResponse,
+      PurchaseOrderRequest
+    >({
+      query: (purchaseOrderData) => {
+        const isUpdate = purchaseOrderData.id !== undefined;
+        return {
+          url: isUpdate
+            ? `${API_ENDPOINTS.GET_PURCHASE_ORDERS}/${purchaseOrderData.id}`
+            : API_ENDPOINTS.GET_PURCHASE_ORDERS,
+          method: "POST",
+          body: purchaseOrderData,
+        };
+      },
+      transformResponse: (
+        response: BaseApiResponse<PurchaseOrderCreateUpdateResponse>
+      ) => {
+        return transformResponse(response);
+      },
+      onQueryStarted: async (
+        arg: PurchaseOrderRequest,
+        { queryFulfilled }: any
+      ) => {
+        try {
+          await queryFulfilled;
+        } catch (error) {
+          handleApiError(error, "Failed to save purchase order");
+        }
+      },
+      invalidatesTags: (result, error, arg) => [
+        { type: TAG_TYPES.Dashboard, id: "PURCHASE_ORDERS" },
+        ...(arg.id
+          ? [{ type: TAG_TYPES.Dashboard, id: `PURCHASE_ORDER_${arg.id}` }]
+          : []),
+      ],
+    }),
   }),
 });
 
@@ -169,4 +231,6 @@ export const {
   useGetVendorByIdQuery,
   useLazyGetVendorByIdQuery,
   useCreateUpdateVendorMutation,
+  useGetPurchaseOrderByIdQuery,
+  useCreateUpdatePurchaseOrderMutation,
 } = amsPurchaseOrderApi;
