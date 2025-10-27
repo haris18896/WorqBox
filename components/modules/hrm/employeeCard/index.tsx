@@ -109,7 +109,7 @@ export default function EmployeeCard({
   });
 
   return (
-    <TouchableOpacity style={styles.card} onPress={handlePress}>
+    <TouchableOpacity style={styles.card} onPress={handlePress} disabled={true}>
       <View style={styles.employeeHeader}>
         <View style={styles.employeeAvatar}>
           {employee.profilePictureUrl ? (
@@ -156,7 +156,7 @@ export default function EmployeeCard({
         </View>
       </View>
 
-      <View style={styles.actionButtons}>
+      {/* <View style={styles.actionButtons}>
         <TouchableOpacity
           style={[styles.actionButton, styles.editButton]}
           onPress={handleEdit}
@@ -173,7 +173,7 @@ export default function EmployeeCard({
         >
           <Ionicons name="trash-outline" size={16} color={palette.error.main} />
         </TouchableOpacity>
-      </View>
+      </View> */}
     </TouchableOpacity>
   );
 }

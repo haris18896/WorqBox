@@ -62,26 +62,6 @@ export default function Employees() {
     console.log("Export CSV clicked");
   };
 
-  const handleAddEmployee = () => {
-    // TODO: Implement add employee functionality
-    console.log("Add Employee clicked");
-  };
-
-  const handleEmployeePress = (employee: HrmEmployee) => {
-    // TODO: Implement employee details view
-    console.log("Employee pressed:", employee.id);
-  };
-
-  const handleEmployeeEdit = (employee: HrmEmployee) => {
-    // TODO: Implement employee edit functionality
-    console.log("Edit employee:", employee.id);
-  };
-
-  const handleEmployeeDelete = (employee: HrmEmployee) => {
-    // TODO: Implement employee delete functionality
-    console.log("Delete employee:", employee.id);
-  };
-
   const isLoading = genderLoading || employeesLoading;
 
   const styles = StyleSheet.create({
@@ -266,9 +246,9 @@ export default function Employees() {
   const renderEmployeeCard = ({ item }: { item: HrmEmployee }) => (
     <EmployeeCard
       employee={item}
-      onPress={handleEmployeePress}
-      onEdit={handleEmployeeEdit}
-      onDelete={handleEmployeeDelete}
+      onPress={() => {}}
+      onEdit={() => {}}
+      onDelete={() => {}}
     />
   );
 
@@ -280,7 +260,7 @@ export default function Employees() {
       {renderStatusCards()}
       <View style={styles.sectionHeader}>
         <Text style={styles.sectionTitle}>Employee List</Text>
-        <View style={styles.actionButtons}>
+        {/* <View style={styles.actionButtons}>
           <TouchableOpacity
             style={styles.exportButton}
             onPress={handleExportCSV}
@@ -293,10 +273,7 @@ export default function Employees() {
             <Text style={styles.buttonText}>Export CSV</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            style={styles.addButton}
-            onPress={handleAddEmployee}
-          >
+          <TouchableOpacity style={styles.addButton} onPress={() => {}}>
             <Ionicons
               name="add-outline"
               size={spacing.lg}
@@ -304,7 +281,7 @@ export default function Employees() {
             />
             <Text style={styles.buttonText}>Add</Text>
           </TouchableOpacity>
-        </View>
+        </View> */}
       </View>
       <View style={styles.searchContainer}>
         <Ionicons name="search-outline" style={styles.searchIcon} />
