@@ -21,6 +21,9 @@ export interface TextInputProps extends Omit<RNTextInputProps, "style"> {
   formikTouched?: boolean;
   nextInputRef?: React.RefObject<any>;
   styleData?: TextInputStyleData;
+  loading?: boolean;
+  validationState?: "success" | "error" | null;
+  validationError?: string;
 }
 
 export type TextInputVariant = "outlined" | "filled" | "underlined";

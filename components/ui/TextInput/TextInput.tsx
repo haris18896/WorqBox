@@ -1,5 +1,6 @@
 import React, { forwardRef, useCallback, useState } from "react";
 import {
+  ActivityIndicator,
   Platform,
   TextInput as RNTextInput,
   StyleSheet,
@@ -43,6 +44,9 @@ const TextInput = forwardRef<RNTextInput, TextInputProps>(
       secureTextEntry,
       onFocus,
       onBlur,
+      loading = false,
+      validationState = null,
+      validationError,
       ...props
     },
     ref
@@ -54,6 +58,7 @@ const TextInput = forwardRef<RNTextInput, TextInputProps>(
     const isPassword = leftIcon === "password" || secureTextEntry;
     const showError = formikTouched && formikError;
     const hasError = Boolean(showError);
+    const showValidationError = Boolean(validationError);
 
     const handleSubmitEditing = () => {
       if (nextInputRef?.current) {
@@ -143,6 +148,20 @@ const TextInput = forwardRef<RNTextInput, TextInputProps>(
         ...getSizeStyles(),
       };
 
+      // Determine border color based on validation state, error state, or focus state
+      const getBorderColor = () => {
+        if (validationState === "error" || hasError) {
+          return palette.error.main;
+        }
+        if (validationState === "success") {
+          return palette.success.main || "#10B981"; // Success green
+        }
+        if (isFocused) {
+          return palette.primary.main;
+        }
+        return palette.border.primary;
+      };
+
       if (disabled) {
         return {
           ...baseStyles,
@@ -156,11 +175,7 @@ const TextInput = forwardRef<RNTextInput, TextInputProps>(
           return {
             ...baseStyles,
             backgroundColor: palette.background.primary,
-            borderColor: hasError
-              ? palette.error.main
-              : isFocused
-              ? palette.primary.main
-              : palette.border.primary,
+            borderColor: getBorderColor(),
           };
         case "underlined":
           return {
@@ -169,20 +184,12 @@ const TextInput = forwardRef<RNTextInput, TextInputProps>(
             borderBottomWidth: 2,
             borderRadius: 0,
             backgroundColor: "transparent",
-            borderBottomColor: hasError
-              ? palette.error.main
-              : isFocused
-              ? palette.primary.main
-              : palette.border.primary,
+            borderBottomColor: getBorderColor(),
           };
         default: // outlined
           return {
             ...baseStyles,
-            borderColor: hasError
-              ? "#EF4444"
-              : isFocused
-              ? palette.primary.main
-              : "#E5E7EB", // Light gray border
+            borderColor: getBorderColor(),
           };
       }
     };
@@ -236,6 +243,16 @@ const TextInput = forwardRef<RNTextInput, TextInputProps>(
         paddingHorizontal: spacing.xs,
         ...styleData?.errorStyles,
       },
+      validationErrorText: {
+        fontSize: scaleFontSize(12),
+        color: palette.error.main,
+        marginTop: spacing.xs,
+        paddingHorizontal: spacing.xs,
+        ...styleData?.errorStyles,
+      },
+      loadingIndicator: {
+        marginRight: spacing.sm,
+      },
     });
 
     return (
@@ -264,6 +281,13 @@ const TextInput = forwardRef<RNTextInput, TextInputProps>(
                 }
               />
             </View>
+          )}
+          {loading && (
+            <ActivityIndicator
+              style={styles.loadingIndicator}
+              size="small"
+              color={palette.primary.main}
+            />
           )}
 
           <RNTextInput
@@ -301,6 +325,9 @@ const TextInput = forwardRef<RNTextInput, TextInputProps>(
         </TouchableOpacity>
 
         {showError && <Text style={styles.errorText}>{formikError}</Text>}
+        {showValidationError && (
+          <Text style={styles.validationErrorText}>{validationError}</Text>
+        )}
       </View>
     );
   }

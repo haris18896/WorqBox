@@ -15,6 +15,8 @@ import { Ionicons } from "@expo/vector-icons";
 
 // ** UI
 import AssetCard from "@/components/modules/ams/assetCard";
+import AddAssetModal from "@/components/modules/ams/Modals/AddAsset";
+import AssignAssetModal from "@/components/modules/ams/Modals/AssignAsset";
 import {
   BarHeader,
   Loading,
@@ -35,6 +37,9 @@ export default function Assets() {
   const [searchQuery, setSearchQuery] = useState("");
   const [pageNumber, setPageNumber] = useState(1);
   const [refreshing, setRefreshing] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [assignModalVisible, setAssignModalVisible] = useState(false);
+  const [selectedAsset, setSelectedAsset] = useState<Asset | null>(null);
 
   const {
     data: assetsData,
@@ -74,23 +79,41 @@ export default function Assets() {
   };
 
   const handleAssignAsset = (asset: Asset) => {
-    console.log("Assign asset:", asset);
-    // TODO: Open assignment modal
+    setSelectedAsset(asset);
+    setAssignModalVisible(true);
   };
 
   const handleUnassignAsset = (asset: Asset) => {
-    console.log("Unassign asset:", asset);
-    // TODO: Show unassign confirmation modal
+    setSelectedAsset(asset);
+    setAssignModalVisible(true);
+  };
+
+  const handleCloseAssignModal = () => {
+    setAssignModalVisible(false);
+    setSelectedAsset(null);
+  };
+
+  const handleAssignModalSuccess = () => {
+    refetchAssets();
   };
 
   const handleAddAsset = () => {
-    console.log("Add asset pressed");
-    // TODO: Navigate to add asset form
+    setSelectedAsset(null);
+    setModalVisible(true);
   };
 
-  const handleFilterAssets = () => {
-    console.log("Filter assets pressed");
-    // TODO: Open filter modal
+  const handleEditAsset = (asset: Asset) => {
+    setSelectedAsset(asset);
+    setModalVisible(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalVisible(false);
+    setSelectedAsset(null);
+  };
+
+  const handleModalSuccess = () => {
+    refetchAssets();
   };
 
   const renderAssetCard = ({ item }: { item: Asset }) => (
@@ -100,6 +123,7 @@ export default function Assets() {
       onPress={handleAssetPress}
       onAssign={handleAssignAsset}
       onUnassign={handleUnassignAsset}
+      onEdit={handleEditAsset}
     />
   );
 
@@ -186,7 +210,7 @@ export default function Assets() {
             />
           </View>
           <View style={styles.buttonContainer}>
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={[styles.actionButton, styles.filterButton]}
               onPress={handleFilterAssets}
             >
@@ -196,7 +220,7 @@ export default function Assets() {
                 color={palette.text.inverse}
               />
               <Text style={styles.buttonText}>Filter</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <TouchableOpacity
               style={styles.actionButton}
               onPress={handleAddAsset}
@@ -238,6 +262,20 @@ export default function Assets() {
           showsVerticalScrollIndicator={false}
         />
       </View>
+
+      <AddAssetModal
+        visible={modalVisible}
+        onClose={handleCloseModal}
+        onSuccess={handleModalSuccess}
+        selectedAsset={selectedAsset}
+      />
+
+      <AssignAssetModal
+        visible={assignModalVisible}
+        onClose={handleCloseAssignModal}
+        onSuccess={handleAssignModalSuccess}
+        selectedAsset={selectedAsset}
+      />
     </View>
   );
 }

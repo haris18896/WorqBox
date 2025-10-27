@@ -209,6 +209,34 @@ export interface Asset {
     fullName: string;
   } | null;
   purchaseOrder: any | null;
+  purchaseOrderId?: number;
+}
+
+export interface AssetRequest {
+  id?: number;
+  name: string;
+  serialNumber: string;
+  shortDescription: string;
+  purchaseData: string;
+  purchaseCost: number;
+  assetCategoryId: number;
+  purchaseOrderId: number;
+}
+
+export interface AssetCreateUpdateResponse {
+  isSuccess: boolean;
+  responseMessage: string;
+  errors: any;
+  result: {
+    id: number;
+  };
+}
+
+export interface Employee {
+  id: number;
+  employeeNumber: string;
+  fullName: string;
+  profilePictureUrl?: string;
 }
 
 export interface AssetParams extends PaginationParams {
@@ -225,4 +253,15 @@ export interface AssetResponse {
   responseMessage: string;
   errors: any;
   result: PaginatedResult<Asset>;
+}
+
+export interface AssignAssetRequest {
+  employeeId: number;
+}
+
+export interface AssignAssetResponse {
+  isSuccess: boolean;
+  responseMessage: string;
+  errors: any;
+  result: boolean;
 }

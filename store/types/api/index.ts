@@ -279,6 +279,10 @@ export const API_ENDPOINTS = {
   GET_CLEARANCE_ASSIGNMENTS: "/Clearance/employee-assignments",
   GET_ASSET_CATEGORIES: "/AssetCategory",
   GET_ASSETS: "/Asset/GetAssets",
+  GET_ASSET_BY_ID: "/Asset",
+  VALIDATE_SERIAL: "/Asset/validate-serial",
+  CREATE_UPDATE_ASSET: "/Asset/CreateUpdateAsset",
+  ASSIGN_ASSET: "/Asset",
 
   // HRM (Human Resource Management)
   GET_EMPLOYEE_COUNT_WITH_GENDER: "/Dashboard/GetCountEmployeeWithGender",

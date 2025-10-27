@@ -16,8 +16,12 @@ import {
   AssetCategoryDeleteResponse,
   AssetCategoryParams,
   AssetCategoryRequest,
+  AssetCreateUpdateResponse,
   AssetParams,
+  AssetRequest,
   AssetTypesCategory,
+  AssignAssetRequest,
+  AssignAssetResponse,
 } from "./amsTypes";
 
 export const amsManagementApi = createApi({
@@ -193,6 +197,149 @@ export const amsManagementApi = createApi({
         { type: TAG_TYPES.Dashboard, id: `ASSET_CATEGORY_${id}` },
       ],
     }),
+
+    // VALIDATE SERIAL NUMBER
+    validateSerialNumber: builder.query<boolean, string>({
+      query: (serialNumber) => ({
+        url: API_ENDPOINTS.VALIDATE_SERIAL,
+        method: "GET",
+        params: { serialNumber },
+      }),
+      transformResponse: (response: BaseApiResponse<boolean>) => {
+        return transformResponse(response);
+      },
+      onQueryStarted: async (arg: string, { queryFulfilled }: any) => {
+        try {
+          await queryFulfilled;
+        } catch (error) {
+          // Silent error handling for validation
+        }
+      },
+    }),
+
+    // GET ASSET BY ID
+    getAssetById: builder.query<Asset, number>({
+      query: (id) => ({
+        url: `${API_ENDPOINTS.GET_ASSET_BY_ID}/${id}`,
+        method: "GET",
+      }),
+      transformResponse: (response: BaseApiResponse<Asset>) => {
+        return transformResponse(response);
+      },
+      onQueryStarted: async (arg: number, { queryFulfilled }: any) => {
+        try {
+          await queryFulfilled;
+        } catch (error) {
+          handleApiError(error, "Failed to fetch asset details");
+        }
+      },
+      providesTags: (result: Asset | undefined, error, id) =>
+        result
+          ? [{ type: TAG_TYPES.Dashboard, id: `ASSET_${id}` }]
+          : [{ type: TAG_TYPES.Dashboard, id: `ASSET_${id}` }],
+    }),
+
+    // CREATE/UPDATE ASSET
+    createUpdateAsset: builder.mutation<
+      AssetCreateUpdateResponse,
+      { data: AssetRequest; isUpdate?: boolean }
+    >({
+      query: ({ data, isUpdate }) => {
+        // Format data as FormData
+        const formData = new FormData();
+
+        if (data.id) {
+          formData.append("id", data.id.toString());
+        }
+        formData.append("name", data.name);
+        formData.append("serialNumber", data.serialNumber);
+        formData.append("shortDescription", data.shortDescription);
+        formData.append("purchaseData", data.purchaseData);
+        formData.append("purchaseCost", data.purchaseCost.toString());
+        formData.append("assetCategoryId", data.assetCategoryId.toString());
+        formData.append("purchaseOrderId", data.purchaseOrderId.toString());
+
+        return {
+          url: isUpdate
+            ? `${API_ENDPOINTS.CREATE_UPDATE_ASSET}/${data.id}`
+            : API_ENDPOINTS.CREATE_UPDATE_ASSET,
+          method: "POST",
+          body: formData,
+        };
+      },
+      transformResponse: (
+        response: BaseApiResponse<AssetCreateUpdateResponse>
+      ) => {
+        return transformResponse(response);
+      },
+      onQueryStarted: async (
+        arg: { data: AssetRequest; isUpdate?: boolean },
+        { queryFulfilled }: any
+      ) => {
+        try {
+          await queryFulfilled;
+        } catch (error) {
+          handleApiError(error, "Failed to save asset");
+        }
+      },
+      invalidatesTags: (result, error, arg) => [
+        { type: TAG_TYPES.Dashboard, id: "ASSETS" },
+        ...(arg.data.id
+          ? [{ type: TAG_TYPES.Dashboard, id: `ASSET_${arg.data.id}` }]
+          : []),
+      ],
+    }),
+
+    // ASSIGN ASSET
+    assignAsset: builder.mutation<
+      AssignAssetResponse,
+      { assetId: number; data: AssignAssetRequest }
+    >({
+      query: ({ assetId, data }) => ({
+        url: `${API_ENDPOINTS.ASSIGN_ASSET}/${assetId}/assign`,
+        method: "POST",
+        body: data,
+      }),
+      transformResponse: (response: BaseApiResponse<AssignAssetResponse>) => {
+        return transformResponse(response);
+      },
+      onQueryStarted: async (
+        arg: { assetId: number; data: AssignAssetRequest },
+        { queryFulfilled }: any
+      ) => {
+        try {
+          await queryFulfilled;
+        } catch (error) {
+          handleApiError(error, "Failed to assign asset");
+        }
+      },
+      invalidatesTags: (result, error, arg) => [
+        { type: TAG_TYPES.Dashboard, id: "ASSETS" },
+        { type: TAG_TYPES.Dashboard, id: `ASSET_${arg.assetId}` },
+      ],
+    }),
+
+    // UNASSIGN ASSET
+    unassignAsset: builder.mutation<AssignAssetResponse, number>({
+      query: (assetId) => ({
+        url: `${API_ENDPOINTS.ASSIGN_ASSET}/${assetId}/unassign`,
+        method: "POST",
+      }),
+      transformResponse: (response: BaseApiResponse<AssignAssetResponse>) => {
+        return transformResponse(response);
+      },
+      onQueryStarted: async (arg: number, { queryFulfilled }: any) => {
+        try {
+          await queryFulfilled;
+        } catch (error) {
+          handleApiError(error, "Failed to unassign asset");
+        }
+      },
+      invalidatesTags: (result, error, assetId) => [
+        { type: TAG_TYPES.Dashboard, id: "ASSETS" },
+        { type: TAG_TYPES.Dashboard, id: `ASSET_${assetId}` },
+      ],
+    }),
   }),
 });
 
@@ -205,4 +352,11 @@ export const {
   useLazyGetAssetCategoryByIdQuery,
   useCreateUpdateAssetCategoryMutation,
   useDeleteAssetCategoryMutation,
+  useValidateSerialNumberQuery,
+  useLazyValidateSerialNumberQuery,
+  useGetAssetByIdQuery,
+  useLazyGetAssetByIdQuery,
+  useCreateUpdateAssetMutation,
+  useAssignAssetMutation,
+  useUnassignAssetMutation,
 } = amsManagementApi;

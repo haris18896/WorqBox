@@ -1,5 +1,5 @@
 import { Badge, Button } from "@/components/ui";
-import { useTheme } from "@/theme";
+import { spacing, useTheme } from "@/theme";
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -11,6 +11,7 @@ export default function AssetCard({
   onPress,
   onAssign,
   onUnassign,
+  onEdit,
 }: AssetCardProps) {
   const { palette } = useTheme();
 
@@ -24,6 +25,11 @@ export default function AssetCard({
 
   const handleUnassign = () => {
     onUnassign?.(asset);
+  };
+
+  const handleEdit = (e: any) => {
+    e.stopPropagation();
+    onEdit?.(asset);
   };
 
   const formatCurrency = (amount: number) => {
@@ -89,6 +95,18 @@ export default function AssetCard({
       color: palette.text.secondary,
       fontFamily: "monospace",
     },
+    headerActions: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 8,
+    },
+    editButton: {
+      padding: 4,
+      borderRadius: 4,
+      backgroundColor: palette.primary.main,
+      justifyContent: "center",
+      alignItems: "center",
+    },
     statusBadge: {
       alignSelf: "flex-start",
     },
@@ -123,6 +141,7 @@ export default function AssetCard({
       padding: 12,
       borderRadius: 8,
       marginBottom: 12,
+      gap: spacing["sm"],
     },
     employeeImage: {
       width: 32,
@@ -167,10 +186,19 @@ export default function AssetCard({
           <Text style={styles.title}>{asset.name}</Text>
           <Text style={styles.serialNumber}>SN: {asset.serialNumber}</Text>
         </View>
-        <View style={styles.statusBadge}>
-          <Badge variant={assignedEmployee ? "success" : "warning"}>
-            {assignedEmployee ? "Assigned" : "Available"}
-          </Badge>
+        <View style={styles.headerActions}>
+          <TouchableOpacity onPress={handleEdit} style={styles.editButton}>
+            <Ionicons
+              name="create-outline"
+              size={20}
+              color={palette.text.inverse}
+            />
+          </TouchableOpacity>
+          <View style={styles.statusBadge}>
+            <Badge variant={assignedEmployee ? "success" : "warning"}>
+              {assignedEmployee ? "Assigned" : "Available"}
+            </Badge>
+          </View>
         </View>
       </View>
 

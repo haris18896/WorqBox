@@ -186,7 +186,7 @@ const SingleSelectDropdown: React.FC<SingleSelectDropdownProps> = ({
       borderRadius: 8,
       borderWidth: 1,
       borderColor: palette.border.primary,
-      minWidth: 200,
+      minWidth: 350,
       maxWidth: "90%",
       maxHeight: maxHeight,
       flex: 1,

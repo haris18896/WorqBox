@@ -6,4 +6,5 @@ export interface AssetCardProps {
   onPress?: (asset: Asset) => void;
   onAssign?: (asset: Asset) => void;
   onUnassign?: (asset: Asset) => void;
+  onEdit?: (asset: Asset) => void;
 }
